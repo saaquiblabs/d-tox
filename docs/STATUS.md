@@ -1,6 +1,6 @@
 # Status
 
-Last updated: 2026-11-19 (IST). Each session overwrites this at handoff.
+Last updated: 2026-11-19 (IST), 04:40. Each session overwrites this at handoff.
 
 ## Where we are
 
@@ -22,6 +22,17 @@ finished: 32 questions, all answered by Najmush on 2026-11-18. **Read `CONTEXT.m
   added as the project's public endpoint before the edge served the real certificate. Deploys
   are manual: `ssh najmush-oracle '~/.openship/bin/openship --local deploy --project
   proj_ombNMbyjVUOS-aV7 --branch main --env production --watch'`.
+- **Product page `/` is live from the #22 prototype (direction H, pass 3; branch
+  `feat/27-product-page-live`, 2026-11-19).** Najmush: "make this live for the moment, we will
+  polish it at another moment." `site/src/pages/index.astro` is its own dark page (not Base.astro):
+  wipe showcase, "Ten switches" story with the popup, numbers bento, Home scene (full feed →
+  Intention Page B), close + footer. Assets in `site/public/{shots,feed,logo,fonts}`; Instrument
+  Serif + Inter self-hosted (OFL, `public/fonts/LICENSES.txt`). Gate: 100 everywhere, `/` ~395 KB
+  phone. **Still to polish (#27):** PLACEHOLDER numbers (#25), the feed uses real creators'
+  thumbnails (replace before promoting the page), the hero mark is hidden on phones (it was the
+  slow LCP), Header/Footer components are not shared with `/privacy` and `/welcome` yet.
+  The prototype's history and Najmush's verdicts live on `proto/22-prototypes` (docs/STATUS.md
+  there); picks so far: popup D, Intention Page **B** (from the Home scene), page H.
 - **#20 (PR #36, merged 2026-11-19):** Settings shorts, shorts-redirect, search-clean-up, explore, bell.
   RYS-derived selectors in `extension/src/hide-rys.css` (MPL-2.0, its own file). Merged with
   #19's harness: cases may list `distractions` under `elsewhere`, and every hiding Setting is
