@@ -1,7 +1,7 @@
 import { existsSync } from 'node:fs';
 import settings from '../../settings.json' with { type: 'json' };
-import { cases, savedPages } from './cases';
-import { expect, test, turn } from './extension';
+import { cases, pagesOf, savedPages } from './cases';
+import { expect, store, test, turn } from './extension';
 import type { Page } from '@playwright/test';
 
 const settingSwitch = (popup: Page, name: string) => popup.getByRole('checkbox', { name, exact: true });
@@ -11,7 +11,6 @@ const groups = ['Home', 'Watch', 'Shorts', 'Search', 'Everywhere'];
 
 /** Every switch off, so one Setting can be tested alone. */
 const allOff = Object.fromEntries(settings.filter((s) => s.type === 'switch').map((s) => [s.id, false]));
-const store = (popup: Page, values: Record<string, unknown>) => popup.evaluate((v) => chrome.storage.sync.set(v), values);
 
 test('every Setting in settings.json has the agreed shape', () => {
   const ids = new Set<string>();
@@ -37,7 +36,7 @@ for (const setting of settings) {
 
     test('has a saved page to test against', () => {
       expect(c, `add "${setting.id}" to tests/cases.ts`).toBeDefined();
-      for (const page of [c!, ...('elsewhere' in c! ? (c.elsewhere ?? []) : [])])
+      for (const page of pagesOf(c!))
         expect(existsSync(new URL(`./fixtures/${page.fixture}`, import.meta.url)), `missing tests/fixtures/${page.fixture}`).toBe(true);
       if ('spec' in c!) expect(existsSync(new URL(`./${c.spec}`, import.meta.url)), `missing tests/${c.spec}`).toBe(true);
     });
@@ -102,10 +101,10 @@ for (const setting of settings) {
 
     // Hides only what it says, on every saved page: its Distractions wherever they are (and the
     // element a rule hides around them, such as the list that holds them), and nothing else.
-    const allDistractions = [c, ...(c.elsewhere ?? [])].flatMap((p) => p.distractions ?? []);
+    const allDistractions = pagesOf(c).flatMap((p) => ('distractions' in p ? (p.distractions ?? []) : []));
     for (const saved of savedPages) {
-      const spot = [c, ...(c.elsewhere ?? [])].find((p) => p.fixture === saved.fixture);
-      const distractions = spot?.distractions ?? [];
+      const spot = pagesOf(c).find((p) => p.fixture === saved.fixture);
+      const distractions = spot && 'distractions' in spot ? (spot.distractions ?? []) : [];
       const title = distractions.length ? `on ${saved.fixture} it hides its Distractions and nothing else` : `hides nothing on ${saved.fixture}`;
       test(title, async ({ openSaved, openPopup }) => {
         const popup = await openPopup();
@@ -124,7 +123,7 @@ for (const setting of settings) {
         for (const d of distractions) {
           for (const el of await page.locator(d).all()) await expect(el, `${d} is hidden`).toBeHidden();
         }
-        for (const kept of spot?.keeps ?? []) {
+        for (const kept of spot && 'keeps' in spot ? spot.keeps : []) {
           const all = await page.locator(kept).all();
           expect(all.length, `${kept} is in the saved page`).toBeGreaterThan(0);
           for (const el of all) await expect(el, `${kept} stays`).toBeVisible();

@@ -29,12 +29,14 @@ Load `extension/dist` from `chrome://extensions` → Developer mode → Load unp
 
 ### How hiding works
 
-`extension/src/hide.css` is declared in the manifest, so Chrome applies it before YouTube draws.
+`extension/src/hide.css` and `extension/src/hide-rys.css` (selectors ported from RYS, kept
+MPL-2.0) are declared in the manifest, so Chrome applies them before YouTube draws.
 Each rule is gated on an attribute on `<html>` (`html[data-dtox-comments] …`) and scoped to its
 page. `extension/src/content.ts` copies Settings from `chrome.storage.sync` onto `<html>` and
 follows storage changes, which is how the popup applies to open tabs at once (ADR 0001).
-JavaScript does only what CSS can't: Autoplay off clicks YouTube's own autoplay button, on
-YouTube's own events (no timers, no observers).
+JavaScript does only what CSS can't: Autoplay off clicks YouTube's own autoplay button, and
+the Shorts redirect opens a Short in the normal player, on YouTube's own events (no timers, no
+observers).
 
 ### Adding a Setting
 

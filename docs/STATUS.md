@@ -54,7 +54,7 @@ finished: 32 questions, all answered by Najmush on 2026-11-18. **Read `CONTEXT.m
   page; a ~1 KB script copies Settings; no timers or hiding observers; at most 5 `:has()`;
   no selectors that match text. Popup in plain TS and CSS. Under 40 KB excluding icons.
 - **Build is plain esbuild, not WXT** (measured in #18: WXT added ~4.4 KB; ADR 0001).
-  Current size 2.42 KB.
+  Current size 7.16 KB (script 1,271 bytes); `:has()` 3 of 5.
 - Repo: `extension/`, `site/` (Astro static, set up like saaquiblabs `site/`),
   `settings.json` (the single list of Settings), `checks/`, `docs/`.
 - Release Gate: a manual Openship job on the home VPS. It runs the audit with every Setting on
@@ -86,7 +86,7 @@ prototypes of the popup, Intention Page and product page (seen running before an
 
 | Branch | Ticket | State | To finish |
 |---|---|---|---|
-| `feat/20-shorts-search-menu-bell` | #20 | PR #36. Merged with `main` (#19's harness), full suite green. | `/code-review` (once, behaviour change), then merge on Najmush's go-ahead. |
+| `feat/20-shorts-search-menu-bell` | #20 | PR #36. Merged with `main` (#19's harness), reviewed (2026-11-19) and review fixes in; 104 tests green. | Merge on Najmush's go-ahead. |
 | `feat/24-nightly-check` | #24 nightly check (Openship job) | `checks/` written (`nightly.ts`, `job.mjs`, `lib/`), its 9 tests pass. The live run against YouTube was interrupted. | Rebase on `main` after #20. Run the live check once (`npm run nightly` in `checks/`, no video plays); `/code-review`; STATUS; PR. Then the [HUMAN] Openship job setup and the issues token. |
 
 **Order (two sessions at most at a time):**
@@ -107,6 +107,12 @@ Start Claude inside the worktree and say: "Continue #19 from the STATUS table."
   signed-in capture, i.e. Najmush's cookies — his call if ever wanted.
 - A channel's Shorts *tab* stays visible; only its grid is hidden. It can be found only by
   `tab-title="Shorts"` (text), which ADR 0001 forbids.
+- Untested rules (no signed-out saved page has them): the Trending, Explore and Playables
+  menu links (only the Explore section is tested), and search clean-up's
+  `ytd-horizontal-card-list-renderer`. The full menu's Shorts link is found by position (first
+  section, the entry without a link); signed-in menus may differ. All need signed-in captures.
+- "Explore, Trending and Playables" hides the menu's whole Explore section (Music, Gaming, News,
+  Sports…); its "hides" line says so (issue: "the menu offers nothing to browse").
 - Still open from the handoff: the bell and signed-in Home Shorts shelves are untested against
   real signed-in markup; Release Gate risk that hiding Shorts on Shorts-heavy searches makes
   YouTube load page after page (#25 should look).

@@ -126,11 +126,14 @@ export const cases: Record<string, Case> = {
   },
 };
 
+/** A case's own page and its other pages. */
+export const pagesOf = (c: Case) => [c, ...('elsewhere' in c ? (c.elsewhere ?? []) : [])];
+
 /** Every saved page any case names, once each, by fixture. */
 export const savedPages: SavedPage[] = [
   ...new Map(
     Object.values(cases)
-      .flatMap((c) => [c, ...('elsewhere' in c ? (c.elsewhere ?? []) : [])])
+      .flatMap(pagesOf)
       .map((p) => [p.fixture, { fixture: p.fixture, url: p.url }] as const),
   ).values(),
 ];

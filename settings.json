@@ -42,7 +42,7 @@
   {
     "id": "shorts-redirect",
     "name": "Open Shorts in the normal player",
-    "hides": "Hides the Shorts swipe feed by opening every Short in the normal video player.",
+    "hides": "Turns every Short into a normal video: it opens in the normal player, not the Shorts swipe feed.",
     "group": "Shorts",
     "type": "switch",
     "calmDefault": false
@@ -58,7 +58,7 @@
   {
     "id": "explore",
     "name": "Explore, Trending and Playables",
-    "hides": "Hides Explore, Trending and Playables from YouTube's menu.",
+    "hides": "Hides Explore, Trending and Playables from YouTube's menu, with the whole Explore section (Music, Gaming, News, Sports and the rest).",
     "group": "Everywhere",
     "type": "switch",
     "calmDefault": false

@@ -37,12 +37,12 @@ const html = await page.evaluate(() => {
   doc.querySelector('iframe#chatframe')?.removeAttribute('src');
   // Keep the first 3 items of long lists, counting Shorts and other items apart so both stay.
   for (const list of ['ytd-comment-thread-renderer', 'ytd-compact-video-renderer', 'yt-lockup-view-model', 'ytd-rich-item-renderer', 'ytd-video-renderer', 'ytd-playlist-panel-video-renderer', 'ytd-macro-markers-list-item-renderer', '.ytp-modern-videowall-still']) {
-    const seen = new Map();
+    const countsByParent = new Map();
     for (const el of doc.querySelectorAll(list)) {
-      const short = el.querySelector('a[href^="/shorts/"]') ? 'short' : 'other';
-      const byParent = seen.get(el.parentNode) ?? { short: 0, other: 0 };
-      seen.set(el.parentNode, byParent);
-      if (++byParent[short] > 3) el.remove();
+      const kind = el.querySelector('a[href^="/shorts/"]') ? 'short' : 'other';
+      const counts = countsByParent.get(el.parentNode) ?? { short: 0, other: 0 };
+      countsByParent.set(el.parentNode, counts);
+      if (++counts[kind] > 3) el.remove();
     }
   }
   // Don't commit strangers' names and words: replace comment text and links with placeholders.

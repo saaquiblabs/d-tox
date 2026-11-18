@@ -1,14 +1,12 @@
 // The Shorts redirect: a Short opens in the normal player instead of the swipe feed, both when
 // a Short's URL is loaded and when YouTube moves to one itself (it uses history.pushState).
 import { search, short } from './cases';
-import { expect, test } from './extension';
+import { expect, store, test } from './extension';
 import type { Page } from '@playwright/test';
 
 const id = new URL(short.url).pathname.split('/')[2]!;
 const watchUrl = `https://www.youtube.com/watch?v=${id}`;
 
-const store = (popup: Page, values: Record<string, unknown>) =>
-  popup.evaluate((v) => chrome.storage.sync.set(v), values);
 
 /** YouTube's own navigation to the Short, as its app does it: no page load, just pushState. */
 const youtubeNavigatesToShort = (page: Page) =>
@@ -42,6 +40,14 @@ test('the back button does not return to the Short', async ({ openSaved, openPop
   await expect(page).toHaveURL(watchUrl);
   await page.goBack();
   await expect(page).toHaveURL(search.url);
+});
+
+test('switching it on while a Short is open opens it in the normal player at once', async ({ openSaved, openPopup }) => {
+  const page = await openSaved(short.fixture, short.url);
+  await settled(page);
+  const popup = await openPopup();
+  await store(popup, { 'shorts-redirect': true });
+  await expect(page).toHaveURL(watchUrl);
 });
 
 test('off in the Calm Default: a Short stays a Short', async ({ openSaved }) => {

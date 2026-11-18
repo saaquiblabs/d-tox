@@ -71,6 +71,8 @@ chrome.storage.sync.onChanged.addListener((changes) => {
     if (id in defaults) current[id] = (changes[id]?.newValue as Values[string] | undefined) ?? defaults[id]!;
   }
   apply();
+  // Switched on while a Short is open: open it in the normal player now, not at the next move.
+  if (changes['shorts-redirect'] || changes.enabled) redirectShort();
   if (changes['autoplay-off'] || changes.enabled) {
     autoplayPending = true;
     autoplayOff();

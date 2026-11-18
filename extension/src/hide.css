@@ -1,6 +1,6 @@
 /*
- * The only stylesheet that hides Distractions (ADR 0001). Chrome applies it before the page
- * draws. Every rule is gated on a D-Tox attribute on <html>, which content.ts sets from the
+ * Hides Distractions (ADR 0001), with hide-rys.css: selectors ported from RYS live there,
+ * because that file stays MPL-2.0. Chrome applies both before the page draws. Every rule is gated on a D-Tox attribute on <html>, which content.ts sets from the
  * Settings, and scoped to the page the Setting belongs to. Selectors use element names, ids,
  * classes and attributes only — never visible text or labels.
  */

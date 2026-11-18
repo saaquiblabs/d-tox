@@ -73,6 +73,10 @@ export const test = base.extend<Fixtures>({
 
 export { expect };
 
+/** Writes Settings straight to storage from an extension page, without the popup's switches. */
+export const store = (extensionPage: Page, values: Record<string, unknown>) =>
+  extensionPage.evaluate((v) => chrome.storage.sync.set(v), values);
+
 /**
  * Turns a popup switch on or off and waits until chrome.storage.sync holds it. The popup writes
  * storage asynchronously, so a page opened straight after a click could otherwise read the old

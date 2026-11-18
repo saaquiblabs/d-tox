@@ -6,14 +6,15 @@
  */
 
 /* Shorts · Shorts shelves on browse pages, search and beside a video (RYS remove_all_shorts,
-   remove_shorts_results). In search every grid shelf seen so far is a Shorts shelf. */
+   remove_shorts_results). In search only a grid shelf of Shorts items: another kind of grid
+   shelf is left to search clean-up. :has() 2 of 5, child steps and element names only. */
 html[data-dtox-shorts] :is(ytd-browse, ytd-search, ytd-watch-flexy) ytd-reel-shelf-renderer,
-html[data-dtox-shorts] ytd-search ytd-item-section-renderer > #contents > grid-shelf-view-model,
+html[data-dtox-shorts] ytd-search ytd-item-section-renderer > #contents > grid-shelf-view-model:has(> div > .ytGridShelfViewModelGridShelfRow > .ytGridShelfViewModelGridShelfItem > ytm-shorts-lockup-view-model-v2),
 /* Search · search clean-up: shelves between results (RYS remove_extra_results, remove_shorts_results) */
 html[data-dtox-search-clean-up] ytd-search ytd-item-section-renderer > #contents > :is(grid-shelf-view-model, ytd-shelf-renderer, ytd-reel-shelf-renderer),
 /* Everywhere · Explore and Trending in the menu (RYS remove_explore_link), and the menu's whole
    Explore section, found by its Movies & TV and Music links (RYS remove_explore_section).
-   :has() 2 of 5, limited to the menu. */
+   :has() 3 of 5, limited to the menu. */
 html[data-dtox-explore] :is(ytd-guide-renderer, ytd-mini-guide-renderer) a:is([href="/feed/trending"], [href^="/feed/explore"]),
 html[data-dtox-explore] ytd-guide-renderer ytd-guide-section-renderer:has(> #items a:is([href^="/feed/storefront"], [href="/channel/UC-9-kyTW8ZkZNDHQJ6FgpwQ"])),
 /* Everywhere · the notifications bell (RYS remove_notif_bell) */
