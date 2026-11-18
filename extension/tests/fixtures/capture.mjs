@@ -58,6 +58,17 @@ const html = await page.evaluate(() => {
     }
     for (const a of [...el.attributes]) if (a.name === 'style' || a.name.startsWith('on') || a.value.length > 300) el.removeAttribute(a.name);
   }
+  // YouTube's scripts nest a <button> in a <button> (and an <a> in an <a>). Saved as HTML, the
+  // parser can't rebuild that: it closes elements early, and the player's controls end up
+  // outside #movie_player. Make each inner one a <div>, which parses back as it was.
+  for (const tag of ['button', 'a']) {
+    for (const inner of [...doc.querySelectorAll(`${tag} ${tag}`)].reverse()) {
+      const div = document.createElement('div');
+      for (const a of inner.attributes) div.setAttribute(a.name, a.value);
+      div.append(...inner.childNodes);
+      inner.replaceWith(div);
+    }
+  }
   for (const a of [...doc.attributes]) if (a.name.startsWith('data-dtox-')) doc.removeAttribute(a.name);
   return '<!doctype html>\n' + doc.outerHTML.replace(/\n\s*\n+/g, '\n');
 });
