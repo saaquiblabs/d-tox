@@ -22,10 +22,17 @@ finished: 32 questions, all answered by Najmush on 2026-11-18. **Read `CONTEXT.m
   added as the project's public endpoint before the edge served the real certificate. Deploys
   are manual: `ssh najmush-oracle '~/.openship/bin/openship --local deploy --project
   proj_ombNMbyjVUOS-aV7 --branch main --env production --watch'`.
-- **#20 (PR #36, open):** Settings shorts, shorts-redirect, search-clean-up, explore, bell.
+- **#20 (PR #36, merged 2026-11-19):** Settings shorts, shorts-redirect, search-clean-up, explore, bell.
   RYS-derived selectors in `extension/src/hide-rys.css` (MPL-2.0, its own file). Merged with
   #19's harness: cases may list `distractions` under `elsewhere`, and every hiding Setting is
   checked on every saved page to hide nothing outside its Distractions.
+- **Nightly check (#24, PR #37, merged 2026-11-19).** `checks/`: `npm run nightly` checks every
+  Setting on live YouTube in English and Hindi, plays no video, exits 1 on a failure and (with
+  `DTOX_ISSUES_TOKEN`) opens a `needs-triage` issue. Openship job **`d-tox nightly`**
+  (`custom:yzEqfBekA24oA7JU`, home-vps), daily 23:00 UTC = 04:30 IST, 20 min timeout, no
+  retries; command of record in `checks/README.md`. Green on the VPS in the pinned container
+  (2026-11-19, ~3.5 min). **Still [HUMAN]:** the issues token (`checks/README.md` § The issues
+  token); until then a failure only emails.
 
 ## Decisions (grill, 2026-11-18)
 
@@ -62,7 +69,7 @@ finished: 32 questions, all answered by Najmush on 2026-11-18. **Read `CONTEXT.m
   timeouts, playback and Shorts swipe working. **Standing approval for muted headless
   playback in the Release Gate only** (Najmush, 2026-11-18). Other video work still needs a yes.
 - Nightly check: a scheduled Openship job (not GitHub Actions). It checks that each Setting's
-  selector matches, once in Hindi, and plays no video. A failure emails (Openship) and opens a
+  selector matches, in English and in Hindi, and plays no video. A failure emails (Openship) and opens a
   `needs-triage` issue using a fine-grained token (Issues: write on this repo only).
 - Release: Najmush uploads the zip by hand ([HUMAN] steps) as v2.0.0 on the existing listing
   `ocngpkbaoflpfjamgcnnjbdnhmakmgel`; switch the listing's name, site and email to Saaquib Labs.
@@ -79,19 +86,18 @@ finished: 32 questions, all answered by Najmush on 2026-11-18. **Read `CONTEXT.m
 
 ## Pipeline
 
-research ✅ → grill ✅ → spec ✅ (#16) → tickets ✅ (#18–#28) → build: #18 ✅ (PR #30), #26 ✅ (live), #19 ✅ (PR #34), #20 PR #36, rest next →
+research ✅ → grill ✅ → spec ✅ (#16) → tickets ✅ (#18–#28) → build: #18 ✅ (PR #30), #26 ✅ (live), #19 ✅ (PR #34), #20 ✅ (PR #36), #24 ✅ (PR #37), rest next →
 prototypes of the popup, Intention Page and product page (seen running before anything is picked).
 
-## Next step: merge #20, finish #24
+## Next step: #21 and #25
 
-| Branch | Ticket | State | To finish |
-|---|---|---|---|
-| `feat/20-shorts-search-menu-bell` | #20 | PR #36. Merged with `main` (#19's harness), reviewed (2026-11-19) and review fixes in; 104 tests green. | Merge on Najmush's go-ahead. |
-| `feat/24-nightly-check` | #24 nightly check (Openship job) | `checks/` written (`nightly.ts`, `job.mjs`, `lib/`), its 9 tests pass. The live run against YouTube was interrupted. | Rebase on `main` after #20. Run the live check once (`npm run nightly` in `checks/`, no video plays); `/code-review`; STATUS; PR. Then the [HUMAN] Openship job setup and the issues token. |
+#20 and #24 are merged. No branch is open. Next: #21 (Home choice + Intention Page) and #25
+(Release Gate, alone on a quiet machine: it measures speed). Najmush: the issues token for the
+nightly check (5 minutes, `checks/README.md`).
 
 **Order (two sessions at most at a time):**
 1. ✅ #19 + #26.
-2. #20 (PR #36) + #24.
+2. ✅ #20 (PR #36) + #24 (PR #37).
 3. Then #21 (after #19) and #25 (alone on a quiet machine: it measures speed). #23, #27, #28 as before; #22 prototypes still need Najmush.
 
 Merge one PR at a time; after each, rebase the other open branch on `main`.
@@ -124,6 +130,25 @@ Start Claude inside the worktree and say: "Continue #19 from the STATUS table."
   parallel load. Fix with #21 or when it next shows.
 - #19's watch-page Settings now go through the every-saved-page check too; a hidden element
   counts as a Distraction if it is one, holds one, or sits inside a hidden one.
+
+**#24 (merged 2026-11-19), what the next tickets should know**
+- The nightly checks that a hide rule *matches* each Distraction (a marker custom property in its
+  copy of the stylesheets), not that it disappears: no video plays. It loads every `.css` at the
+  top of `extension/src/`. Every hide rule must use `display: none !important` (noted in `hide.css`).
+- `cases.ts` gained three nightly-only fields. `needs`: Distractions it can't see, skipped with
+  the reason (end-screen links and grid need "a playing video", the bell "a signed-in account").
+  `width`: the page's capture width (Gaming 1600, for the full menu). `liveUrl`: the search page
+  opens "cooking" live, because "python tutorial" has no Shorts shelf in Hindi.
+- **Case selectors must work in Hindi**: the Explore case's `a[title="Music"]` failed there; it
+  now uses the Music channel's address. New cases: no text in selectors the nightly uses.
+- YouTube's player shows the VPS (a datacenter address) "Sign in to confirm you're not a bot"
+  and refuses the video, but the page renders. The check notes it and carries on; it blocks only
+  if a Distraction is then missing. **#25 (Release Gate, plays video) cannot run on the VPS as
+  is**: it needs a residential address (the Mac, or a proxy). Decide in #25.
+- #25 should check live what the nightly skips: end-screen links and grid. Behaviour Settings
+  (Autoplay off, Shorts redirect) and `elsewhere` pages are not checked nightly.
+- Follow-up: if a Setting breaks in a second language while its issue is open, the new language
+  is only logged, not added to the issue.
 
 **Carry-overs from #26's review**
 - `/welcome` now lists #19's two Calm Default Settings (Recommendations, Autoplay off). A choice (Home) that starts on YouTube's default must use `calmDefault: false`.

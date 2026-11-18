@@ -1,0 +1,20 @@
+{
+  "name": "d-tox-checks",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "npm@11.19.1",
+  "engines": {
+    "node": ">=22.18.0"
+  },
+  "scripts": {
+    "nightly": "node nightly.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "npm run typecheck && node --test 'tests/*.test.ts'"
+  },
+  "devDependencies": {
+    "@types/node": "24.10.1",
+    "playwright": "1.63.0",
+    "typescript": "6.0.3"
+  }
+}

@@ -9,6 +9,10 @@ export type SavedPage = {
   fixture: string;
   /** The youtube.com URL the saved page is served at. */
   url: string;
+  /** The window width it was captured at, if not capture.mjs's default 1280. The nightly check opens it at this width. */
+  width?: number;
+  /** The page the nightly check opens instead of `url`, when live YouTube shows the Distractions more reliably there. */
+  liveUrl?: string;
 };
 
 /** A Setting that hides a Distraction. settings.spec.ts tests it from this entry. */
@@ -20,6 +24,9 @@ export type Hides = SavedPage & {
   /** Other saved pages this Setting acts on or must leave alone: what it hides there (if
    *  anything) and what it must leave visible. */
   elsewhere?: (SavedPage & { distractions?: string[]; keeps: string[] })[];
+  /** Distractions the nightly check can't find on live YouTube, with what they need. It plays no
+   *  video and is signed out, so it skips these; the saved-page tests still check them. */
+  needs?: Record<string, 'a playing video' | 'a signed-in account'>;
 };
 
 /** A Setting that changes a YouTube behaviour. Its own spec file tests it. */
@@ -28,11 +35,16 @@ export type Acts = SavedPage & {
   spec: string;
 };
 
-export const search: SavedPage = { fixture: 'search.html', url: 'https://www.youtube.com/results?search_query=python+tutorial' };
+// Live, "python tutorial" gets no Shorts shelf in Hindi; "cooking" gets shelves and single Shorts in both languages (2026-11-19).
+export const search: SavedPage = {
+  fixture: 'search.html',
+  url: 'https://www.youtube.com/results?search_query=python+tutorial',
+  liveUrl: 'https://www.youtube.com/results?search_query=cooking',
+};
 const channelShorts: SavedPage = { fixture: 'channel-shorts.html', url: 'https://www.youtube.com/@NASA/shorts' };
 // Signed out, YouTube's home is empty, so /gaming stands in for a browse page with Shorts
 // shelves. It is captured 1600 px wide, so the full menu is in it.
-const gaming: SavedPage = { fixture: 'gaming.html', url: 'https://www.youtube.com/gaming' };
+const gaming: SavedPage = { fixture: 'gaming.html', url: 'https://www.youtube.com/gaming', width: 1600 };
 /** A Short opened from a link. No Setting may hide it. */
 export const short: SavedPage = { fixture: 'short.html', url: 'https://www.youtube.com/shorts/k5Z7sFwFF7Q' };
 
@@ -69,6 +81,10 @@ export const cases: Record<string, Case> = {
       'ytd-watch-flexy #movie_player .ytp-cards-teaser',
     ],
     keeps: ['ytd-watch-flexy #movie_player .ytp-chrome-bottom', 'ytd-watch-flexy ytd-watch-metadata'],
+    needs: {
+      'ytd-watch-flexy #movie_player .ytp-ce-element': 'a playing video',
+      'ytd-watch-flexy #movie_player .html5-endscreen button': 'a playing video',
+    },
   },
   'autoplay-off': { ...watchPlaylist, spec: 'autoplay.spec.ts' },
   comments: {
@@ -112,7 +128,8 @@ export const cases: Record<string, Case> = {
   },
   explore: {
     ...gaming,
-    distractions: ['ytd-guide-section-renderer:has(a[title="Music"][href^="/channel/"])'],
+    // The menu's Explore section, found by its YouTube Music link: the address, so it holds in Hindi too.
+    distractions: ['ytd-guide-section-renderer:has(a[href="/channel/UC-9-kyTW8ZkZNDHQJ6FgpwQ"])'],
     keeps: [
       'ytd-guide-entry-renderer > a[href="/feed/subscriptions"]',
       'ytd-guide-entry-renderer > a[href="/feed/history"]',
@@ -122,6 +139,7 @@ export const cases: Record<string, Case> = {
   bell: {
     ...search,
     distractions: ['ytd-masthead ytd-notification-topbar-button-renderer'],
+    needs: { 'ytd-masthead ytd-notification-topbar-button-renderer': 'a signed-in account' },
     keeps: ['ytd-masthead ytd-topbar-menu-button-renderer', 'ytd-search yt-lockup-view-model'],
   },
 };
