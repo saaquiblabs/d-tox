@@ -1,9 +1,28 @@
 /*
  * The only stylesheet that hides Distractions (ADR 0001). Chrome applies it before the page
  * draws. Every rule is gated on a D-Tox attribute on <html>, which content.ts sets from the
- * Settings, and scoped to the page the Setting belongs to. Selectors use element names, ids
- * and attributes only — never visible text.
+ * Settings, and scoped to the page the Setting belongs to. Selectors use element names, ids,
+ * classes and attributes only — never visible text or labels.
  */
+
+/*
+ * Watch page · recommendations. YouTube moves this one element between the right column and
+ * below the video as the window narrows. The playlist queue (#playlist), live chat
+ * (#chat-container) and engagement panels such as chapters and the transcript (#panels) are its
+ * siblings, so they stay.
+ */
+html[data-dtox-recommendations] ytd-watch-flexy ytd-watch-next-secondary-results-renderer {
+  display: none !important;
+}
+
+/*
+ * Watch page · end screens: the creator's end-screen links (.ytp-ce-element), the video grid at
+ * the end (.html5-endscreen, and .ytp-fullscreen-grid in YouTube's newer player) and info cards
+ * (.ytp-cards-*).
+ */
+html[data-dtox-end-screens] ytd-watch-flexy #movie_player :is(.ytp-ce-element, .html5-endscreen, .ytp-fullscreen-grid, .ytp-cards-button, .ytp-cards-teaser) {
+  display: none !important;
+}
 
 /* Watch page · comments */
 html[data-dtox-comments] ytd-watch-flexy ytd-comments#comments {
