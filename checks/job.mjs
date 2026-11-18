@@ -1,6 +1,6 @@
 // What the Openship job `d-tox nightly` runs, inside mcr.microsoft.com/playwright:v1.63.0-noble.
 // Openship fetches this one file from main (like mihrab smoke) and pipes it in; it then fetches
-// the rest of the repo at the same branch, installs checks/ and runs `npm run nightly`. Its exit code is the job's.
+// the repo at DTOX_REF (default main), installs checks/ and runs `npm run nightly`. Its exit code is the job's.
 // Plain JavaScript with no dependencies, because it runs before anything is installed.
 import { spawnSync } from 'node:child_process';
 import { mkdtempSync, writeFileSync } from 'node:fs';
@@ -31,8 +31,8 @@ if (!res.ok) {
   console.error(`job: could not fetch ${tarball}: ${res.status}`);
   process.exit(1);
 }
-writeFileSync(join(dir, 'main.tar.gz'), Buffer.from(await res.arrayBuffer()));
-run('tar', ['-xzf', 'main.tar.gz', '--strip-components=1']);
+writeFileSync(join(dir, 'repo.tar.gz'), Buffer.from(await res.arrayBuffer()));
+run('tar', ['-xzf', 'repo.tar.gz', '--strip-components=1']);
 
 const checks = join(dir, 'checks');
 run('npm', ['ci', '--no-audit', '--no-fund', '--loglevel=error'], checks);

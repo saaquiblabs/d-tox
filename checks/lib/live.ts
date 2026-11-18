@@ -32,8 +32,8 @@ const probe = 'html[data-dtox-nightly-probe] { --dtox-nightly-probe: 1; }';
  */
 const hiddenMark = '--dtox-nightly-hidden';
 export function markHideRules(css: string) {
-  const marked = css.replaceAll('display: none !important;', `display: none !important; ${hiddenMark}: 1;`);
-  if (marked === css) throw new Error('the check is broken: hide.css has no `display: none !important;` rule to mark');
+  const marked = css.replace(/display\s*:\s*none\s*!important\s*;?/g, `display: none !important; ${hiddenMark}: 1;`);
+  if (marked === css) throw new Error('the check is broken: hide.css has no `display: none !important` rule to mark');
   return marked;
 }
 
@@ -108,19 +108,20 @@ async function reveal(page: Page, selectors: string[], tries: number, settleMs: 
   return missing();
 }
 
-/** The Distractions no hide rule matches. */
+/** The Distractions no hide rule matches (one YouTube has since removed counts as unmatched). */
 async function unmatched(page: Page, selectors: string[]) {
   return page.evaluate(
-    ([sels, mark]) => sels.filter((s) => getComputedStyle(document.querySelector(s)!).getPropertyValue(mark).trim() !== '1'),
+    ([sels, mark]) =>
+      sels.filter((s) => {
+        const el = document.querySelector(s);
+        return !el || getComputedStyle(el).getPropertyValue(mark).trim() !== '1';
+      }),
     [selectors, hiddenMark] as const,
   );
 }
 
-async function setAttribute(page: Page, name: string, on: boolean) {
-  await page.evaluate(([n, o]) => (o ? document.documentElement.setAttribute(n!, '') : document.documentElement.removeAttribute(n!)), [
-    name,
-    on ? '1' : '',
-  ] as const);
+async function setAttribute(page: Page, name: string) {
+  await page.evaluate((n) => document.documentElement.setAttribute(n, ''), name);
 }
 
 type Outcome = { blocked: string } | { problem: string } | { ok: true };
@@ -139,7 +140,7 @@ async function checkOnce(context: BrowserContext, language: Language, setting: S
     const why = await blockedReason(page, language);
     if (why) return { blocked: why };
 
-    await setAttribute(page, 'data-dtox-nightly-probe', true);
+    await setAttribute(page, 'data-dtox-nightly-probe');
     const loaded = await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--dtox-nightly-probe').trim());
     if (loaded !== '1') throw new Error('the check is broken: Chrome did not apply hide.css to the page');
 
@@ -150,7 +151,7 @@ async function checkOnce(context: BrowserContext, language: Language, setting: S
 
     if ((await unmatched(page, distractions)).length < distractions.length)
       throw new Error('the check is broken: a Distraction is marked hidden with every Setting off');
-    await setAttribute(page, `data-dtox-${setting.id}`, true);
+    await setAttribute(page, `data-dtox-${setting.id}`);
     let left = await unmatched(page, distractions);
     for (const end = Date.now() + o.hideTimeoutMs; left.length && Date.now() < end; left = await unmatched(page, distractions))
       await page.waitForTimeout(100);
@@ -192,8 +193,12 @@ export async function checkLanguage(
       lines.push(`  -  ${label}: skipped, it changes a behaviour (tested in extension/tests/${c.spec})`);
       continue;
     }
+    // A block on any try wins over a later problem: a half-loaded retry must not blame the Setting.
     let outcome = await checkOnce(context, language, setting, c, o);
-    for (let i = 1; i < o.tries && !('ok' in outcome); i++) outcome = await checkOnce(context, language, setting, c, o);
+    for (let i = 1; i < o.tries && !('ok' in outcome); i++) {
+      const next = await checkOnce(context, language, setting, c, o);
+      if (!('blocked' in outcome) || 'ok' in next) outcome = next;
+    }
 
     if ('blocked' in outcome) {
       results.push({ kind: 'blocked', language: language.name, problem: outcome.blocked });

@@ -20,7 +20,7 @@ export type Hides = SavedPage & {
   /** Other saved pages this Setting acts on or must leave alone: what it hides there (if
    *  anything) and what it must leave visible. */
   elsewhere?: (SavedPage & { distractions?: string[]; keeps: string[] })[];
-  /** The distractions YouTube builds only once a video plays or ends. The nightly check plays no video, so it skips these. */
+  /** The Distractions YouTube builds only once a video plays or ends. The nightly check plays no video, so it skips these. */
   needPlayback?: string[];
 };
 

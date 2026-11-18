@@ -50,7 +50,7 @@ export function planIssues(results: Result[], openIssues: OpenIssue[]) {
       const { id, name } = first.setting;
       open.push({
         key,
-        title: `Nightly check: “${name}” no longer finds its Distraction (${languages})`,
+        title: `Nightly check: “${name}” is broken (${languages})`,
         body: [
           `The nightly check against live YouTube failed for the Setting **${name}** (\`${id}\`).`,
           '',

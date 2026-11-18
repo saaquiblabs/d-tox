@@ -157,3 +157,18 @@ test('a Setting that changes a behaviour is skipped by name, not failed', async 
   assert.deepEqual(results, []);
   assert.match(lines.join('\n'), /Autoplay off.*skipped.*autoplay\.spec\.ts/);
 });
+
+test('a block on the first try is not turned into a broken Setting by a half-loaded retry', async (t) => {
+  const context = await open(t);
+  let loads = 0;
+  await context.route('**/*', (route) => {
+    if (new URL(route.request().url()).pathname !== '/watch') return route.fulfill({ status: 404, body: '' });
+    loads++;
+    const body = loads === 1 ? '<!doctype html><html lang="en"><body>no app</body></html>' : watchHtml.replaceAll('ytd-comment-thread-renderer', 'x-gone');
+    return route.fulfill({ contentType: 'text/html; charset=utf-8', body });
+  });
+  const { results } = await checkLanguage(context, english!, [comments], cases, { ...fast, tries: 2 });
+  assert.equal(loads, 2);
+  assert.equal(results.length, 1);
+  assert.equal(results[0]!.kind, 'blocked');
+});
