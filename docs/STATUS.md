@@ -63,14 +63,19 @@ finished: 32 questions, all answered by Najmush on 2026-11-18. **Read `CONTEXT.m
 
 ## Pipeline
 
-research ✅ → grill ✅ → spec ✅ (#16) → `/to-tickets` (next) → prototypes of the popup,
+research ✅ → grill ✅ → spec ✅ (#16) → tickets ✅ (#18–#28) → build (next) → prototypes of the popup,
 Intention Page and product page (seen running before anything is picked) → `/implement #n`.
 
 ## Next step
 
-Najmush confirmed the shared understanding and the test points (2026-11-18). The spec is
-issue #16 (`ready-for-agent`). Next: `/to-tickets` on #16. The first tickets should be the
-Settings list and the saved-page test setup, because everything else hangs off them.
+Tickets #18–#28 are sub-issues of #16, with GitHub "blocked by" links.
+
+- **Start now (nothing blocks them):** #18 working skeleton (`ready-for-agent`) and #22
+  prototypes (`ready-for-human`: Najmush must see them running and pick).
+- After #18: #19 watch page, #20 Shorts/search/menu/bell, #21 Home + Calm Default + install,
+  #24 nightly check, #25 Release Gate, #26 site skeleton — all in parallel.
+- #23 popup/Intention Page design waits on #21 + #22; #27 product page on #22 + #25 + #26;
+  #28 release waits on everything.
 
 ## Standing rules
 
