@@ -1,0 +1,5 @@
+node_modules/
+dist/
+.astro/
+# Copied from ../extension/public at build time (scripts/copy-icons.mjs). Edit those, not these.
+public/icon-*.png

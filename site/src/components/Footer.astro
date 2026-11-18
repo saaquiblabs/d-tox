@@ -1,0 +1,37 @@
+---
+// Footer: Privacy · Changelog · Sponsor (the popup's footer too), "A Saaquib Labs product", and the
+// line that says what the site counts. Ported in spirit from the studio site's Footer.astro: the
+// flat S is a CSS mask, so it takes the text colour in both themes.
+import { analytics, footer, studio } from "../site";
+
+const year = new Date().getFullYear();
+const here = Astro.url.pathname.replace(/\/$/, "") || "/";
+---
+
+<footer class="ft">
+  <div class="wrap ft-in">
+    <nav aria-label="Footer">
+      <ul>
+        {footer.map((l) => <li><a href={l.href} aria-current={l.href === here ? "page" : undefined}>{l.label}</a></li>)}
+      </ul>
+    </nav>
+    <p class="by"><a href={studio.href}><span class="s" aria-hidden="true"></span>A {studio.label} product</a> · MIT · © {year}</p>
+    {/* Said only once the Umami tag is on the page (src/site.ts). */}
+    {analytics.websiteId && <p class="note">This site counts visits with Umami, which we run ourselves. No cookies. <a href="/privacy">How we count</a>.</p>}
+  </div>
+</footer>
+
+<style>
+  .ft { border-top: 1px solid var(--border); margin-top: clamp(48px, 6vw, 80px); }
+  .ft-in { display: grid; gap: 12px; padding-block: 40px 64px; font-size: var(--t-small); color: var(--text-2); }
+  ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px 24px; }
+  a { color: var(--text-2); text-decoration: none; }
+  a:hover, a[aria-current="page"] { color: var(--text); }
+  .note a { text-decoration: underline; }
+  .by a { display: inline-flex; align-items: center; gap: 8px; }
+  .s {
+    width: 16px; height: 16px; background: currentColor;
+    -webkit-mask: url(/brand/symbol-flat.svg) center / contain no-repeat;
+    mask: url(/brand/symbol-flat.svg) center / contain no-repeat;
+  }
+</style>

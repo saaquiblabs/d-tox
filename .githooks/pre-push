@@ -1,8 +1,10 @@
 #!/bin/sh
-# Runs the extension's saved-page tests before a push that touches the extension or the
-# Settings list: `npm test` in extension/ (typecheck, build with the size check, Playwright).
-# Installed by `npm ci` in extension/ (core.hooksPath). It checks the working tree, so commit
-# or stash other edits first. Skip once: git push --no-verify.
+# Before a push, runs the checks for what it touches. It checks the working tree, so commit or
+# stash other edits first. Installed by `npm ci` in extension/ or site/ (core.hooksPath).
+# Skip once: git push --no-verify.
+# - extension/ or settings.json: `npm test` in extension/ (typecheck, build, size, Playwright).
+# - site/, settings.json or the extension's icons: `npm run verify` in site/, the same gate the
+#   Openship build runs (unit tests, build, /welcome vs settings.json, links, Lighthouse).
 # Ported from saaquiblabs/.githooks/pre-push.
 set -eu
 zero=0000000000000000000000000000000000000000
@@ -20,13 +22,25 @@ while read -r _lref lsha _rref rsha; do
 "
   fi
 done
-if ! printf '%s' "$changed" | grep -qE '^(extension/|settings\.json$)'; then
-  exit 0
+root="$(git rev-parse --show-toplevel)"
+touches() { printf '%s' "$changed" | grep -qE "$1"; }
+
+if touches '^(extension/|settings\.json$)'; then
+  cd "$root/extension"
+  if [ ! -d node_modules ]; then
+    echo "pre-push: run 'npm ci' in extension/ first (the extension tests need it)" >&2
+    exit 1
+  fi
+  echo "pre-push: the push touches the extension; running npm test (under a minute)"
+  npm test
 fi
-cd "$(git rev-parse --show-toplevel)/extension"
-if [ ! -d node_modules ]; then
-  echo "pre-push: run 'npm ci' in extension/ first (the extension tests need it)" >&2
-  exit 1
+
+if touches '^(site/|settings\.json$|extension/public/)'; then
+  cd "$root/site"
+  if [ ! -d node_modules ]; then
+    echo "pre-push: run 'npm ci' in site/ first (the site gate needs it)" >&2
+    exit 1
+  fi
+  echo "pre-push: the push touches the site; running npm run verify (about a minute)"
+  npm run verify
 fi
-echo "pre-push: the push touches the extension; running npm test (under a minute)"
-npm test

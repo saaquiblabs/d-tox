@@ -1,0 +1,15 @@
+---
+// Header: the icon and name, home; Add to Chrome on the right. A placeholder until the product
+// page prototypes are picked (#22, #27).
+import { name, store } from "../site";
+---
+
+<header class="hd wrap">
+  <a class="mark" href="/"><img src="/icon-48.png" alt="" width="28" height="28" />{name}</a>
+  <a class="btn btn-solid" href={store.href}>{store.label}</a>
+</header>
+
+<style>
+  .hd { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 20px; }
+  .mark { display: inline-flex; align-items: center; gap: 10px; font-weight: 500; font-size: 1.125rem; text-decoration: none; }
+</style>

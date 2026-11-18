@@ -1,0 +1,21 @@
+---
+// The product page. A stand-in until #27 builds it from the picked prototype (#22): the promise,
+// Add to Chrome, and the way to the other pages.
+import Base from "../layouts/Base.astro";
+import { pages } from "../seo";
+import { fullName, promise, store } from "../site";
+---
+
+<Base {...pages["/"]}>
+  <section class="wrap hero">
+    <p class="label">{fullName}</p>
+    <h1>{promise}<br /><span class="second">Nothing else.</span></h1>
+    <p class="lead">D-Tox hides the parts of YouTube that pull you elsewhere, and it stays measurably light. Free and open source. It sends nothing anywhere.</p>
+    <p><a class="btn btn-solid" href={store.href}>{store.label}</a></p>
+  </section>
+</Base>
+
+<style>
+  .hero { display: grid; gap: 20px; padding-block: clamp(64px, 10vw, 128px); }
+  .hero .lead { max-width: 40rem; }
+</style>
