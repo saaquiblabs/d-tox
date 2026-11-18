@@ -1,7 +1,7 @@
 import { existsSync } from 'node:fs';
 import settings from '../../settings.json' with { type: 'json' };
 import { cases } from './cases';
-import { expect, test } from './extension';
+import { expect, test, turn } from './extension';
 import type { Page } from '@playwright/test';
 
 const settingSwitch = (popup: Page, name: string) => popup.getByRole('checkbox', { name, exact: true });
@@ -76,11 +76,11 @@ for (const setting of settings) {
       const popup = await openPopup();
       const switchEl = settingSwitch(popup, setting.name);
 
-      await switchEl.check();
+      await turn(switchEl, true);
       await distractionsHidden(page, true);
       for (const kept of c.keeps) await expect(page.locator(kept).first(), `${kept} stays`).toBeVisible();
 
-      await switchEl.uncheck();
+      await turn(switchEl, false);
       await distractionsHidden(page, false);
       expect(await page.evaluate(() => (window as any).notReloaded)).toBe(true);
     });
@@ -88,7 +88,7 @@ for (const setting of settings) {
     for (const other of c.elsewhere ?? []) {
       test(`leaves the rest of ${other.fixture} alone`, async ({ openSaved, openPopup }) => {
         const popup = await openPopup();
-        await settingSwitch(popup, setting.name).check();
+        await turn(settingSwitch(popup, setting.name), true);
         const page = await openSaved(other.fixture, other.url);
         for (const kept of other.keeps) await expect(page.locator(kept).first(), `${kept} stays`).toBeVisible();
       });
@@ -96,7 +96,7 @@ for (const setting of settings) {
 
     test('is hidden from the first load when on', async ({ openSaved, openPopup }) => {
       const popup = await openPopup();
-      await settingSwitch(popup, setting.name).check();
+      await turn(settingSwitch(popup, setting.name), true);
       const page = await openSaved(c.fixture, c.url);
       await distractionsHidden(page, true);
     });
@@ -104,12 +104,12 @@ for (const setting of settings) {
     test('the master switch turns it off everywhere at once', async ({ openSaved, openPopup }) => {
       const page = await openSaved(c.fixture, c.url);
       const popup = await openPopup();
-      await settingSwitch(popup, setting.name).check();
+      await turn(settingSwitch(popup, setting.name), true);
       await distractionsHidden(page, true);
 
-      await masterSwitch(popup).uncheck();
+      await turn(masterSwitch(popup), false);
       await distractionsHidden(page, false);
-      await masterSwitch(popup).check();
+      await turn(masterSwitch(popup), true);
       await distractionsHidden(page, true);
     });
   });
