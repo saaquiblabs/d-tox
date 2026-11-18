@@ -1,6 +1,6 @@
 import { existsSync } from 'node:fs';
 import settings from '../../settings.json' with { type: 'json' };
-import { cases } from './cases';
+import { cases, type Hides } from './cases';
 import { expect, test } from './extension';
 import type { Page } from '@playwright/test';
 
@@ -18,7 +18,8 @@ test('every Setting in settings.json has the agreed shape', () => {
     expect(ids.has(s.id as string), `duplicate id ${s.id}`).toBe(false);
     ids.add(s.id as string);
     expect(typeof s.name === 'string' && s.name.length > 0).toBe(true);
-    expect(s.hides, 'hides: one line starting "Hides "').toMatch(/^Hides [^\n]+\.$/);
+    // A Setting that changes a behaviour (autoplay) says what it turns, not what it hides.
+    expect(s.hides, 'hides: one line starting "Hides " or "Turns "').toMatch(/^(Hides|Turns) [^\n]+\.$/);
     expect(groups).toContain(s.group);
     expect(['switch', 'choice']).toContain(s.type);
     if (s.type === 'switch') expect(typeof s.calmDefault).toBe('boolean');
@@ -32,51 +33,81 @@ for (const setting of settings) {
 
     test('has a saved page to test against', () => {
       expect(c, `add "${setting.id}" to tests/cases.ts`).toBeDefined();
-      expect(existsSync(new URL(`./fixtures/${c!.fixture}`, import.meta.url)), `missing tests/fixtures/${c!.fixture}`).toBe(true);
+      for (const page of [c!, ...('elsewhere' in c! ? (c.elsewhere ?? []) : [])])
+        expect(existsSync(new URL(`./fixtures/${page.fixture}`, import.meta.url)), `missing tests/fixtures/${page.fixture}`).toBe(true);
+      if ('spec' in c!) expect(existsSync(new URL(`./${c.spec}`, import.meta.url)), `missing tests/${c.spec}`).toBe(true);
     });
-    if (!c || setting.type !== 'switch') return;
+    if (!c || 'spec' in c || setting.type !== 'switch') return;
+    const shown = (page: Page) => c.distractions.map((d) => page.locator(d).first());
 
     test('the page starts on the Calm Default', async ({ openSaved }) => {
       const page = await openSaved(c.fixture, c.url);
-      const distraction = page.locator(c.distraction).first();
-      if (setting.calmDefault) await expect(distraction).toBeHidden();
-      else await expect(distraction).toBeVisible();
+      for (const d of shown(page)) {
+        if (setting.calmDefault) await expect(d).toBeHidden();
+        else await expect(d).toBeVisible();
+      }
     });
+
+    if (setting.calmDefault) {
+      // toBeHidden() retries, so it can't see a flash. This records whether the Distraction
+      // could be seen at the moment YouTube's markup first put it on the page.
+      test('never shows, not even while the page loads', async ({ openSaved }) => {
+        const page = await openSaved(c.fixture, c.url, (selectors) => {
+          const w = window as any;
+          w.firstSeen = {};
+          const observer = new MutationObserver(() => {
+            for (const s of selectors) {
+              const el = document.querySelector(s);
+              if (el && !(s in w.firstSeen)) w.firstSeen[s] = el.checkVisibility();
+            }
+          });
+          observer.observe(document, { childList: true, subtree: true });
+        }, c.distractions);
+        expect(await page.evaluate(() => (window as any).firstSeen)).toEqual(Object.fromEntries(c.distractions.map((d) => [d, false])));
+      });
+    }
 
     test('switching it on and off in the popup applies to the open tab without a reload', async ({ openSaved, openPopup }) => {
       const page = await openSaved(c.fixture, c.url);
       await page.evaluate(() => ((window as any).notReloaded = true));
       const popup = await openPopup();
       const switchEl = settingSwitch(popup, setting.name);
-      const distraction = page.locator(c.distraction).first();
 
       await switchEl.check();
-      await expect(distraction).toBeHidden();
+      for (const d of shown(page)) await expect(d).toBeHidden();
       for (const kept of c.keeps) await expect(page.locator(kept).first(), `${kept} stays`).toBeVisible();
 
       await switchEl.uncheck();
-      await expect(distraction).toBeVisible();
+      for (const d of shown(page)) await expect(d).toBeVisible();
       expect(await page.evaluate(() => (window as any).notReloaded)).toBe(true);
     });
+
+    for (const other of (c as Hides).elsewhere ?? []) {
+      test(`leaves the rest of ${other.fixture} alone`, async ({ openSaved, openPopup }) => {
+        const popup = await openPopup();
+        await settingSwitch(popup, setting.name).check();
+        const page = await openSaved(other.fixture, other.url);
+        for (const kept of other.keeps) await expect(page.locator(kept).first(), `${kept} stays`).toBeVisible();
+      });
+    }
 
     test('is hidden from the first load when on', async ({ openSaved, openPopup }) => {
       const popup = await openPopup();
       await settingSwitch(popup, setting.name).check();
       const page = await openSaved(c.fixture, c.url);
-      await expect(page.locator(c.distraction).first()).toBeHidden();
+      for (const d of shown(page)) await expect(d).toBeHidden();
     });
 
     test('the master switch turns it off everywhere at once', async ({ openSaved, openPopup }) => {
       const page = await openSaved(c.fixture, c.url);
       const popup = await openPopup();
       await settingSwitch(popup, setting.name).check();
-      const distraction = page.locator(c.distraction).first();
-      await expect(distraction).toBeHidden();
+      for (const d of shown(page)) await expect(d).toBeHidden();
 
       await masterSwitch(popup).uncheck();
-      await expect(distraction).toBeVisible();
+      for (const d of shown(page)) await expect(d).toBeVisible();
       await masterSwitch(popup).check();
-      await expect(distraction).toBeHidden();
+      for (const d of shown(page)) await expect(d).toBeHidden();
     });
   });
 }

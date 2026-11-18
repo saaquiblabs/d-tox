@@ -1,5 +1,29 @@
 [
   {
+    "id": "recommendations",
+    "name": "Recommendations",
+    "hides": "Hides the suggested videos beside and below the video you're watching. Playlists, live chat, chapters and transcripts stay.",
+    "group": "Watch",
+    "type": "switch",
+    "calmDefault": true
+  },
+  {
+    "id": "end-screens",
+    "name": "End screens",
+    "hides": "Hides the grid of videos and the info cards that appear at the end of a video.",
+    "group": "Watch",
+    "type": "switch",
+    "calmDefault": false
+  },
+  {
+    "id": "autoplay-off",
+    "name": "Autoplay off",
+    "hides": "Turns YouTube's autoplay off on each video, so the next one doesn't start by itself. The autoplay button still works.",
+    "group": "Watch",
+    "type": "switch",
+    "calmDefault": true
+  },
+  {
     "id": "comments",
     "name": "Comments",
     "hides": "Hides the comments below the video you're watching.",
