@@ -1,0 +1,76 @@
+/* PROTOTYPE (#22), throwaway. The Intention Page, three variants, on YouTube's real home page.
+   YouTube's root font size is 10px, so everything here is in px. It follows YouTube's theme
+   (html[dark]), not the system's. Gated on html[data-dtox-home=intention], set by intention-proto.ts. */
+
+/* Hide the feed (and its chip bar) on Home only; our page goes in its place. */
+html[data-dtox-home=intention] ytd-browse[page-subtype=home] > ytd-two-column-browse-results-renderer { display: none !important; }
+#dtox-i { display: none; }
+html[data-dtox-home=intention] ytd-browse[page-subtype=home] > #dtox-i { display: block; }
+
+#dtox-i {
+  --i-bg: #F7F4EE; --i-surface: #FCFAF6; --i-shade: #EFEBE3; --i-flap: #E6E0D5;
+  --i-text: #202124; --i-text-2: #4D4F54; --i-border: #E3DDD2; --i-btn: #202124; --i-btn-fg: #F7F4EE;
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  min-height: calc(100vh - 56px);
+  box-sizing: border-box;
+}
+html[dark] #dtox-i {
+  --i-bg: #151A22; --i-surface: #1B212B; --i-shade: #11151C; --i-flap: #2A323E;
+  --i-text: #F7F4EE; --i-text-2: #B9BDC4; --i-border: #2A313C; --i-btn: #F7F4EE; --i-btn-fg: #151A22;
+}
+#dtox-i *, #dtox-i *::before, #dtox-i *::after { box-sizing: border-box; }
+#dtox-i h1, #dtox-i p { margin: 0; }
+#dtox-i a { text-decoration: none; color: inherit; }
+#dtox-i svg { width: 24px; height: 24px; fill: currentColor; flex: none; }
+
+/* ---------- A · YouTube-native: looks like YouTube, Roboto, YouTube's own colours ---------- */
+#dtox-i.A { display: grid; place-items: start center; padding: 18vh 24px 64px; font-family: "Roboto", "Arial", sans-serif; color: var(--yt-spec-text-primary, #0f0f0f); }
+#dtox-i.A .in { width: min(640px, 100%); display: grid; gap: 24px; justify-items: center; text-align: center; }
+#dtox-i.A h1 { font-size: 32px; line-height: 40px; font-weight: 700; letter-spacing: -.5px; }
+#dtox-i.A form { display: flex; width: 100%; height: 48px; }
+#dtox-i.A input { flex: 1; min-width: 0; height: 100%; padding: 0 20px; font: 400 18px "Roboto", "Arial", sans-serif; color: inherit; background: var(--yt-spec-base-background, #fff); border: 1px solid var(--yt-spec-10-percent-layer, #ccc); border-right: 0; border-radius: 24px 0 0 24px; outline: none; box-shadow: inset 0 1px 2px rgb(0 0 0 / .1); }
+#dtox-i.A input:focus { border-color: #1c62b9; }
+#dtox-i.A form button { width: 72px; height: 100%; display: grid; place-items: center; border: 1px solid var(--yt-spec-10-percent-layer, #ccc); border-radius: 0 24px 24px 0; background: var(--yt-spec-badge-chip-background, #f8f8f8); color: inherit; cursor: pointer; }
+#dtox-i.A nav { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+#dtox-i.A nav a { display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 16px; border-radius: 18px; font-size: 14px; font-weight: 500; background: var(--yt-spec-badge-chip-background, #0000000d); }
+#dtox-i.A nav a:hover { background: var(--yt-spec-10-percent-layer, #0000001a); }
+#dtox-i.A nav svg { width: 20px; height: 20px; }
+#dtox-i.A .note { font-size: 12px; color: var(--yt-spec-text-secondary, #606060); }
+
+/* ---------- B · Saaquib Labs paper: a folded sheet on YouTube's page ---------- */
+#dtox-i.B { display: grid; place-items: start center; padding: 12vh 24px 64px; color: var(--i-text); }
+#dtox-i.B .sheet { position: relative; width: min(720px, 100%); padding: 48px 56px 40px; background: var(--i-bg); border: 1px solid var(--i-border); border-radius: 28px; box-shadow: 0 1px 2px rgb(32 33 36 / .05), 0 12px 32px rgb(32 33 36 / .08); overflow: hidden; }
+#dtox-i.B .sheet::after { content: ""; position: absolute; top: 0; right: 0; width: 44px; height: 44px; background: linear-gradient(225deg, var(--yt-spec-base-background, #fff) 50%, var(--i-flap) 50%); border-bottom-left-radius: 8px; box-shadow: -2px 2px 6px rgb(0 0 0 / .12); }
+#dtox-i.B .glow { position: absolute; inset: auto -10% -60% -10%; height: 90%; background: radial-gradient(40% 50% at 50% 50%, rgb(139 92 246 / .16), transparent 70%), radial-gradient(25% 40% at 22% 50%, rgb(245 158 11 / .14), transparent 70%), radial-gradient(25% 40% at 78% 50%, rgb(251 191 36 / .12), transparent 70%); pointer-events: none; }
+#dtox-i.B .kicker { font-size: 12px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--i-text-2); }
+#dtox-i.B h1 { margin-top: 14px; font-size: 48px; line-height: 1.08; font-weight: 500; letter-spacing: -.02em; }
+#dtox-i.B h1 span { display: block; font-weight: 300; font-style: italic; color: var(--i-text-2); }
+#dtox-i.B form { position: relative; display: flex; gap: 8px; margin-top: 32px; padding: 6px; border-radius: 999px; background: var(--i-surface); border: 1px solid var(--i-border); }
+#dtox-i.B input { flex: 1; min-width: 0; padding: 0 18px; border: 0; background: none; height: 48px; font-size: 17px; font-family: inherit; color: var(--i-text); outline: none; }
+#dtox-i.B form:focus-within { border-color: var(--i-text-2); }
+#dtox-i.B form button { border: 0; padding: 0 24px; border-radius: 999px; background: var(--i-btn); color: var(--i-btn-fg); font-size: 15px; font-weight: 500; font-family: inherit; cursor: pointer; }
+#dtox-i.B ul { position: relative; list-style: none; margin: 28px 0 0; padding: 0; border-top: 1px solid var(--i-border); }
+#dtox-i.B li a { display: flex; align-items: center; gap: 14px; padding: 16px 4px; border-bottom: 1px solid var(--i-border); font-size: 16px; }
+#dtox-i.B li a small { color: var(--i-text-2); font-size: 14px; }
+#dtox-i.B li a::after { content: "→"; margin-left: auto; color: var(--i-text-2); transition: transform .15s; }
+#dtox-i.B li a:hover::after { transform: translateX(4px); color: var(--i-text); }
+#dtox-i.B .by { position: relative; display: flex; align-items: center; gap: 8px; margin-top: 24px; font-size: 13px; color: var(--i-text-2); }
+#dtox-i.B .by img { width: 18px; height: 18px; }
+
+/* ---------- C · Just the question: the prompt is the search box ---------- */
+#dtox-i.C { padding: 22vh max(48px, 9vw) 64px; color: var(--yt-spec-text-primary, #0f0f0f); }
+#dtox-i.C label { display: block; font-size: 15px; color: var(--yt-spec-text-secondary, #606060); margin-bottom: 8px; }
+#dtox-i.C input { width: 100%; padding: 0 0 12px; border: 0; border-bottom: 2px solid var(--yt-spec-10-percent-layer, #0000001a); background: none; outline: none; color: inherit; font: 500 clamp(36px, 5vw, 64px)/1.1 ui-sans-serif, system-ui, -apple-system, sans-serif; letter-spacing: -.025em; caret-color: #8b5cf6; }
+#dtox-i.C input::placeholder { color: var(--yt-spec-text-primary, #0f0f0f); opacity: .9; }
+#dtox-i.C input:focus { border-color: var(--yt-spec-text-primary, #0f0f0f); }
+#dtox-i.C input:focus::placeholder { opacity: .3; }
+#dtox-i.C .hints { display: flex; flex-wrap: wrap; gap: 8px 28px; margin-top: 20px; font-size: 14px; color: var(--yt-spec-text-secondary, #606060); }
+#dtox-i.C .hints a:hover { color: var(--yt-spec-text-primary, #0f0f0f); }
+#dtox-i.C kbd { display: inline-block; min-width: 22px; padding: 2px 6px; margin-right: 6px; border: 1px solid var(--yt-spec-10-percent-layer, #0000001a); border-bottom-width: 2px; border-radius: 6px; font: 500 12px ui-monospace, Menlo, monospace; text-align: center; color: var(--yt-spec-text-primary, #0f0f0f); }
+
+/* ---------- prototype switcher (not part of the design) ---------- */
+#dtox-proto { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 9999; display: none; align-items: center; gap: 6px; background: #E8FF59; color: #111; font: 600 13px/1 system-ui, sans-serif; padding: 6px; border-radius: 999px; box-shadow: 0 6px 24px rgb(0 0 0 / .35); border: 2px solid #111; }
+html[data-dtox-home=intention][data-dtox-on-home] #dtox-proto { display: flex; }
+#dtox-proto button { all: unset; cursor: pointer; padding: 8px 12px; border-radius: 999px; }
+#dtox-proto button:hover { background: #111; color: #E8FF59; }
+#dtox-proto span { min-width: 210px; text-align: center; }

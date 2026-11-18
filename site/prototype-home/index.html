@@ -1,0 +1,504 @@
+<!doctype html>
+<!--
+  PROTOTYPE (#22), throwaway. What should d-tox.saaquiblabs.com/ look like? Three structurally
+  different variants of the six agreed sections (hero, before/after, the 10 Settings, measured
+  numbers, comparison with Unhook and RYS, privacy in one line) plus the footer, on one page,
+  switched by ?variant=A|B|C and ?theme=system|light|dark (the theme switch is for review only;
+  the real site follows the system, ADR 0011). Bar at the bottom, or ← →.
+  Run from the repo root: python3 -m http.server 4322  →  http://localhost:4322/site/prototype-home/?variant=A
+  Tokens: src/brand/tokens.css (Saaquib Labs). Screenshots: extension/scripts/prototype-capture.mjs
+  (live YouTube, signed out, video blocked). Numbers marked PLACEHOLDER are made up until #25.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>D-Tox for YouTube (prototype)</title>
+<link rel="icon" href="../../extension/public/icon-48.png">
+<style>
+:root{
+  --font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --bg:#F7F4EE;--bg-shade:#EFEBE3;--surface:#FCFAF6;--flap:#E6E0D5;--text:#202124;--text-2:#4D4F54;--border:#E3DDD2;
+  --btn-bg:#202124;--btn-fg:#F7F4EE;--focus:#202124;--lit:color-mix(in srgb,var(--bg) 55%,#fff);
+  --stage:#17191E;--stage-text:#F7F4EE;--stage-text-2:#C9CCD1;
+  --term-bg:#151A22;--term-fg:#E9E6DF;--term-dim:#A9AFB8;--term-ok:#8FD6A4;
+  --t-display:clamp(2.5rem,5.5vw,4.6rem);--t-h2:clamp(2.2rem,4vw,3.4rem);--t-h3:1.375rem;--t-lead:1.125rem;--t-small:.875rem;--t-label:.75rem;
+  --r-sm:8px;--r-md:16px;--r-lg:clamp(28px,3.5vw,44px);--r-pill:999px;
+  --container:1160px;--gutter:clamp(16px,4vw,32px);--section:clamp(48px,7vw,96px);
+  --shadow:0 1px 2px rgb(32 33 36 / .05),0 12px 32px rgb(32 33 36 / .07);
+  --tint-core:139 92 246;--tint-warm:245 158 11;--tint-soft:251 191 36;
+  --ph:#B45309;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){
+  --bg:#151A22;--bg-shade:#11151C;--surface:#1B212B;--flap:#2A323E;--text:#F7F4EE;--text-2:#B9BDC4;--border:#2A313C;
+  --btn-bg:#F7F4EE;--btn-fg:#151A22;--focus:#F7F4EE;--lit:color-mix(in srgb,var(--bg) 88%,#fff);--term-bg:#0E1218;
+  --shadow:0 1px 2px rgb(0 0 0 / .3),0 12px 32px rgb(0 0 0 / .35);--ph:#FBBF24}}
+:root[data-theme=dark]{
+  --bg:#151A22;--bg-shade:#11151C;--surface:#1B212B;--flap:#2A323E;--text:#F7F4EE;--text-2:#B9BDC4;--border:#2A313C;
+  --btn-bg:#F7F4EE;--btn-fg:#151A22;--focus:#F7F4EE;--lit:color-mix(in srgb,var(--bg) 88%,#fff);--term-bg:#0E1218;
+  --shadow:0 1px 2px rgb(0 0 0 / .3),0 12px 32px rgb(0 0 0 / .35);--ph:#FBBF24;color-scheme:dark}
+:root[data-theme=light]{color-scheme:light}
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--text);font:400 1rem/1.65 var(--font);overflow-x:clip}
+img{max-width:100%;height:auto;display:block}
+a{color:inherit;text-underline-offset:.2em;text-decoration-thickness:1px}
+:focus-visible{outline:2px solid var(--focus);outline-offset:4px;border-radius:4px}
+h1,h2,h3,p{margin:0}
+h1{font-size:var(--t-display);font-weight:500;line-height:1.08;letter-spacing:-.02em}
+h2{font-size:clamp(1.75rem,3.4vw,2.6rem);font-weight:500;line-height:1.1;letter-spacing:-.025em}
+h3{font-size:var(--t-h3);font-weight:500;line-height:1.25;letter-spacing:-.015em}
+.second{display:block;font-weight:300;font-style:italic;color:var(--text-2)}
+.lead{font-size:var(--t-lead);color:var(--text-2)}
+.label{font-size:var(--t-label);font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--text-2)}
+.wrap{max-width:var(--container);margin-inline:auto;padding-inline:var(--gutter)}
+.btn{display:inline-flex;align-items:center;gap:.6em;padding:.95em 1.75em;border-radius:var(--r-pill);font-weight:500;font-size:.9375rem;line-height:1;text-decoration:none;border:1px solid transparent;white-space:nowrap}
+.btn-solid{background:var(--btn-bg);color:var(--btn-fg)}
+.btn-ghost{border-color:var(--border)}
+.btn-ghost:hover{border-color:var(--text-2)}
+.btn svg{width:18px;height:18px}
+.ph{display:inline-block;font:600 10px/1 var(--font);letter-spacing:.08em;text-transform:uppercase;color:var(--ph);border:1px dashed currentColor;border-radius:4px;padding:3px 5px;vertical-align:middle;white-space:nowrap}
+.mark{display:inline-flex;align-items:center;gap:10px;font-weight:600;font-size:1.0625rem;text-decoration:none;letter-spacing:-.01em}
+.mark img{width:26px;height:26px}
+.s-mask{display:inline-block;width:16px;height:16px;background:currentColor;-webkit-mask:url(../public/brand/symbol-flat.svg) center/contain no-repeat;mask:url(../public/brand/symbol-flat.svg) center/contain no-repeat;vertical-align:-3px}
+.fold{position:relative}
+.fold::after{content:"";position:absolute;top:0;right:0;width:var(--fold,36px);height:var(--fold,36px);background:linear-gradient(225deg,var(--bg) 50%,var(--flap) 50%);border-bottom-left-radius:8px;box-shadow:-2px 2px 6px rgb(0 0 0 / .1)}
+.win{border-radius:12px;overflow:hidden;border:1px solid var(--border);background:var(--surface);box-shadow:var(--shadow)}
+.win .bar{display:flex;gap:6px;padding:9px 12px;border-bottom:1px solid var(--border)}
+.win .bar i{width:9px;height:9px;border-radius:50%;background:var(--border)}
+.glow{position:absolute;inset:auto 0 -30% 0;height:70%;pointer-events:none;background:radial-gradient(35% 55% at 50% 60%,rgb(var(--tint-core) / .18),transparent 70%),radial-gradient(25% 45% at 25% 65%,rgb(var(--tint-warm) / .16),transparent 70%),radial-gradient(25% 45% at 75% 65%,rgb(var(--tint-soft) / .14),transparent 70%)}
+table{border-collapse:collapse;width:100%}
+.yes{color:var(--text)}.no{color:var(--text-2)}
+
+.variant{display:none}
+body[data-variant=A] #A,body[data-variant=B] #B,body[data-variant=C] #C{display:block}
+footer.site{border-top:1px solid var(--border);margin-top:var(--section)}
+footer.site .in{display:grid;gap:10px;padding-block:36px 96px;font-size:var(--t-small);color:var(--text-2)}
+footer.site nav{display:flex;flex-wrap:wrap;gap:8px 24px}
+footer.site a{text-decoration:none}
+footer.site a:hover{color:var(--text)}
+
+/* ================= A · Calm editorial ================= */
+#A header{position:sticky;top:14px;z-index:10;max-width:1200px;margin:14px auto 0;padding-inline:var(--gutter)}
+#A header .in{display:flex;align-items:center;justify-content:space-between;padding:8px 8px 8px 18px;border-radius:var(--r-pill);background:color-mix(in srgb,var(--surface) 82%,transparent);backdrop-filter:blur(22px) saturate(1.6);border:1px solid var(--border);box-shadow:var(--shadow)}
+#A header nav{display:flex;gap:22px;font-size:var(--t-small);color:var(--text-2)}
+#A header nav a{text-decoration:none}
+#A header .btn{padding:.75em 1.3em}
+#A .hero{position:relative;text-align:center;padding-block:clamp(72px,11vw,140px) clamp(40px,6vw,72px)}
+#A .hero h1{max-width:15ch;margin-inline:auto}
+#A .hero .lead{max-width:38rem;margin:24px auto 0}
+#A .hero .cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:32px}
+#A .hero small{display:block;margin-top:16px;color:var(--text-2);font-size:var(--t-small)}
+#A section.blk{padding-block:var(--section)}
+#A .head{text-align:center;max-width:40rem;margin:0 auto 36px;display:grid;gap:12px}
+#A .tabs{display:flex;justify-content:center;gap:6px;margin-bottom:20px}
+#A .tabs button{all:unset;cursor:pointer;padding:8px 16px;border-radius:var(--r-pill);font-size:var(--t-small);font-weight:500;color:var(--text-2);border:1px solid var(--border)}
+#A .tabs button[aria-selected=true]{background:var(--btn-bg);color:var(--btn-fg);border-color:var(--btn-bg)}
+#A .cmp{position:relative;max-width:1000px;margin-inline:auto;aspect-ratio:1280/800;border-radius:var(--r-md);overflow:hidden;border:1px solid var(--border);box-shadow:var(--shadow);--x:50%;user-select:none;touch-action:none;cursor:ew-resize}
+#A .cmp img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top}
+#A .cmp .after{clip-path:inset(0 0 0 var(--x))}
+#A .cmp .line{position:absolute;top:0;bottom:0;left:var(--x);width:2px;background:var(--btn-bg);transform:translateX(-1px)}
+#A .cmp .knob{position:absolute;top:50%;left:var(--x);transform:translate(-50%,-50%);width:44px;height:44px;border-radius:50%;background:var(--btn-bg);color:var(--btn-fg);display:grid;place-items:center;font-size:14px;box-shadow:var(--shadow)}
+#A .cmp .tag{position:absolute;top:14px;padding:5px 10px;border-radius:var(--r-pill);font-size:12px;font-weight:600;background:rgb(0 0 0 / .72);color:#fff}
+#A .cmp .tag.l{left:14px}#A .cmp .tag.r{right:14px}
+#A .caption{text-align:center;margin-top:16px;color:var(--text-2);font-size:var(--t-small);min-height:3.2em}
+#A .groups{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:28px 32px}
+#A .groups h3{font-size:var(--t-label);font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--text-2);padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:12px}
+#A .groups dl{margin:0;display:grid;gap:14px}
+#A .groups dt{font-weight:500}
+#A .groups dd{margin:2px 0 0;font-size:var(--t-small);color:var(--text-2);line-height:1.55}
+#A .cd{font-size:11px;font-weight:600;color:var(--text);background:var(--bg-shade);border:1px solid var(--border);border-radius:var(--r-pill);padding:1px 8px;margin-left:6px;vertical-align:2px;white-space:nowrap}
+#A .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-block:1px solid var(--border)}
+#A .stat{padding:28px 24px;display:grid;gap:8px;align-content:start}
+#A .stat+.stat{border-left:1px solid var(--border)}
+#A .stat .n{font-size:clamp(2.25rem,1.6rem + 2.2vw,3.5rem);font-weight:500;letter-spacing:-.04em;line-height:1;font-variant-numeric:tabular-nums}
+#A .stat p{font-size:var(--t-small);color:var(--text-2);max-width:24ch}
+#A .when{text-align:center;margin-top:16px;font-size:var(--t-small);color:var(--text-2)}
+#A table{max-width:860px;margin-inline:auto;font-size:.9375rem}
+#A th,#A td{padding:14px 16px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top}
+#A thead th{font-size:var(--t-label);letter-spacing:.1em;text-transform:uppercase;color:var(--text-2);font-weight:600}
+#A tbody th{font-weight:500}
+#A td.us{background:var(--lit)}
+#A .src{text-align:center;margin-top:14px;font-size:var(--t-small);color:var(--text-2)}
+#A .privacy{--fold:56px;max-width:900px;margin-inline:auto;padding:clamp(40px,6vw,72px);border-radius:var(--r-lg);background:var(--surface);border:1px solid var(--border);box-shadow:var(--shadow);text-align:center}
+#A .privacy p{font-size:clamp(1.4rem,2.6vw,2rem);line-height:1.3;letter-spacing:-.015em;font-weight:500;max-width:28ch;margin-inline:auto}
+#A .privacy a{display:inline-block;margin-top:16px;font-size:var(--t-small);color:var(--text-2)}
+@media (max-width:760px){#A header nav{display:none}#A .stats{grid-template-columns:repeat(2,minmax(0,1fr))}#A .stat:nth-child(3){border-left:0}#A .stat:nth-child(n+3){border-top:1px solid var(--border)}#A td,#A th{padding:10px 8px}}
+
+/* ================= B · Graphite stage ================= */
+#B header .in{display:flex;align-items:center;justify-content:space-between;padding-block:22px}
+#B .hero{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(32px,5vw,72px);align-items:center;padding-block:clamp(32px,5vw,64px) var(--section)}
+#B .hero .lead{margin-top:22px;max-width:34rem}
+#B .hero .cta{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-top:30px;font-size:var(--t-small);color:var(--text-2)}
+#B .stage{position:relative;overflow:hidden;border-radius:var(--r-lg);background:var(--stage);padding:clamp(28px,4vw,48px);display:grid;place-items:center;min-height:520px;--fold:56px}
+#B .stage .glow{inset:auto -20% -40% -20%;height:90%;opacity:1.6}
+#B .stage.fold::after{background:linear-gradient(225deg,var(--bg) 50%,#2A323E 50%)}
+#B .pop{position:relative;width:320px;border-radius:14px;background:#151A22;color:#F7F4EE;font-size:13px;box-shadow:0 30px 60px rgb(0 0 0 / .5);border:1px solid #2A313C;overflow:hidden}
+#B .pop .top{display:flex;justify-content:space-between;align-items:center;padding:14px 14px 10px}
+#B .pop .mark{font-size:14px}#B .pop .mark img{width:20px;height:20px}
+#B .pop .st{padding:0 14px 10px;color:#B9BDC4;font-size:11.5px;border-bottom:1px solid #2A313C}
+#B .pop h6{margin:0;padding:10px 14px 4px;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#B9BDC4}
+#B .pop .r{display:flex;justify-content:space-between;align-items:center;padding:6px 14px}
+#B .pop .ft{display:flex;gap:12px;padding:10px 14px;border-top:1px solid #2A313C;color:#B9BDC4;font-size:11px;margin-top:6px}
+#B .sw{width:32px;height:18px;border-radius:9px;background:#3A4350;position:relative;flex:none}
+#B .sw::after{content:"";position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:#fff}
+#B .sw.on{background:#F7F4EE}#B .sw.on::after{left:16px;background:#151A22}
+#B section.blk{padding-block:var(--section)}
+#B .head{display:flex;justify-content:space-between;align-items:end;gap:24px;margin-bottom:32px;flex-wrap:wrap}
+#B .head .lead{max-width:30rem}
+#B .pairs{display:grid;gap:40px}
+#B .pair{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+#B .pair figure{margin:0}
+#B .pair figcaption{display:flex;justify-content:space-between;font-size:var(--t-small);color:var(--text-2);margin-top:10px}
+#B .pair figcaption b{color:var(--text);font-weight:500}
+#B .pair .win img{aspect-ratio:1280/800;object-fit:cover;object-position:top}
+#B .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
+#B .card{--fold:28px;padding:22px 22px 20px;border-radius:var(--r-md);background:var(--surface);border:1px solid var(--border);display:grid;gap:8px;align-content:start}
+#B .card .g{font-size:var(--t-label);letter-spacing:.12em;text-transform:uppercase;color:var(--text-2);font-weight:600}
+#B .card h3{font-size:1.125rem}
+#B .card p{font-size:var(--t-small);color:var(--text-2);line-height:1.55}
+#B .card .cd{justify-self:start;font-size:11px;font-weight:600;padding:2px 8px;border-radius:var(--r-pill);background:var(--btn-bg);color:var(--btn-fg)}
+#B .term{border-radius:var(--r-md);background:var(--term-bg);color:var(--term-fg);font:400 .875rem/1.8 var(--mono);padding:24px 28px;overflow-x:auto;box-shadow:var(--shadow)}
+#B .term .d{color:var(--term-dim)}#B .term .ok{color:var(--term-ok)}#B .term .phm{color:#FBBF24}
+#B .three{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+#B .who{padding:26px;border-radius:var(--r-md);border:1px solid var(--border);display:grid;gap:14px;align-content:start}
+#B .who.us{background:var(--stage);color:var(--stage-text);border-color:var(--stage)}
+#B .who.us .k,#B .who.us li::marker{color:var(--stage-text-2)}
+#B .who .k{font-size:var(--t-small);color:var(--text-2)}
+#B .who h3 small{font-size:var(--t-small);font-weight:400;color:inherit;opacity:.7;margin-left:6px}
+#B .who ul{margin:0;padding-left:18px;display:grid;gap:6px;font-size:var(--t-small)}
+#B .who .wins{font-size:var(--t-small);padding-top:12px;border-top:1px solid color-mix(in srgb,currentColor 18%,transparent)}
+#B .band{margin-top:var(--section);background:var(--stage);color:var(--stage-text)}
+#B .band .in{display:flex;align-items:center;justify-content:space-between;gap:24px;padding-block:44px;flex-wrap:wrap}
+#B .band p{font-size:clamp(1.25rem,2.4vw,1.75rem);font-weight:500;letter-spacing:-.015em}
+#B .band a{color:var(--stage-text-2);font-size:var(--t-small)}
+#B footer.site{margin-top:0}
+@media (max-width:900px){#B .hero,#B .pair,#B .three{grid-template-columns:1fr}#B .stage{min-height:0}}
+
+/* ================= C · Single-column dossier ================= */
+#C .layout{display:grid;grid-template-columns:200px minmax(0,680px);gap:clamp(32px,6vw,96px);justify-content:center;padding-inline:var(--gutter)}
+#C aside{position:sticky;top:0;align-self:start;padding-top:40px;height:100vh;display:flex;flex-direction:column;gap:28px}
+#C aside ol{list-style:none;margin:0;padding:0;display:grid;gap:8px;font-size:var(--t-small);color:var(--text-2);counter-reset:n}
+#C aside li{counter-increment:n}
+#C aside li a{text-decoration:none;display:flex;gap:10px}
+#C aside li a::before{content:"0" counter(n);font-variant-numeric:tabular-nums;opacity:.6}
+#C aside li a:hover,#C aside li a.on{color:var(--text)}
+#C aside .btn{align-self:start;padding:.8em 1.3em}
+#C article{padding-block:40px 0}
+#C .hero{padding-block:clamp(40px,10vh,120px) 56px;border-bottom:1px solid var(--border)}
+#C .hero h1{font-size:clamp(2.4rem,4.6vw,3.6rem)}
+#C .hero .lead{margin-top:22px}
+#C .hero .cta{display:flex;gap:16px;align-items:center;margin-top:28px;flex-wrap:wrap;font-size:var(--t-small);color:var(--text-2)}
+#C section{padding-block:56px;border-bottom:1px solid var(--border);scroll-margin-top:20px}
+#C section > .label{display:block;margin-bottom:12px}
+#C section h2{font-size:clamp(1.6rem,2.8vw,2.1rem)}
+#C section > p{margin-top:14px;color:var(--text-2)}
+#C .seg{display:inline-flex;margin:24px 0 14px;padding:3px;border-radius:var(--r-pill);background:var(--bg-shade);border:1px solid var(--border)}
+#C .seg button{all:unset;cursor:pointer;padding:7px 16px;border-radius:var(--r-pill);font-size:var(--t-small);font-weight:500;color:var(--text-2)}
+#C .seg button[aria-pressed=true]{background:var(--surface);color:var(--text);box-shadow:0 1px 2px rgb(0 0 0 / .12)}
+#C .shot{display:grid;gap:10px}
+#C .shot .row{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:var(--t-small);color:var(--text-2)}
+#C .shot .flip{display:inline-flex;gap:4px}
+#C .shot .flip button{all:unset;cursor:pointer;padding:4px 10px;border-radius:6px;font-weight:500}
+#C .shot .flip button[aria-pressed=true]{background:var(--btn-bg);color:var(--btn-fg)}
+#C .shot .win img{aspect-ratio:1280/800;object-fit:cover;object-position:top}
+#C dl{margin:24px 0 0;display:grid}
+#C dl .it{display:grid;grid-template-columns:120px 1fr;gap:4px 20px;padding:14px 0;border-top:1px solid var(--border)}
+#C dl .g{font-size:var(--t-small);color:var(--text-2)}
+#C dt{font-weight:500}
+#C dd{margin:0;grid-column:2;font-size:var(--t-small);color:var(--text-2)}
+#C dt small{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-2);margin-left:8px}
+#C table{margin-top:24px;font-size:var(--t-small)}
+#C th,#C td{text-align:left;padding:11px 10px 11px 0;border-bottom:1px solid var(--border);vertical-align:top}
+#C thead th{color:var(--text-2);font-weight:500}
+#C td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+#C .note{margin-top:12px;font-size:var(--t-small);color:var(--text-2)}
+#C .one{font-size:clamp(1.3rem,2.4vw,1.7rem);line-height:1.35;letter-spacing:-.015em;color:var(--text);font-weight:500}
+#C footer.site{margin-top:0;border-top:0}
+@media (max-width:900px){#C .layout{grid-template-columns:1fr}#C aside{position:static;height:auto;padding-top:24px;flex-direction:row;align-items:center;justify-content:space-between}#C aside ol{display:none}#C dl .it{grid-template-columns:1fr}#C dd{grid-column:1}}
+
+/* ---------- prototype switcher (not part of the design) ---------- */
+.proto{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:99;display:flex;align-items:center;gap:6px;background:#E8FF59;color:#111;font:600 13px/1 system-ui,sans-serif;padding:6px;border-radius:999px;box-shadow:0 6px 24px rgb(0 0 0 / .35);border:2px solid #111}
+.proto button{all:unset;cursor:pointer;padding:8px 12px;border-radius:999px}
+.proto button:hover{background:#111;color:#E8FF59}
+.proto .lbl{min-width:180px;text-align:center}
+</style>
+</head>
+<body data-variant="A">
+
+<!-- ======================= A · Calm editorial ======================= -->
+<div class="variant" id="A" data-name="Calm editorial">
+  <header><div class="in">
+    <a class="mark" href="#"><img src="../../extension/public/icon-48.png" alt="">D-Tox</a>
+    <nav><a href="#A-ba">Before and after</a><a href="#A-set">Settings</a><a href="#A-num">Numbers</a><a href="#A-vs">Compared</a></nav>
+    <a class="btn btn-solid" href="#">Add to Chrome</a>
+  </div></header>
+  <section class="wrap hero">
+    <div class="glow"></div>
+    <p class="label" style="margin-bottom:22px">D-Tox for YouTube</p>
+    <h1>YouTube for what you came for.<span class="second">Nothing else.</span></h1>
+    <p class="lead">D-Tox hides the parts of YouTube that pull you elsewhere: the feed, the suggestions, Shorts. It stays measurably light, and it sends nothing anywhere.</p>
+    <div class="cta"><a class="btn btn-solid" href="#">${chrome}Add to Chrome</a><a class="btn btn-ghost" href="#A-ba">See the difference</a></div>
+    <small>Free and open source (MIT). Chrome, on www.youtube.com.</small>
+  </section>
+  <section class="wrap blk" id="A-ba">
+    <div class="head"><p class="label">Before and after</p><h2>The same page, without the pull.</h2></div>
+    <div class="tabs" role="tablist"></div>
+    <div class="cmp" aria-label="Drag to compare"><img class="before" alt=""><img class="after" alt=""><span class="tag l">YouTube</span><span class="tag r">With D-Tox</span><span class="line"></span><span class="knob">⇆</span></div>
+    <p class="caption"></p>
+  </section>
+  <section class="wrap blk" id="A-set">
+    <div class="head"><p class="label">The 10 Settings</p><h2>Each one hides one thing. You choose.</h2><p class="lead">A fresh install starts calm: the four marked <span class="cd" style="margin:0">Calm Default</span> are on. Change any of them from the D-Tox button.</p></div>
+    <div class="groups" data-settings="A"></div>
+  </section>
+  <section class="wrap blk" id="A-num">
+    <div class="head"><p class="label">Measured, every release</p><h2>Light enough to forget it's there.</h2><p class="lead">Every release runs YouTube with every Setting on and compares it with YouTube alone. A release that slows YouTube down doesn't ship.</p></div>
+    <div class="stats">
+      <div class="stat"><span class="n">7 KB</span><p>the whole extension, icons aside</p></div>
+      <div class="stat"><span class="n">+2%</span><p>long-task time against YouTube alone <span class="ph">placeholder</span></p></div>
+      <div class="stat"><span class="n">−31%</span><p>page size on Home, with the feed gone <span class="ph">placeholder</span></p></div>
+      <div class="stat"><span class="n">0</span><p>timers or observers watching the page</p></div>
+    </div>
+    <p class="when">Release Gate run of v2.0.0, <time>2026-11-—</time> <span class="ph">placeholder until #25</span></p>
+  </section>
+  <section class="wrap blk" id="A-vs">
+    <div class="head"><p class="label">Compared</p><h2>Unhook and RYS are good too.</h2><p class="lead">Here's where each one wins, so you can pick the right one.</p></div>
+    <table data-compare="A"></table>
+    <p class="src">From each store listing and repository, read 2026-11-18. <span class="ph">re-check in #27</span></p>
+  </section>
+  <section class="wrap blk">
+    <div class="privacy fold"><p>D-Tox sends nothing anywhere. Your Settings stay in your Chrome.</p><a href="#">Read the privacy page</a></div>
+  </section>
+  <footer class="site"><div class="wrap in" data-footer></div></footer>
+</div>
+
+<!-- ======================= B · Graphite stage ======================= -->
+<div class="variant" id="B" data-name="Graphite stage">
+  <header class="wrap"><div class="in">
+    <a class="mark" href="#"><img src="../../extension/public/icon-48.png" alt="">D-Tox</a>
+    <a class="btn btn-ghost" href="#">Add to Chrome</a>
+  </div></header>
+  <section class="wrap hero">
+    <div>
+      <h1>YouTube for what you came for.<span class="second">Nothing else.</span></h1>
+      <p class="lead">Ten Settings, one switch. D-Tox hides the feed, the suggestions and Shorts, starts calm, and sends nothing anywhere.</p>
+      <div class="cta"><a class="btn btn-solid" href="#">Add to Chrome — free</a><span>MIT · Chrome</span></div>
+    </div>
+    <div class="stage fold"><div class="glow"></div>
+      <div class="pop" data-pop></div>
+    </div>
+  </section>
+  <section class="wrap blk">
+    <div class="head"><h2>Before and after.</h2><p class="lead">Live YouTube, signed out, the same moment. Left as YouTube made it; right with D-Tox's Calm Default.</p></div>
+    <div class="pairs" data-pairs></div>
+  </section>
+  <section class="wrap blk">
+    <div class="head"><h2>The 10 Settings.</h2><p class="lead">Grouped as in the D-Tox button. The dark tags are on from the start.</p></div>
+    <div class="cards" data-settings="B"></div>
+  </section>
+  <section class="wrap blk">
+    <div class="head"><h2>The numbers.</h2><p class="lead">The Release Gate's own output for this version, against YouTube with no extension.</p></div>
+<pre class="term"><span class="d">$ npm run gate -- --baseline 2026-11-18T21:04 </span><span class="phm"># PLACEHOLDER until #25</span>
+<span class="d">Release Gate · v2.0.0 · every Setting on · 6 pages × 5 runs</span>
+
+  long-task time      +2.1%   <span class="d">(limit ±10%)</span>   <span class="ok">pass</span>   <span class="phm">placeholder</span>
+  style recalc        +0.8%   <span class="d">(limit ±10%)</span>   <span class="ok">pass</span>   <span class="phm">placeholder</span>
+  DOM growth          none    <span class="d">(no runaway)</span>   <span class="ok">pass</span>   <span class="phm">placeholder</span>
+  timeouts            0                       <span class="ok">pass</span>   <span class="phm">placeholder</span>
+  playback, Shorts    work                    <span class="ok">pass</span>   <span class="phm">placeholder</span>
+  size                7.16 KB <span class="d">(budget 40 KB)</span>  <span class="ok">pass</span>
+
+<span class="ok">Gate passed.</span> <span class="d">2026-11-—</span></pre>
+  </section>
+  <section class="wrap blk">
+    <div class="head"><h2>D-Tox, Unhook, RYS.</h2><p class="lead">All three hide YouTube's pull. Each wins somewhere. <span class="ph">re-check in #27</span></p></div>
+    <div class="three" data-three></div>
+  </section>
+  <div class="band"><div class="wrap in"><p>D-Tox sends nothing anywhere. Your Settings stay in your Chrome.</p><a href="#">Privacy →</a></div></div>
+  <footer class="site"><div class="wrap in" data-footer></div></footer>
+</div>
+
+<!-- ======================= C · Single-column dossier ======================= -->
+<div class="variant" id="C" data-name="Dossier">
+  <div class="layout">
+    <aside>
+      <a class="mark" href="#"><img src="../../extension/public/icon-48.png" alt="">D-Tox</a>
+      <ol>
+        <li><a href="#C-ba">Before and after</a></li>
+        <li><a href="#C-set">The 10 Settings</a></li>
+        <li><a href="#C-num">The numbers</a></li>
+        <li><a href="#C-vs">Compared</a></li>
+        <li><a href="#C-pr">Privacy</a></li>
+      </ol>
+      <a class="btn btn-solid" href="#">Add to Chrome</a>
+    </aside>
+    <article>
+      <div class="hero">
+        <p class="label">D-Tox for YouTube · v2.0.0</p>
+        <h1 style="margin-top:18px">YouTube for what you came for.<span class="second">Nothing else.</span></h1>
+        <p class="lead">A Chrome extension for people who need YouTube to learn or work and keep getting pulled off course. It hides the feed, the suggestions and Shorts, and stays out of the way.</p>
+        <div class="cta"><a class="btn btn-solid" href="#">Add to Chrome</a><span>Free · MIT · sends nothing anywhere</span></div>
+      </div>
+      <section id="C-ba">
+        <span class="label">01 · Before and after</span>
+        <h2>One page at a time.</h2>
+        <p>Pick a page, then flip between YouTube and YouTube with D-Tox.</p>
+        <div class="seg" data-seg></div>
+        <div class="shot"><div class="row"><span data-cap></span><span class="flip"><button aria-pressed="false" data-flip="before">YouTube</button><button aria-pressed="true" data-flip="after">With D-Tox</button></span></div><div class="win"><div class="bar"><i></i><i></i><i></i></div><img data-img alt=""></div></div>
+      </section>
+      <section id="C-set">
+        <span class="label">02 · The 10 Settings</span>
+        <h2>What each one hides.</h2>
+        <p>Four are on from the start; they are marked “Calm Default”. The rest wait until you want them.</p>
+        <dl data-settings="C"></dl>
+      </section>
+      <section id="C-num">
+        <span class="label">03 · The numbers</span>
+        <h2>Measured against YouTube alone.</h2>
+        <p>Each release runs the same pages with no extension, then with every Setting on.</p>
+        <table>
+          <thead><tr><th>Measure</th><th>YouTube</th><th>With D-Tox</th><th>Change</th></tr></thead>
+          <tbody>
+            <tr><td>Long-task time, Home</td><td class="num">1,840 ms</td><td class="num">1,190 ms</td><td class="num">−35% <span class="ph">placeholder</span></td></tr>
+            <tr><td>Long-task time, Watch</td><td class="num">2,210 ms</td><td class="num">2,256 ms</td><td class="num">+2% <span class="ph">placeholder</span></td></tr>
+            <tr><td>Style recalc, Search</td><td class="num">96 ms</td><td class="num">97 ms</td><td class="num">+1% <span class="ph">placeholder</span></td></tr>
+            <tr><td>Pages that timed out</td><td class="num">0</td><td class="num">0</td><td class="num">— <span class="ph">placeholder</span></td></tr>
+            <tr><td>Extension size</td><td class="num">—</td><td class="num">7.16 KB</td><td class="num">of 40 KB</td></tr>
+          </tbody>
+        </table>
+        <p class="note">Release Gate, v2.0.0, run on <time>2026-11-—</time>. <span class="ph">placeholder until #25</span></p>
+      </section>
+      <section id="C-vs">
+        <span class="label">04 · Compared</span>
+        <h2>D-Tox, Unhook and RYS.</h2>
+        <p>Where they match, the table says so. <span class="ph">re-check in #27</span></p>
+        <table data-compare="C"></table>
+        <p class="note">Sources: the Chrome Web Store listings and GitHub repositories, read 2026-11-18.</p>
+      </section>
+      <section id="C-pr">
+        <span class="label">05 · Privacy</span>
+        <p class="one">D-Tox sends nothing anywhere. Your Settings stay in your Chrome. <a href="#" style="font-size:var(--t-small);font-weight:400;color:var(--text-2)">The privacy page</a></p>
+      </section>
+      <footer class="site"><div class="in" data-footer></div></footer>
+    </article>
+  </div>
+</div>
+
+<div class="proto"><button data-step="-1" aria-label="Previous variant">◀</button><span class="lbl"></span><button data-step="1" aria-label="Next variant">▶</button><button data-theme-next></button></div>
+
+<script>
+// Copy of ../../settings.json (2026-11-19) plus the Home choice (#21), which isn't in it yet.
+const SETTINGS = [
+  {id:'home',name:'Home',group:'Home',calm:true,hides:'Choose what Home shows: the Intention Page (“What are you here for?” and a search box), your Subscriptions, or YouTube’s own feed.',calmName:'Intention Page'},
+  {id:'recommendations',name:'Recommendations',group:'Watch',calm:true,hides:"Hides the suggested videos beside and below the video you're watching. Playlists, live chat, chapters and transcripts stay."},
+  {id:'end-screens',name:'End screens',group:'Watch',calm:false,hides:'Hides the grid of videos and the info cards that appear at the end of a video.'},
+  {id:'autoplay-off',name:'Autoplay off',group:'Watch',calm:true,hides:"Turns YouTube's autoplay off, so the next video doesn't start by itself. The autoplay button still works, and playlists still play in order."},
+  {id:'comments',name:'Comments',group:'Watch',calm:false,hides:"Hides the comments below the video you're watching."},
+  {id:'shorts',name:'Shorts',group:'Shorts',calm:true,hides:"Hides Shorts shelves, the Shorts link in the menu, Shorts in search and a channel's Shorts; a link to a Short still opens."},
+  {id:'shorts-redirect',name:'Open Shorts in the normal player',group:'Shorts',calm:false,hides:'Turns every Short into a normal video: it opens in the normal player, not the Shorts swipe feed.'},
+  {id:'search-clean-up',name:'Search clean-up',group:'Search',calm:false,hides:'Hides the shelves in search results, such as "People also watched" and Shorts, and keeps every result.'},
+  {id:'explore',name:'Explore, Trending and Playables',group:'Everywhere',calm:false,hides:"Hides Explore, Trending and Playables from YouTube's menu, with the whole Explore section (Music, Gaming, News, Sports and the rest)."},
+  {id:'bell',name:'Notifications bell',group:'Everywhere',calm:false,hides:'Hides the notifications bell and its red count.'},
+];
+const GROUPS = ['Home','Watch','Shorts','Search','Everywhere'];
+const PAIRS = [
+  {key:'home',label:'Home',cap:'Home becomes the Intention Page: a question and a search box, not a feed.'},
+  {key:'watch',label:'Watch',cap:'The suggestions beside the video are gone. The video, its description and its playlist stay.'},
+  {key:'search',label:'Search',cap:'Search keeps every result and drops the Shorts and the shelves in between.'},
+];
+// Rows: [label, D-Tox, Unhook, RYS]. Only facts from docs/research/2026-11-rebuild-grounding.md; unknown = "not stated".
+const COMPARE = [
+  ['Licence','MIT, open source','Closed source','MPL-2.0, open source'],
+  ['Users','New (v2.0)','1,000,000 · 4.9★','590 GitHub stars'],
+  ['Hides feed, suggestions, Shorts, comments','Yes','Yes','Yes'],
+  ['Home → Subscriptions','Yes','Yes','Yes'],
+  ['Shorts open in the normal player','Yes','Not stated','Yes'],
+  ['m.youtube.com and embeds','No','Yes','Not stated'],
+  ['Schedules','No','Not stated','Yes'],
+  ['Starts calm on install','Yes','Not stated','Not stated'],
+  ['Speed measured against YouTube, published','Every release','Not published','Not published'],
+];
+const WHO = [
+  {k:'D-Tox',sub:'MIT',line:'Starts calm, measures itself.',pts:['Intention Page on Home','Calm Default on install','Speed published every release','Sends nothing anywhere'],wins:'Wins on: open source, published speed, a calm start.'},
+  {k:'Unhook',sub:'1M users',line:'The one most people use.',pts:['Hides the same things','Works on m.youtube.com and embeds','Home → Subscriptions','4.9★ from 4,600 ratings'],wins:'Wins on: trust, reach, mobile web and embeds.'},
+  {k:'RYS',sub:'MPL-2.0',line:'The open-source veteran.',pts:['Static CSS, like D-Tox','Schedules','Search-only mode','Shorts → normal player'],wins:'Wins on: schedules, search-only mode.'},
+];
+const chromeIcon = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 6.5a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7ZM4.1 7.2 7.9 13.8A4.5 4.5 0 0 0 12 16.5c.3 0 .6 0 .9-.1l-2.8 4.9A8.5 8.5 0 0 1 4.1 7.2Zm15.8 1.3a8.5 8.5 0 0 1-6.6 12.8l3.8-6.6a4.5 4.5 0 0 0 .4-4.2c-.1-.3-.3-.5-.4-.7h2.8ZM12 3.5a8.5 8.5 0 0 1 7.2 4H12a4.5 4.5 0 0 0-4.4 3.4L5 6.4A8.5 8.5 0 0 1 12 3.5Z"/></svg>';
+const esc = s => s.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const inG = g => SETTINGS.filter(s => s.group === g);
+
+// Hero button icon (A).
+document.querySelectorAll('.btn').forEach(b => { b.innerHTML = b.innerHTML.replace('${chrome}', chromeIcon); });
+
+// Settings, three ways.
+document.querySelector('[data-settings=A]').innerHTML = GROUPS.map(g => `<div><h3>${g}</h3><dl>${inG(g).map(s => `<div><dt>${esc(s.name)}${s.calm ? '<span class="cd">Calm Default</span>' : ''}</dt><dd>${esc(s.hides)}</dd></div>`).join('')}</dl></div>`).join('');
+document.querySelector('[data-settings=B]').innerHTML = SETTINGS.map(s => `<div class="card fold"><span class="g">${s.group}</span><h3>${esc(s.name)}</h3><p>${esc(s.hides)}</p>${s.calm ? '<span class="cd">On from the start</span>' : ''}</div>`).join('');
+document.querySelector('[data-settings=C]').innerHTML = SETTINGS.map(s => `<div class="it"><span class="g">${s.group}</span><dt>${esc(s.name)}${s.calm ? '<small>Calm Default</small>' : ''}</dt><dd>${esc(s.hides)}</dd></div>`).join('');
+
+// Comparison: A and C tables.
+const table = () => `<thead><tr><th></th><th>D-Tox</th><th>Unhook</th><th>RYS</th></tr></thead><tbody>${COMPARE.map(r => `<tr><th>${r[0]}</th>${r.slice(1).map((c, i) => `<td class="${i === 0 ? 'us ' : ''}${/^(No|Not)/.test(c) ? 'no' : 'yes'}">${c}</td>`).join('')}</tr>`).join('')}</tbody>`;
+document.querySelector('[data-compare=A]').innerHTML = table();
+document.querySelector('[data-compare=C]').innerHTML = table();
+document.querySelector('[data-three]').innerHTML = WHO.map((w, i) => `<div class="who${i === 0 ? ' us' : ''}"><h3>${w.k}<small>${w.sub}</small></h3><p class="k">${w.line}</p><ul>${w.pts.map(p => `<li>${p}</li>`).join('')}</ul><p class="wins">${w.wins}</p></div>`).join('');
+
+// B's popup on the stage (popup variant A's layout, dark).
+document.querySelector('[data-pop]').innerHTML = `<div class="top"><span class="mark"><img src="../../extension/public/icon-48.png" alt="">D-Tox</span><span class="sw on"></span></div><p class="st">On · 4 of 10 Settings</p>${GROUPS.map(g => `<h6>${g}</h6>${inG(g).map(s => `<div class="r"><span>${s.id === 'home' ? 'Home: Intention Page' : esc(s.name)}</span><span class="sw${s.calm ? ' on' : ''}"></span></div>`).join('')}`).join('')}<div class="ft"><span>Privacy</span><span>Changelog</span><span>Sponsor</span></div>`;
+
+// Before/after: A (drag slider with tabs), B (pairs), C (segmented + flip).
+const shot = (k, w) => `shots/${k}-${w}.jpg`;
+const aTabs = document.querySelector('#A .tabs'), cmp = document.querySelector('#A .cmp');
+function aShow(k) {
+  const p = PAIRS.find(p => p.key === k);
+  cmp.querySelector('.before').src = shot(k, 'before'); cmp.querySelector('.after').src = shot(k, 'after');
+  document.querySelector('#A .caption').textContent = p.cap;
+  aTabs.querySelectorAll('button').forEach(b => b.setAttribute('aria-selected', b.dataset.k === k));
+}
+aTabs.innerHTML = PAIRS.map(p => `<button role="tab" data-k="${p.key}">${p.label}</button>`).join('');
+aTabs.addEventListener('click', e => e.target.dataset.k && aShow(e.target.dataset.k));
+aShow('home');
+const drag = e => { const r = cmp.getBoundingClientRect(); cmp.style.setProperty('--x', Math.min(100, Math.max(0, (e.clientX - r.left) / r.width * 100)) + '%'); };
+cmp.addEventListener('pointerdown', e => { cmp.setPointerCapture(e.pointerId); drag(e); });
+cmp.addEventListener('pointermove', e => e.buttons && drag(e));
+
+document.querySelector('[data-pairs]').innerHTML = PAIRS.map(p => `<div><div class="pair"><figure><div class="win"><img src="${shot(p.key,'before')}" alt="" loading="lazy"></div><figcaption><span>YouTube · ${p.label}</span></figcaption></figure><figure><div class="win"><img src="${shot(p.key,'after')}" alt="" loading="lazy"></div><figcaption><b>With D-Tox</b></figcaption></figure></div><p style="margin-top:6px;font-size:var(--t-small);color:var(--text-2)">${p.cap}</p></div>`).join('');
+
+let cK = 'home', cW = 'after';
+const seg = document.querySelector('[data-seg]');
+seg.innerHTML = PAIRS.map(p => `<button data-k="${p.key}">${p.label}</button>`).join('');
+function cShow() {
+  document.querySelector('[data-img]').src = shot(cK, cW);
+  document.querySelector('[data-cap]').textContent = PAIRS.find(p => p.key === cK).cap;
+  seg.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b.dataset.k === cK));
+  document.querySelectorAll('[data-flip]').forEach(b => b.setAttribute('aria-pressed', b.dataset.flip === cW));
+}
+seg.addEventListener('click', e => { if (e.target.dataset.k) { cK = e.target.dataset.k; cShow(); } });
+document.querySelectorAll('[data-flip]').forEach(b => b.addEventListener('click', () => { cW = b.dataset.flip; cShow(); }));
+cShow();
+
+// Footers (Privacy · Changelog · Sponsor, the studio line, what the site counts).
+document.querySelectorAll('[data-footer]').forEach(f => f.innerHTML = `<nav><a href="#">Privacy</a><a href="#">Changelog</a><a href="#">Sponsor</a><a href="#">GitHub</a></nav><p><a href="#"><span class="s-mask"></span> A Saaquib Labs product</a> · MIT · © 2026</p><p>This site counts visits with Umami, which we run ourselves. No cookies.</p>`);
+
+// Variant + theme switcher.
+const V = ['A','B','C'], THEMES = ['system','light','dark'];
+const q = new URLSearchParams(location.search);
+let v = V.includes(q.get('variant')) ? q.get('variant') : 'A', t = THEMES.includes(q.get('theme')) ? q.get('theme') : 'system';
+function set() {
+  document.body.dataset.variant = v;
+  if (t === 'system') delete document.documentElement.dataset.theme; else document.documentElement.dataset.theme = t;
+  document.querySelector('.proto .lbl').textContent = `${v} · ${document.getElementById(v).dataset.name}`;
+  document.querySelector('[data-theme-next]').textContent = `theme: ${t}`;
+  q.set('variant', v); q.set('theme', t); history.replaceState(null, '', '?' + q);
+}
+const step = d => { v = V[(V.indexOf(v) + d + V.length) % V.length]; set(); scrollTo(0, 0); };
+document.querySelector('.proto').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  if (b.dataset.step) step(+b.dataset.step); else { t = THEMES[(THEMES.indexOf(t) + 1) % 3]; set(); }
+});
+addEventListener('keydown', e => { if (!e.target.closest('input,textarea,[contenteditable]') && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) step(e.key === 'ArrowLeft' ? -1 : 1); });
+set();
+</script>
+</body>
+</html>

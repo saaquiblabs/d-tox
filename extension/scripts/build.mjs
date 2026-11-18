@@ -23,6 +23,8 @@ const manifest = {
   description: 'YouTube for what you came for. Hides the parts of YouTube that pull you elsewhere.',
   icons: { 16: 'icon-16.png', 48: 'icon-48.png', 128: 'icon-128.png' },
   permissions: ['storage'],
+  // PROTOTYPE (#22): the Intention Page shows the icon.
+  web_accessible_resources: [{ resources: ['icon-48.png'], matches: ['https://www.youtube.com/*'] }],
   host_permissions: ['https://www.youtube.com/*'],
   action: { default_title: 'D-Tox', default_popup: 'popup.html' },
   content_scripts: [
@@ -32,6 +34,8 @@ const manifest = {
       css: ['hide.css', 'hide-rys.css'],
       js: ['content.js'],
     },
+    // PROTOTYPE (#22): the Intention Page variants.
+    { matches: ['https://www.youtube.com/*'], run_at: 'document_start', css: ['intention-proto-style.css'], js: ['intention-proto.js'] },
   ],
 };
 
@@ -42,6 +46,11 @@ const options = {
     hide: join(root, 'src/hide.css'),
     'hide-rys': join(root, 'src/hide-rys.css'), // MPL-2.0, kept as its own file
     'popup-style': join(root, 'src/popup/popup.css'),
+    // PROTOTYPE (#22)
+    'popup-proto': join(root, 'src/popup/popup-proto.ts'),
+    'popup-proto-style': join(root, 'src/popup/popup-proto.css'),
+    'intention-proto': join(root, 'src/intention-proto.ts'),
+    'intention-proto-style': join(root, 'src/intention-proto.css'),
   },
   outdir: out,
   bundle: true,
