@@ -336,6 +336,136 @@ body[data-variant=D] #D{display:block}
 }}
 @media (max-width:900px){#D header nav{display:none}#D .pop{position:relative;right:auto;bottom:auto;margin:-40px auto 0;transform:none}#D .stats{grid-template-columns:repeat(2,minmax(0,1fr))}#D .stat:nth-child(3){border-left:0}#D .stat:nth-child(n+3){border-top:1px solid var(--border)}#D .head{grid-template-columns:1fr}#D .head .num{grid-row:auto}#D footer.dft .top{grid-template-columns:1fr 1fr}#D .vs{overflow-x:auto}#D .vs th,#D .vs td{padding:10px 10px}}
 
+/* ================= E · Its own identity: dark by default ================= */
+body[data-variant=E]{background:var(--e-bg)}
+body[data-variant=E] #E{display:block}
+#E{--e-bg:#07110F;--e-bg2:#0B1814;--e-surface:#0F1F1A;--e-line:#1B2F29;--e-text:#EAF4EF;--e-text2:#9FB8AE;--e-acc:#6EE7B7;--e-acc-ink:#03140E;--e-acc-rgb:110 231 183;--e-noise:#FF6B4A;--e-noise-rgb:255 107 74;
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
+  background:var(--e-bg);color:var(--e-text);color-scheme:dark}
+body[data-palette=plum] #E{--e-bg:#0D0A13;--e-bg2:#130F1B;--e-surface:#1A1524;--e-line:#2A2338;--e-text:#F3EFF8;--e-text2:#B6ACC7;--e-acc:#C4B5FD;--e-acc-ink:#120A24;--e-acc-rgb:196 181 253}
+body[data-palette=amber] #E{--e-bg:#0A0C11;--e-bg2:#10131A;--e-surface:#151922;--e-line:#242A36;--e-text:#F6F2EA;--e-text2:#B2B7C2;--e-acc:#FBBF24;--e-acc-ink:#1A1204;--e-acc-rgb:251 191 36;--e-noise:#FF5A5F;--e-noise-rgb:255 90 95}
+#E a{color:inherit}
+#E :focus-visible{outline-color:var(--e-acc)}
+#E .ebtn{display:inline-flex;align-items:center;gap:.6em;padding:1em 1.6em;border-radius:12px;font-weight:600;font-size:.9375rem;line-height:1;text-decoration:none;border:1px solid transparent;white-space:nowrap;transition:transform .2s,box-shadow .2s}
+#E .ebtn svg{width:18px;height:18px}
+#E .ebtn.solid{background:var(--e-acc);color:var(--e-acc-ink);box-shadow:0 0 0 1px rgb(var(--e-acc-rgb) / .4),0 10px 40px -8px rgb(var(--e-acc-rgb) / .55)}
+#E .ebtn.solid:hover{transform:translateY(-1px);box-shadow:0 0 0 1px rgb(var(--e-acc-rgb) / .6),0 14px 50px -6px rgb(var(--e-acc-rgb) / .7)}
+#E .ebtn.ghost{border-color:var(--e-line);color:var(--e-text)}
+#E .ebtn.ghost:hover{border-color:var(--e-text2)}
+#E .kick{font:600 12px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--e-acc)}
+#E .kick.noise{color:var(--e-noise)}
+#E .ser{font-family:var(--serif);font-style:italic;font-weight:400;letter-spacing:-.01em;color:var(--e-acc)}
+#E header{position:absolute;inset:0 0 auto;z-index:5}
+#E header .in{display:flex;align-items:center;justify-content:space-between;padding-block:22px}
+#E header nav{display:flex;gap:28px;font-size:var(--t-small);color:var(--e-text2)}
+#E header nav a{text-decoration:none}#E header nav a:hover{color:var(--e-text)}
+#E header .ebtn{padding:.75em 1.2em;font-size:.875rem}
+/* hero: noise behind, calm in front */
+#E .hero{position:relative;min-height:min(100dvh,940px);display:grid;align-items:center;overflow:hidden;isolation:isolate}
+#E .hero::before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(60% 50% at 78% 55%,rgb(var(--e-acc-rgb) / .14),transparent 70%),radial-gradient(40% 40% at 95% 10%,rgb(var(--e-noise-rgb) / .12),transparent 70%)}
+#E .noisewall{position:absolute;z-index:-1;right:-6%;top:6%;width:62%;height:92%;perspective:1400px;pointer-events:none;-webkit-mask:linear-gradient(90deg,transparent,#000 35%,#000 80%,transparent),linear-gradient(transparent,#000 15%,#000 70%,transparent);-webkit-mask-composite:source-in;mask:linear-gradient(90deg,transparent,#000 35%,#000 80%,transparent) intersect,linear-gradient(transparent,#000 15%,#000 70%,transparent)}
+#E .noisewall .tiles{position:absolute;inset:0;display:grid;grid-template-columns:1fr 1fr;gap:18px;transform:rotateY(-24deg) rotateX(8deg) translateZ(-120px);transform-origin:right center}
+#E .noisewall img{width:100%;border-radius:10px;filter:saturate(1.3) brightness(.55);box-shadow:0 0 0 1px rgb(var(--e-noise-rgb) / .35)}
+#E .calmshot{position:absolute;z-index:0;right:4%;bottom:9%;width:min(38%,540px);border-radius:16px;overflow:hidden;border:1px solid rgb(var(--e-acc-rgb) / .45);box-shadow:0 0 0 6px rgb(var(--e-acc-rgb) / .06),0 40px 100px -20px rgb(0 0 0 / .8),0 0 120px -10px rgb(var(--e-acc-rgb) / .35)}
+#E .calmshot img{aspect-ratio:1280/800;object-fit:cover;object-position:top;filter:brightness(.9)}
+#E .calmshot span{position:absolute;z-index:1;left:12px;top:12px;font:600 11px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;padding:6px 9px;border-radius:6px;background:var(--e-acc);color:var(--e-acc-ink)}
+#E .noisetag{position:absolute;z-index:0;right:6%;top:13%;font:600 11px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;padding:6px 9px;border-radius:6px;background:rgb(var(--e-noise-rgb) / .14);color:var(--e-noise);border:1px solid rgb(var(--e-noise-rgb) / .4)}
+#E .hero .txt{position:relative;z-index:1;max-width:min(560px,52%);padding-block:120px 80px}
+#E .hero h1{font-size:clamp(3rem,5.4vw,5.4rem);line-height:.98;letter-spacing:-.045em;font-weight:600;margin-top:22px}
+#E .hero h1 .ser{display:block;font-size:1.02em;margin-top:.08em}
+#E .hero .lead{color:var(--e-text2);font-size:clamp(1.0625rem,1.4vw,1.25rem);margin-top:26px;max-width:32rem}
+#E .hero .cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:34px}
+#E .hero .facts{display:flex;gap:22px;flex-wrap:wrap;margin-top:26px;font:500 12px/1 var(--mono);color:var(--e-text2);letter-spacing:.04em}
+#E .hero .facts span::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--e-acc);margin-right:8px;vertical-align:1px}
+/* sections */
+#E section.sec{padding-block:clamp(72px,10vw,140px);border-top:1px solid var(--e-line)}
+#E .sh{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px 64px;align-items:end;margin-bottom:48px}
+#E .sh h2{font-size:clamp(2.2rem,4.6vw,4rem);line-height:1;letter-spacing:-.04em;font-weight:600;margin-top:16px}
+#E .sh p{color:var(--e-text2);max-width:34rem}
+/* before / after */
+#E .ba{display:grid;grid-template-columns:220px minmax(0,1fr);gap:40px;align-items:start}
+#E .ba .list{display:grid;gap:4px;position:sticky;top:24px}
+#E .ba .list button{all:unset;cursor:pointer;display:grid;gap:6px;padding:16px 18px;border-radius:12px;border:1px solid transparent;color:var(--e-text2)}
+#E .ba .list button b{font-size:1.375rem;font-weight:600;letter-spacing:-.02em;color:var(--e-text2)}
+#E .ba .list button small{font-size:var(--t-small);line-height:1.45}
+#E .ba .list button[aria-selected=true]{border-color:var(--e-line);background:var(--e-surface)}
+#E .ba .list button[aria-selected=true] b{color:var(--e-text)}
+#E .ecmp{position:relative;aspect-ratio:1280/800;border-radius:18px;overflow:hidden;--x:50%;user-select:none;touch-action:none;cursor:ew-resize;box-shadow:0 0 0 1px var(--e-line),0 50px 120px -30px rgb(0 0 0 / .9)}
+#E .ecmp img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top}
+#E .ecmp .after{clip-path:inset(0 0 0 var(--x))}
+#E .ecmp .before{filter:saturate(1.15)}
+#E .ecmp .line{position:absolute;top:0;bottom:0;left:var(--x);width:2px;background:var(--e-acc);transform:translateX(-1px);box-shadow:0 0 24px rgb(var(--e-acc-rgb) / .9)}
+#E .ecmp .knob{position:absolute;top:50%;left:var(--x);transform:translate(-50%,-50%);width:52px;height:52px;border-radius:50%;background:var(--e-acc);color:var(--e-acc-ink);display:grid;place-items:center;font-weight:700;box-shadow:0 0 0 8px rgb(var(--e-acc-rgb) / .18),0 10px 30px rgb(0 0 0 / .5)}
+#E .ecmp .tag{position:absolute;top:16px;font:600 11px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;padding:7px 10px;border-radius:6px}
+#E .ecmp .tag.l{left:16px;background:var(--e-noise);color:#1A0602}
+#E .ecmp .tag.r{right:16px;background:var(--e-acc);color:var(--e-acc-ink)}
+/* switchboard */
+#E .board{display:grid;grid-template-columns:340px minmax(0,1fr);gap:56px;align-items:start}
+#E .board .side{position:sticky;top:24px;display:grid;gap:20px}
+#E .board .side p{color:var(--e-text2);font-size:var(--t-small)}
+#E .epop{width:100%;padding:12px;border-radius:20px;background:#151A22;border:1px solid #2A313C;box-shadow:0 40px 90px -20px rgb(0 0 0 / .8),0 0 80px -20px rgb(var(--e-acc-rgb) / .3);font-size:13px;color:#F7F4EE}
+#E .epop .card{position:relative;overflow:hidden;padding:14px;border-radius:14px;background:#0E1218}
+#E .epop .card::before{content:"";position:absolute;inset:auto -20% -80% -20%;height:130%;background:radial-gradient(50% 50% at 50% 50%,rgb(139 92 246 / .4),transparent 70%),radial-gradient(30% 40% at 20% 40%,rgb(245 158 11 / .3),transparent 70%)}
+#E .epop .card>*{position:relative}
+#E .epop .top{display:flex;justify-content:space-between;align-items:center}
+#E .epop .mark{font-size:13px;gap:7px}#E .epop .mark img{width:18px;height:18px}
+#E .epop .card b{display:block;margin-top:10px;font-weight:500;font-size:16px}
+#E .epop .card small{color:#C9CCD1;font-size:11px}
+#E .epop .pt{display:grid;grid-template-columns:repeat(5,auto);gap:2px;margin:9px 0 7px;padding:3px;border-radius:10px;background:#11151C;border:1px solid #2A313C}
+#E .epop .pt button{all:unset;cursor:pointer;text-align:center;padding:5px 3px;border-radius:7px;font-size:10.5px;font-weight:500;color:#B9BDC4}
+#E .epop .pt button[aria-selected=true]{background:#F7F4EE;color:#151A22}
+#E .epop .it{padding:10px;border-radius:10px;background:#1B212B;border:1px solid #2A313C;margin-top:6px}
+#E .epop .it .h{display:flex;justify-content:space-between;align-items:center;font-weight:500}
+#E .epop .it p{color:#B9BDC4;font-size:10.5px;margin-top:3px;line-height:1.4}
+#E .esw{all:unset;cursor:pointer;flex:none;width:40px;height:23px;border-radius:12px;background:var(--e-line);position:relative;transition:background .2s}
+#E .esw::after{content:"";position:absolute;top:3px;left:3px;width:17px;height:17px;border-radius:50%;background:var(--e-text2);transition:transform .22s cubic-bezier(.22,.8,.24,1),background .2s}
+#E .esw[aria-checked=true]{background:var(--e-acc);box-shadow:0 0 18px rgb(var(--e-acc-rgb) / .45)}
+#E .esw[aria-checked=true]::after{transform:translateX(17px);background:var(--e-acc-ink)}
+#E .epop .esw{width:30px;height:17px}#E .epop .esw::after{width:13px;height:13px;top:2px;left:2px}#E .epop .esw[aria-checked=true]::after{transform:translateX(13px)}
+#E .rows{display:grid}
+#E .rows .grp{font:600 11px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--e-text2);padding:26px 0 10px}
+#E .rows .grp:first-child{padding-top:0}
+#E .row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 28px;align-items:center;padding:18px 0;border-top:1px solid var(--e-line)}
+#E .row h3{font-size:1.1875rem;font-weight:600;letter-spacing:-.015em}
+#E .row h3 em{font-style:normal;font:600 10px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--e-acc);border:1px solid rgb(var(--e-acc-rgb) / .4);border-radius:5px;padding:4px 6px;margin-left:10px;vertical-align:3px}
+#E .row p{grid-column:1;font-size:var(--t-small);color:var(--e-text2);max-width:52ch}
+#E .row .esw{grid-row:1 / span 2;grid-column:2}
+/* numbers */
+#E .nums{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--e-line);border-radius:20px;overflow:hidden;background:linear-gradient(180deg,var(--e-bg2),var(--e-bg))}
+#E .num{padding:34px 28px 30px;display:grid;gap:14px;align-content:start}
+#E .num+.num{border-left:1px solid var(--e-line)}
+#E .num b{font:500 clamp(2.6rem,5vw,4.4rem)/1 var(--mono);letter-spacing:-.06em;color:var(--e-acc);text-shadow:0 0 40px rgb(var(--e-acc-rgb) / .35)}
+#E .num p{font-size:var(--t-small);color:var(--e-text2)}
+#E .ph{color:#FBBF24}
+#E .gl{margin-top:14px;font:500 12px/1.6 var(--mono);color:var(--e-text2)}
+/* compare */
+#E .vs{border:1px solid var(--e-line);border-radius:20px;overflow:hidden}
+#E .vs table{font-size:.9375rem}
+#E .vs th,#E .vs td{padding:16px 22px;text-align:left;border-bottom:1px solid var(--e-line);vertical-align:top}
+#E .vs thead th{font:600 12px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--e-text2);background:var(--e-bg2)}
+#E .vs thead th.us{color:var(--e-acc-ink);background:var(--e-acc)}
+#E .vs tbody th{font-weight:500;color:var(--e-text)}
+#E .vs td{color:var(--e-text2)}
+#E .vs td.us{background:rgb(var(--e-acc-rgb) / .06);color:var(--e-text)}
+#E .vs td.yes::before{content:"●";color:var(--e-acc);margin-right:8px;font-size:10px;vertical-align:2px}
+#E .vs td.no::before{content:"○";color:var(--e-text2);margin-right:8px;font-size:10px;vertical-align:2px}
+#E .vs tr:last-child td,#E .vs tr:last-child th{border-bottom:0}
+#E .src{margin-top:14px;font-size:var(--t-small);color:var(--e-text2)}
+/* privacy + close */
+#E .close{text-align:center;padding-block:clamp(96px,14vw,180px);position:relative;overflow:hidden;border-top:1px solid var(--e-line)}
+#E .close::before{content:"";position:absolute;inset:0;background:radial-gradient(45% 55% at 50% 100%,rgb(var(--e-acc-rgb) / .16),transparent 70%)}
+#E .close p{position:relative;font-size:clamp(2rem,5vw,4.2rem);line-height:1.02;letter-spacing:-.04em;font-weight:600;max-width:16ch;margin-inline:auto}
+#E .close .cta{position:relative;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:40px}
+#E footer.ef{border-top:1px solid var(--e-line);font-size:var(--t-small);color:var(--e-text2)}
+#E footer.ef .in{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;padding-block:32px 100px}
+#E footer.ef nav{display:flex;gap:22px;flex-wrap:wrap}
+#E footer.ef a{text-decoration:none}#E footer.ef a:hover{color:var(--e-text)}
+@media (prefers-reduced-motion:no-preference){@supports (animation-timeline:view()){
+  #E .up{animation:e-up linear both;animation-timeline:view();animation-range:entry 0% entry 50%}
+  @keyframes e-up{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:none}}
+}}
+@media (max-width:960px){#E header nav{display:none}#E .noisewall{width:100%;right:-30%;opacity:.5}#E .calmshot{position:relative;right:auto;bottom:auto;width:100%;margin:-20px 0 60px}#E .noisetag{display:none}#E .hero{min-height:0}#E .hero .txt{padding-block:110px 40px;max-width:none}#E .sh,#E .ba,#E .board{grid-template-columns:1fr}#E .ba .list{position:static;grid-template-columns:repeat(3,1fr)}#E .ba .list small{display:none}#E .board .side{position:static}#E .nums{grid-template-columns:1fr 1fr}#E .num:nth-child(3){border-left:0}#E .num:nth-child(n+3){border-top:1px solid var(--e-line)}#E .vs{overflow-x:auto}#E .vs th,#E .vs td{padding:12px}}
+
 /* ---------- prototype switcher (not part of the design) ---------- */
 .proto{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:99;display:flex;align-items:center;gap:6px;background:#E8FF59;color:#111;font:600 13px/1 system-ui,sans-serif;padding:6px;border-radius:999px;box-shadow:0 6px 24px rgb(0 0 0 / .35);border:2px solid #111}
 .proto button{all:unset;cursor:pointer;padding:8px 12px;border-radius:999px}
@@ -574,6 +704,54 @@ body[data-variant=D] #D{display:block}
   </div></footer>
 </div>
 
+<!-- ======================= E · Its own identity (dark by default) ======================= -->
+<div class="variant" id="E" data-name="Own identity, dark">
+  <header><div class="wrap in">
+    <a class="mark" href="#"><img src="../../extension/public/icon-48.png" alt="">D-Tox</a>
+    <nav><a href="#E-ba">See it</a><a href="#E-set">Settings</a><a href="#E-num">Numbers</a><a href="#E-vs">Compared</a></nav>
+    <a class="ebtn solid" href="#">Add to Chrome</a>
+  </div></header>
+  <section class="hero">
+    <div class="noisewall" aria-hidden="true"><div class="tiles"><img src="shots/search-before.jpg" alt=""><img src="shots/watch-before.jpg" alt=""><img src="shots/watch-before.jpg" alt=""><img src="shots/search-before.jpg" alt=""><img src="shots/search-before.jpg" alt=""><img src="shots/watch-before.jpg" alt=""></div></div>
+    <span class="noisetag" aria-hidden="true">The pull</span>
+    <div class="calmshot"><span>What you came for</span><img src="shots/home-after.jpg" alt="YouTube's home page with D-Tox: a question and a search box, no feed"></div>
+    <div class="wrap"><div class="txt">
+      <p class="kick">D-Tox for YouTube</p>
+      <h1>YouTube for what you came for. <span class="ser">Nothing else.</span></h1>
+      <p class="lead">D-Tox quiets the feed, the suggestions and Shorts, so the video you came for is the only thing on the page.</p>
+      <div class="cta"><a class="ebtn solid" href="#">${chrome}Add to Chrome, free</a><a class="ebtn ghost" href="#E-ba">See the difference</a></div>
+      <p class="facts"><span>Open source</span><span>7 KB</span><span>Sends nothing</span></p>
+    </div></div>
+  </section>
+  <section class="sec" id="E-ba"><div class="wrap">
+    <div class="sh up"><div><p class="kick noise">Before → after</p><h2>Same page. <span class="ser">Quieter.</span></h2></div><p>Live YouTube, the same moment, twice. Drag the line: on the left YouTube as it comes, on the right with the Settings D-Tox starts with.</p></div>
+    <div class="ba up"><div class="list" role="tablist" data-elist></div>
+      <div class="ecmp" aria-label="Drag to compare"><img class="before" alt=""><img class="after" alt=""><span class="tag l">The pull</span><span class="tag r">With D-Tox</span><span class="line"></span><span class="knob">⇆</span></div></div>
+  </div></section>
+  <section class="sec" id="E-set"><div class="wrap">
+    <div class="sh up"><div><p class="kick">The switchboard</p><h2>Ten Settings. <span class="ser">Your call.</span></h2></div><p>Each one hides one thing and says exactly what. Four are on the moment you install; the rest wait until you want them. Try the switches.</p></div>
+    <div class="board"><div class="side up"><div class="epop" data-epop></div><p>The D-Tox button, as it opens in Chrome's toolbar.</p></div><div class="rows" data-erows></div></div>
+  </div></section>
+  <section class="sec" id="E-num"><div class="wrap">
+    <div class="sh up"><div><p class="kick">Measured, every release</p><h2>Light enough <span class="ser">to forget.</span></h2></div><p>Every release runs YouTube with every Setting on against YouTube alone. If it makes YouTube slower, it doesn't ship.</p></div>
+    <div class="nums up">
+      <div class="num"><b>7 KB</b><p>the whole extension, icons aside</p></div>
+      <div class="num"><b>+2%</b><p>long-task time vs YouTube alone <span class="ph">placeholder</span></p></div>
+      <div class="num"><b>−31%</b><p>page weight on Home, feed gone <span class="ph">placeholder</span></p></div>
+      <div class="num"><b>0</b><p>timers or observers on the page</p></div>
+    </div>
+    <p class="gl">Release Gate · v2.0.0 · 2026-11-— · <span class="ph">placeholder until #25</span></p>
+  </div></section>
+  <section class="sec" id="E-vs"><div class="wrap">
+    <div class="sh up"><div><p class="kick">Honest comparison</p><h2>Unhook and RYS <span class="ser">are good too.</span></h2></div><p>Where they win, the table says so. <span class="ph">re-check in #27</span></p></div>
+    <div class="vs up"><table data-compare="E"></table></div>
+    <p class="src">From each Chrome Web Store listing and GitHub repository, read 2026-11-18.</p>
+  </div></section>
+  <section class="close"><p>Nothing leaves your browser. <span class="ser">Not one click.</span></p>
+    <div class="cta"><a class="ebtn solid" href="#">${chrome}Add to Chrome</a><a class="ebtn ghost" href="#">Privacy, in full</a></div></section>
+  <footer class="ef"><div class="wrap in"><nav><a href="#">Privacy</a><a href="#">Changelog</a><a href="#">Sponsor</a><a href="#">GitHub</a></nav><span><a href="#"><span class="s-mask"></span> A Saaquib Labs product</a> · MIT · © 2026 · Visits counted by our own Umami, no cookies.</span></div></footer>
+</div>
+
 <div class="proto"><button data-step="-1" aria-label="Previous variant">◀</button><span class="lbl"></span><button data-step="1" aria-label="Next variant">▶</button><button data-theme-next></button></div>
 
 <script>
@@ -696,24 +874,49 @@ dPop.addEventListener('click', e => { const b = e.target.closest('button'); if (
 dPopDraw();
 document.querySelectorAll('#D .btn').forEach(b => { b.innerHTML = b.innerHTML.replace('${chrome}', chromeIcon); });
 
+// ----- E: its own identity -----
+document.querySelector('[data-compare=E]').innerHTML = table().replace('<th>D-Tox</th>', '<th class="us">D-Tox</th>');
+const eList = document.querySelector('[data-elist]'), eCmp = document.querySelector('#E .ecmp');
+eList.innerHTML = PAIRS.map(p => `<button role="tab" data-k="${p.key}"><b>${p.label}</b><small>${p.cap}</small></button>`).join('');
+function eShow(k) { eCmp.querySelector('.before').src = shot(k, 'before'); eCmp.querySelector('.after').src = shot(k, 'after'); eList.querySelectorAll('button').forEach(b => b.setAttribute('aria-selected', b.dataset.k === k)); }
+eList.addEventListener('click', e => { const b = e.target.closest('button'); if (b) eShow(b.dataset.k); });
+eShow('watch');
+const eDrag = e => { const r = eCmp.getBoundingClientRect(); eCmp.style.setProperty('--x', Math.min(100, Math.max(0, (e.clientX - r.left) / r.width * 100)) + '%'); };
+eCmp.addEventListener('pointerdown', e => { eCmp.setPointerCapture(e.pointerId); eDrag(e); });
+eCmp.addEventListener('pointermove', e => e.buttons && eDrag(e));
+const eOn = Object.fromEntries(SETTINGS.map(s => [s.id, s.calm]));
+let eTab = 'Watch';
+const nm = s => s.id === 'home' ? 'Home: Intention Page' : esc(s.name);
+function eDraw() {
+  document.querySelector('[data-erows]').innerHTML = GROUPS.map(g => `<p class="grp">${g}</p>${inG(g).map(s => `<div class="row"><h3>${nm(s)}${s.calm ? '<em>On at install</em>' : ''}</h3><p>${esc(s.hides)}</p><button class="esw" role="switch" data-s="${s.id}" data-g="${g}" aria-checked="${eOn[s.id]}" aria-label="${esc(s.name)}"></button></div>`).join('')}`).join('');
+  const n = Object.values(eOn).filter(Boolean).length;
+  document.querySelector('[data-epop]').innerHTML = `<div class="card"><div class="top"><span class="mark"><img src="../../extension/public/icon-48.png" alt="">D-Tox</span><span class="esw" aria-checked="true"></span></div><b>YouTube for what you came for.</b><small>${n} of 10 Settings on</small></div><div class="pt">${GROUPS.map(g => `<button data-t="${g}" aria-selected="${g === eTab}">${g}</button>`).join('')}</div>${inG(eTab).map(s => `<div class="it"><div class="h">${nm(s)}${s.id === 'home' ? '' : `<button class="esw" data-s="${s.id}" data-g="${eTab}" aria-checked="${eOn[s.id]}" aria-label="${esc(s.name)}"></button>`}</div><p>${esc(s.hides)}</p></div>`).join('')}`;
+}
+document.getElementById('E-set').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; if (b.dataset.t) eTab = b.dataset.t; else if (b.dataset.s && b.dataset.s !== 'home') { eOn[b.dataset.s] = !eOn[b.dataset.s]; eTab = b.dataset.g; } eDraw(); });
+eDraw();
+document.querySelectorAll('#E .ebtn').forEach(b => { b.innerHTML = b.innerHTML.replace('${chrome}', chromeIcon); });
+
 // Footers (Privacy · Changelog · Sponsor, the studio line, what the site counts).
 document.querySelectorAll('[data-footer]').forEach(f => f.innerHTML = `<nav><a href="#">Privacy</a><a href="#">Changelog</a><a href="#">Sponsor</a><a href="#">GitHub</a></nav><p><a href="#"><span class="s-mask"></span> A Saaquib Labs product</a> · MIT · © 2026</p><p>This site counts visits with Umami, which we run ourselves. No cookies.</p>`);
 
 // Variant + theme switcher.
-const V = ['A','B','C','D'], THEMES = ['system','light','dark'];
+const V = ['A','B','C','D','E'], THEMES = ['system','light','dark'];
 const q = new URLSearchParams(location.search);
+const PALS = ['spruce','plum','amber']; let pal = PALS.includes(q.get('palette')) ? q.get('palette') : 'spruce';
 let v = V.includes(q.get('variant')) ? q.get('variant') : 'A', t = THEMES.includes(q.get('theme')) ? q.get('theme') : 'system';
 function set() {
   document.body.dataset.variant = v;
   if (t === 'system') delete document.documentElement.dataset.theme; else document.documentElement.dataset.theme = t;
   document.querySelector('.proto .lbl').textContent = `${v} · ${document.getElementById(v).dataset.name}`;
-  document.querySelector('[data-theme-next]').textContent = `theme: ${t}`;
+  document.body.dataset.palette = pal;
+  document.querySelector('[data-theme-next]').textContent = v === 'E' ? `palette: ${pal}` : `theme: ${t}`;
+  q.set('palette', pal);
   q.set('variant', v); q.set('theme', t); history.replaceState(null, '', '?' + q);
 }
 const step = d => { v = V[(V.indexOf(v) + d + V.length) % V.length]; set(); scrollTo(0, 0); };
 document.querySelector('.proto').addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return;
-  if (b.dataset.step) step(+b.dataset.step); else { t = THEMES[(THEMES.indexOf(t) + 1) % 3]; set(); }
+  if (b.dataset.step) step(+b.dataset.step); else if (v === 'E') { pal = PALS[(PALS.indexOf(pal) + 1) % 3]; set(); } else { t = THEMES[(THEMES.indexOf(t) + 1) % 3]; set(); }
 });
 addEventListener('keydown', e => { if (!e.target.closest('input,textarea,[contenteditable]') && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) step(e.key === 'ArrowLeft' ? -1 : 1); });
 set();

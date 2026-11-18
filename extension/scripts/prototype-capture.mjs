@@ -42,7 +42,7 @@ async function product(withExtension) {
   if (withExtension) {
     const pop = await ctx.newPage();
     await pop.goto(`chrome-extension://${id}/popup.html`);
-    await pop.evaluate(() => Promise.all([chrome.storage.sync.set({ 'search-clean-up': true }), chrome.storage.local.set({ protoIntention: 'A' })]));
+    await pop.evaluate(() => Promise.all([chrome.storage.sync.set({ 'search-clean-up': true }), chrome.storage.local.set({ protoIntention: 'D' })]));
     await pop.close();
   }
   for (const p of pages) {

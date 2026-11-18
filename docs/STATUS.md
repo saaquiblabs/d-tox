@@ -42,7 +42,8 @@ Chrome no longer takes --load-extension). Yellow bar at the bottom switches vari
 - **Product page: not picked yet.** A–C seen; D ("the mix") was rejected as looking exactly like
   saaquiblabs.com. Asked for its own identity: better colour and composition, **dark by default**,
   rich. (Dark by default departs from the studio's ADR 0011, follow-the-system; record in #27.)
-  Next: variant E in `site/prototype-home/index.html`.
+  Variant E ("own identity, dark") built: spruce/plum/amber palettes (`?palette=`), mint = calm, ember = the pull,
+  serif italic second beats. Waiting for his verdict.
 
 ## Decisions (grill, 2026-11-18)
 
