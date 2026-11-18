@@ -1,6 +1,6 @@
 # Status
 
-Last updated: 2026-11-18 (IST). Each session overwrites this at handoff.
+Last updated: 2026-11-19 (IST). Each session overwrites this at handoff.
 
 ## Where we are
 
@@ -15,6 +15,10 @@ finished: 32 questions, all answered by Najmush on 2026-11-18. **Read `CONTEXT.m
   Setting so far: comments), `extension/` (esbuild build, `src/hide.css`, `src/content.ts`, plain
   popup, saved-page Playwright tests), `.githooks/pre-push`, placeholder `site/` and `checks/`.
   How to build, test and add a Setting: root `README.md`.
+- **#20 done (2026-11-19):** Settings shorts, shorts-redirect, search-clean-up, explore, bell.
+  RYS-derived selectors live in `extension/src/hide-rys.css` (MPL-2.0, its own file). Saved
+  pages: watch, search, channel-shorts, gaming (stands in for signed-out Home), short. Every
+  Setting is checked to hide nothing outside its own Distractions on every saved page.
 
 ## Decisions (grill, 2026-11-18)
 
@@ -43,7 +47,7 @@ finished: 32 questions, all answered by Najmush on 2026-11-18. **Read `CONTEXT.m
   page; a ~1 KB script copies Settings; no timers or hiding observers; at most 5 `:has()`;
   no selectors that match text. Popup in plain TS and CSS. Under 40 KB excluding icons.
 - **Build is plain esbuild, not WXT** (measured in #18: WXT added ~4.4 KB; ADR 0001).
-  Current size 2.42 KB.
+  Current size 5.39 KB; `:has()` 2 of 5.
 - Repo: `extension/`, `site/` (Astro static, set up like saaquiblabs `site/`),
   `settings.json` (the single list of Settings), `checks/`, `docs/`.
 - Release Gate: a manual Openship job on the home VPS. It runs the audit with every Setting on
@@ -68,15 +72,14 @@ finished: 32 questions, all answered by Najmush on 2026-11-18. **Read `CONTEXT.m
 
 ## Pipeline
 
-research ✅ → grill ✅ → spec ✅ (#16) → tickets ✅ (#18–#28) → build: #18 ✅ (PR #30), rest next →
+research ✅ → grill ✅ → spec ✅ (#16) → tickets ✅ (#18–#28) → build: #18 ✅ (PR #30), #20 ✅, rest next →
 prototypes of the popup, Intention Page and product page (seen running before anything is picked).
 
 ## Next step
 
-Tickets #18–#28 are sub-issues of #16, with GitHub "blocked by" links. #18 is closed.
+Tickets #18–#28 are sub-issues of #16, with GitHub "blocked by" links. #18 and #20 are closed.
 
-- **Start now (unblocked):** #19 watch page, #20 Shorts/search/menu/bell, #21 Home + Calm Default
-  + install, #24 nightly check, #25 Release Gate, #26 site skeleton — all in parallel. #22
+- **Start now (unblocked):** #19 watch page, #21 Home + Calm Default + install, #24 nightly check, #25 Release Gate, #26 site skeleton — all in parallel. #22
   prototypes is `ready-for-human`: Najmush must see them running and pick.
 - #23 popup/Intention Page design waits on #21 + #22; #27 product page on #22 + #25 + #26;
   #28 release waits on everything.
@@ -86,12 +89,22 @@ Tickets #18–#28 are sub-issues of #16, with GitHub "blocked by" links. #18 is 
   so the page can draw first. Invisible for comments (they load late) but it matters for
   Settings that are on by default: fix in #19/#21 (research §3: a cached first-paint attribute).
   The saved-page tests use `toBeHidden()`, which retries, so they can't catch a flash yet.
+  (#20 made "starts on the Calm Default" wait for Settings, so it no longer passes early; it
+  still doesn't test first paint.)
 - The popup builds switches only; the Home choice needs a `<select>` (#21).
-- No test yet checks a Setting hides nothing on other pages (spec #16, Testing Decisions).
 - The pre-push hook is turned on by `npm ci` in `extension/` (`prepare` sets `core.hooksPath`).
 - Root `promo-*.html` and `assets/` are v1 store material, left for #26/#28 to replace or remove.
 
-Ready prompts: `/implement #19`, `/implement #21`, `/implement #20`, `/implement #24`,
+**Gaps accepted in #20 (Najmush, 2026-11-19)**
+- "People also watched" (`ytd-shelf-renderer`) is hidden by search clean-up but untested: no
+  signed-out capture shows it (tried 4 searches); it seems signed-in only. A test needs a
+  signed-in capture, i.e. Najmush's cookies — his call if ever wanted.
+- A channel's Shorts *tab* stays visible; only its grid is hidden. The tab can be told apart
+  only by its text, which ADR 0001 forbids.
+- Search ads (`ytd-search-pyv-renderer`, `ytd-ad-slot-renderer`) are left alone; no Setting
+  covers ads.
+
+Ready prompts: `/implement #19`, `/implement #21`, `/implement #24`,
 `/implement #25`, `/implement #26`.
 
 **Workflow:** every PR updates this file in the same PR (last commit before the push). No
