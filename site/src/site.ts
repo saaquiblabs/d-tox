@@ -31,6 +31,6 @@ export const footer: Link[] = [
  * The tag is left out until `websiteId` is filled in (a [HUMAN] step in site/README.md). */
 export const analytics = {
   src: "https://analytics.saaquiblabs.com/script.js",
-  websiteId: "",
+  websiteId: "3b2b96c5-06f9-4aa2-861a-e46e361bba97",
   domains: "d-tox.saaquiblabs.com",
 };
