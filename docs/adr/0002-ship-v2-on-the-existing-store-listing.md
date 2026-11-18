@@ -1,0 +1,3 @@
+# Ship the rebuild as v2.0.0 on the existing Chrome Web Store listing
+
+v1.4.1 is live as "D-Tox: YouTube Detox" (`ocngpkbaoflpfjamgcnnjbdnhmakmgel`, 15 users, as of 2026-11-18). The rebuild ships as v2.0.0 on that same listing, rather than as a new Saaquib Labs listing. Settings are not migrated: almost all current users are the owner's own testers, so every install, new or updated, starts on the Calm Default. The listing ID is the only thing that keeps current users updating. The name, website, support email and description can all be changed to Saaquib Labs, and the publisher can move to a group account if needed. `d-tox.najmushsaaquib.com` redirects to `d-tox.saaquiblabs.com`; it is not removed.
