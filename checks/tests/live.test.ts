@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { test, type TestContext } from 'node:test';
 import type { BrowserContext } from 'playwright';
-import { cases } from '../../extension/tests/cases.ts';
+import { cases, type Case, type Hides } from '../../extension/tests/cases.ts';
 import { checkLanguage, languages, launch, type Setting } from '../lib/live.ts';
 
 const watchHtml = readFileSync(new URL('../../extension/tests/fixtures/watch.html', import.meta.url), 'utf8');
@@ -126,4 +126,34 @@ test('a Setting gets a second try before it counts as broken', async (t) => {
   const { results } = await checkLanguage(context, english!, [comments], cases, { ...fast, tries: 2 });
   assert.deepEqual(results, []);
   assert.equal(loads, 2);
+});
+
+test('a Setting with several Distractions passes when its rule matches each, shown or not', async (t) => {
+  // End screens only show when a video ends, and no video plays: the rule must match them anyway.
+  const playlistHtml = readFileSync(new URL('../../extension/tests/fixtures/watch-playlist.html', import.meta.url), 'utf8');
+  const context = await open(t);
+  await serve(context, { '/watch': playlistHtml });
+  const endScreens: Setting = { id: 'end-screens', name: 'End screens', type: 'switch' };
+  const { results, lines } = await checkLanguage(context, english!, [endScreens], cases, fast);
+  assert.deepEqual(results, []);
+  assert.match(lines.join('\n'), /✓.*End screens.*2 of 5 Distractions need a playing video/);
+});
+
+test('a Distraction that needs a playing video is not looked for', async (t) => {
+  const context = await open(t);
+  // Comment threads are missing, as end screens are when no video has played.
+  await serve(context, { '/watch': watchHtml.replaceAll('ytd-comment-thread-renderer', 'x-gone') });
+  const thread = 'ytd-watch-flexy #comments ytd-comment-thread-renderer';
+  const c: Case = { ...(cases.comments as Hides), distractions: [thread, 'ytd-watch-flexy ytd-comments#comments'], needPlayback: [thread] };
+  const { results } = await checkLanguage(context, english!, [comments], { comments: c }, fast);
+  assert.deepEqual(results, []);
+});
+
+test('a Setting that changes a behaviour is skipped by name, not failed', async (t) => {
+  const context = await open(t);
+  await serve(context, {});
+  const autoplay: Setting = { id: 'autoplay-off', name: 'Autoplay off', type: 'switch' };
+  const { results, lines } = await checkLanguage(context, english!, [autoplay], cases, fast);
+  assert.deepEqual(results, []);
+  assert.match(lines.join('\n'), /Autoplay off.*skipped.*autoplay\.spec\.ts/);
 });

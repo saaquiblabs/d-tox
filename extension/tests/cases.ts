@@ -20,6 +20,8 @@ export type Hides = SavedPage & {
   /** Other saved pages this Setting acts on or must leave alone: what it hides there (if
    *  anything) and what it must leave visible. */
   elsewhere?: (SavedPage & { distractions?: string[]; keeps: string[] })[];
+  /** The distractions YouTube builds only once a video plays or ends. The nightly check plays no video, so it skips these. */
+  needPlayback?: string[];
 };
 
 /** A Setting that changes a YouTube behaviour. Its own spec file tests it. */
@@ -69,6 +71,7 @@ export const cases: Record<string, Case> = {
       'ytd-watch-flexy #movie_player .ytp-cards-teaser',
     ],
     keeps: ['ytd-watch-flexy #movie_player .ytp-chrome-bottom', 'ytd-watch-flexy ytd-watch-metadata'],
+    needPlayback: ['ytd-watch-flexy #movie_player .ytp-ce-element', 'ytd-watch-flexy #movie_player .html5-endscreen button'],
   },
   'autoplay-off': { ...watchPlaylist, spec: 'autoplay.spec.ts' },
   comments: {

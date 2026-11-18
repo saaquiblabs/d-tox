@@ -1,13 +1,14 @@
 // Checks Settings against live YouTube. Chromium loads a stripped-down D-Tox: only
 // extension/src/hide.css, injected by Chrome at document_start exactly as the real extension
-// does. For each Setting the check finds the Distraction with D-Tox off, then puts the Setting's
-// attribute on <html> (what content.ts does) and expects the Distraction to disappear.
+// does. For each Setting the check finds each of its Distractions in the page with D-Tox off,
+// then puts the Setting's attribute on <html> (what content.ts does) and expects a hide rule to
+// match it. Matching, not visibility: end screens only show when a video ends, and no video plays.
 // Video and images are never fetched, so nothing plays.
 import { chromium, type BrowserContext, type Page } from 'playwright';
 import { mkdtemp, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import type { Case } from '../../extension/tests/cases.ts';
+import type { Case, Hides } from '../../extension/tests/cases.ts';
 import type { Result } from './issues.ts';
 
 export type Language = { name: string; hl: string; locale: string };
@@ -25,9 +26,20 @@ const blocked = /googlevideo\.com|\/ytimg|ggpht\.com|doubleclick|googlesyndicati
 /** Proves the stylesheet loaded: without it every Setting would look broken. */
 const probe = 'html[data-dtox-nightly-probe] { --dtox-nightly-probe: 1; }';
 
+/**
+ * Marks every hide rule. A custom property is inherited, so an element hidden by a rule on it or
+ * on an ancestor carries the mark, whether or not YouTube was showing it.
+ */
+const hiddenMark = '--dtox-nightly-hidden';
+export function markHideRules(css: string) {
+  const marked = css.replaceAll('display: none !important;', `display: none !important; ${hiddenMark}: 1;`);
+  if (marked === css) throw new Error('the check is broken: hide.css has no `display: none !important;` rule to mark');
+  return marked;
+}
+
 export async function launch(language: Language, hideCss: string): Promise<BrowserContext> {
   const ext = await mkdtemp(join(tmpdir(), 'dtox-nightly-'));
-  await writeFile(join(ext, 'hide.css'), `${hideCss}\n${probe}\n`);
+  await writeFile(join(ext, 'hide.css'), `${markHideRules(hideCss)}\n${probe}\n`);
   await writeFile(
     join(ext, 'manifest.json'),
     JSON.stringify({
@@ -80,16 +92,28 @@ async function blockedReason(page: Page, language: Language): Promise<string | n
   return null;
 }
 
-/** Scrolls until the Distraction shows (comments and others load lazily). */
-async function reveal(page: Page, selector: string, tries: number, settleMs: number) {
-  const distraction = page.locator(selector).first();
+/** Scrolls until every Distraction is in the page (comments and others load lazily); returns the missing ones. */
+async function reveal(page: Page, selectors: string[], tries: number, settleMs: number) {
+  const missing = async () => {
+    const out: string[] = [];
+    for (const s of selectors) if ((await page.locator(s).count()) === 0) out.push(s);
+    return out;
+  };
   for (let i = 0; i < tries; i++) {
     await page.evaluate(() => document.querySelector('video')?.pause());
-    if (await distraction.isVisible()) return true;
+    if ((await missing()).length === 0) return [];
     await page.mouse.wheel(0, 900);
     await page.waitForTimeout(settleMs);
   }
-  return distraction.isVisible();
+  return missing();
+}
+
+/** The Distractions no hide rule matches. */
+async function unmatched(page: Page, selectors: string[]) {
+  return page.evaluate(
+    ([sels, mark]) => sels.filter((s) => getComputedStyle(document.querySelector(s)!).getPropertyValue(mark).trim() !== '1'),
+    [selectors, hiddenMark] as const,
+  );
 }
 
 async function setAttribute(page: Page, name: string, on: boolean) {
@@ -101,7 +125,10 @@ async function setAttribute(page: Page, name: string, on: boolean) {
 
 type Outcome = { blocked: string } | { problem: string } | { ok: true };
 
-async function checkOnce(context: BrowserContext, language: Language, setting: Setting, c: Case, o: Required<Options>): Promise<Outcome> {
+/** The Distractions the check can find without playing a video. */
+const checkable = (c: Hides) => c.distractions.filter((s) => !c.needPlayback?.includes(s));
+
+async function checkOnce(context: BrowserContext, language: Language, setting: Setting, c: Hides, o: Required<Options>): Promise<Outcome> {
   const page = await context.newPage();
   try {
     try {
@@ -116,16 +143,18 @@ async function checkOnce(context: BrowserContext, language: Language, setting: S
     const loaded = await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--dtox-nightly-probe').trim());
     if (loaded !== '1') throw new Error('the check is broken: Chrome did not apply hide.css to the page');
 
-    if (!(await reveal(page, c.distraction, o.revealTries, o.settleMs)))
-      return { problem: `not found: nothing visible matches \`${c.distraction}\` on ${c.url} with D-Tox off` };
+    const list = (sels: string[]) => sels.map((s) => `\`${s}\``).join(', ');
+    const distractions = checkable(c);
+    const missing = await reveal(page, distractions, o.revealTries, o.settleMs);
+    if (missing.length) return { problem: `not found: nothing matches ${list(missing)} on ${c.url}` };
 
+    if ((await unmatched(page, distractions)).length < distractions.length)
+      throw new Error('the check is broken: a Distraction is marked hidden with every Setting off');
     await setAttribute(page, `data-dtox-${setting.id}`, true);
-    const hidden = await page
-      .locator(c.distraction)
-      .first()
-      .waitFor({ state: 'hidden', timeout: o.hideTimeoutMs })
-      .then(() => true, () => false);
-    if (!hidden) return { problem: `still visible: \`${c.distraction}\` shows on ${c.url} with the Setting on` };
+    let left = await unmatched(page, distractions);
+    for (const end = Date.now() + o.hideTimeoutMs; left.length && Date.now() < end; left = await unmatched(page, distractions))
+      await page.waitForTimeout(100);
+    if (left.length) return { problem: `still visible: no hide rule matches ${list(left)} on ${c.url} with the Setting on` };
     return { ok: true };
   } finally {
     await page.close();
@@ -159,6 +188,10 @@ export async function checkLanguage(
       lines.push(`  -  ${label}: skipped, choice Settings have no live check yet`);
       continue;
     }
+    if (!('distractions' in c)) {
+      lines.push(`  -  ${label}: skipped, it changes a behaviour (tested in extension/tests/${c.spec})`);
+      continue;
+    }
     let outcome = await checkOnce(context, language, setting, c, o);
     for (let i = 1; i < o.tries && !('ok' in outcome); i++) outcome = await checkOnce(context, language, setting, c, o);
 
@@ -170,7 +203,10 @@ export async function checkLanguage(
     if ('problem' in outcome) {
       results.push({ kind: 'setting', setting, language: language.name, problem: outcome.problem });
       lines.push(`  ✗  ${label}: ${outcome.problem}`);
-    } else lines.push(`  ✓  ${label}`);
+    } else {
+      const unchecked = c.distractions.length - checkable(c).length;
+      lines.push(`  ✓  ${label}${unchecked ? ` (${unchecked} of ${c.distractions.length} Distractions need a playing video: not checked)` : ''}`);
+    }
   }
   return { results, lines };
 }
