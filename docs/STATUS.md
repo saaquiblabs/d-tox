@@ -65,7 +65,15 @@ Chrome no longer takes --load-extension). Yellow bar at the bottom switches vari
     a gap, like the Saaquib Labs S. `mark-a.svg` (mint), `mark-dawn.svg`, `mark-ivory.svg` for 64 px and
     up; `mark-small*.svg` flat for 16–32 px. The prototype popup shows it (`extension/public/proto-mark-*.png`);
     the real `icon-*.png` are unchanged until a pick.
-  - Next: Najmush picks F or G (or parts); then record all three #22 picks in #22 and here.
+  - Verdict on F/G (2026-11-19): "cramped, literally no breathing space"; the before/after showed no
+    difference (signed-out captures: Home and Search barely change, only Watch does); no real header;
+    wants a giant footer like px0.ai; G's first look beats F's.
+  - **H, "Dawn, roomy"** (built from G): sticky glass header (nav, GitHub, Add to Chrome); sections
+    ~120–220 px apart; the before/after is a *drawn* watch page whose suggestions, Shorts, comments, end
+    screen and bell blur away when "With D-Tox" is on (flips once by itself in view); Settings as roomy
+    tiles with names only (descriptions live in the popup beside them); giant footer: four link columns,
+    then a huge faded "D-Tox" wordmark with the mark.
+  - Next: Najmush reacts to H; then record all three #22 picks in #22 and here.
 
 ## Decisions (grill, 2026-11-18)
 
