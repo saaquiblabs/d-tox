@@ -1,0 +1,57 @@
+---
+// Base layout: head, skip link, header, main, footer. Ported from the saaquiblabs studio site's
+// src/layouts/Base.astro; adapted: D-Tox's icon and name, no web fonts (Gellix is a trial licence and
+// this repo is public), Umami only once its website ID exists (src/site.ts).
+import "../brand/tokens.css";
+import "../styles/base.css";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import { analytics, fullName } from "../site";
+import { urlOf, type PageMeta } from "../seo";
+
+interface Props extends PageMeta {
+  /** The 404 page: not indexed, no canonical address. */
+  noindex?: boolean;
+}
+
+const { title, description, noindex = false } = Astro.props;
+const fullTitle = title ? `${title} — ${fullName}` : fullName;
+const canonical = noindex ? null : urlOf(Astro.url.pathname.replace(/\/$/, "") || "/");
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    {canonical ? <link rel="canonical" href={canonical} /> : <meta name="robots" content="noindex" />}
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={fullName} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    {canonical && <meta property="og:url" content={canonical} />}
+    <meta property="og:locale" content="en_IN" />
+    {/* Visit counts: self-hosted Umami, no cookies (the Privacy page and footer say so). */}
+    {analytics.websiteId && (
+      <script is:inline defer src={analytics.src} data-website-id={analytics.websiteId} data-domains={analytics.domains}></script>
+    )}
+    {/* The extension's own icon (extension/public, copied in by scripts/copy-icons.mjs). */}
+    <link rel="icon" type="image/png" sizes="16x16" href="/icon-16.png" />
+    <link rel="icon" type="image/png" sizes="48x48" href="/icon-48.png" />
+    <link rel="apple-touch-icon" href="/icon-128.png" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#F7F4EE" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#151A22" />
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <Header />
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

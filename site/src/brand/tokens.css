@@ -1,0 +1,86 @@
+/* Design tokens. Source: site/DESIGN.md (approved baseline, prototype variant E).
+   Themes follow prefers-color-scheme only (ADR 0011). Solid colours for all text. */
+
+:root {
+  /* The family name lives here and only here, so a licensed Gellix or a look-alike
+     is a one-line swap (ADR 0013). Without the font files, the system stack shows. */
+  --font: Gellix, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  /* Ivory (light) */
+  --bg: #F7F4EE;        /* Warm Ivory: paper */
+  --bg-shade: #EFEBE3;  /* paper turned away from the light */
+  --surface: #FCFAF6;   /* card paper, a touch brighter */
+  --flap: #E6E0D5;      /* back of a folded corner */
+  --text: #202124;      /* Graphite: ink */
+  --text-2: #4D4F54;    /* secondary ink, 7.47:1 on --bg */
+  --border: #E3DDD2;
+  --crease-hi: #FDFBF8;
+  --crease-lo: #DCD5C8;
+  --btn-bg: #202124;
+  --btn-fg: #F7F4EE;
+  --focus: #202124;
+  --lit: color-mix(in srgb, var(--bg) 55%, #fff);
+
+  /* The showcase stage is graphite in both themes. */
+  --stage: #17191E;
+  --stage-text: #F7F4EE;
+  --stage-text-2: #C9CCD1;
+
+  --term-bg: #151A22;
+  --term-fg: #E9E6DF;
+  --term-dim: #A9AFB8;
+  --term-ok: #8FD6A4;
+
+  /* Type scale: seven steps plus mono (DESIGN.md § Type). */
+  --t-display: clamp(2.5rem, 5.5vw, 4.6rem);
+  --t-h2: clamp(2.2rem, 4vw, 3.4rem);
+  --t-h3: 1.375rem;
+  --t-lead: 1.125rem;
+  --t-body: 1rem;
+  --t-small: 0.875rem;
+  --t-label: 0.75rem;
+
+  /* Radii: four (DESIGN.md § Shape and space). */
+  --r-sm: 8px;
+  --r-md: 16px;
+  --r-lg: clamp(28px, 3.5vw, 44px);
+  --r-pill: 999px;
+
+  --container: 1160px;
+  --container-wide: 1200px;
+  --gutter: clamp(16px, 4vw, 32px);
+  --section: clamp(48px, 7vw, 96px);
+
+  --fold: 36px;
+  --ease-glide: cubic-bezier(.22, .8, .24, 1);
+
+  --shadow: 0 1px 2px rgb(32 33 36 / .05), 0 12px 32px rgb(32 33 36 / .07);
+
+  /* Tints: the colour in the glow (Glow.astro), from openship's aurora: violet core, amber and
+     gold wings. RGB channels, so the glow can set its own alpha. Never used for text. */
+  --tint-core: 139 92 246;
+  --tint-warm: 245 158 11;
+  --tint-soft: 251 191 36;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Midnight Ink (dark) */
+    --bg: #151A22;
+    --bg-shade: #11151C;
+    --surface: #1B212B;
+    --flap: #2A323E;
+    --text: #F7F4EE;
+    --text-2: #B9BDC4;
+    --border: #2A313C;
+    --crease-hi: #232A35;
+    --crease-lo: #0B0E13;
+    --btn-bg: #F7F4EE;
+    --btn-fg: #151A22;
+    --focus: #F7F4EE;
+    --lit: color-mix(in srgb, var(--bg) 88%, #fff);
+    --term-bg: #0E1218;
+    --shadow: 0 1px 2px rgb(0 0 0 / .3), 0 12px 32px rgb(0 0 0 / .35);
+  }
+}

@@ -1,0 +1,74 @@
+---
+// Privacy: ported from the old page (najmushsaaquib.com, app/(products)/d-tox/privacy/page.tsx): the
+// short version, then the same table. Corrected for v2 (#26): Settings live in chrome.storage.sync
+// (not .local), so Chrome may sync them through the person's Google account; this site now counts
+// visits with self-hosted, cookieless Umami (so "Analytics: none" was only true of the extension);
+// contact is the studio address and repo. The Chrome Web Store links here: keep it true to what
+// extension/ stores, and change it in the same PR as anything that changes that.
+import Base from "../layouts/Base.astro";
+import { pages } from "../seo";
+import { analytics, email, fullName, mailto, repo } from "../site";
+
+const updated = { iso: "2026-11-18", text: "18 November 2026" };
+const extension: [string, string][] = [
+  ["What it collects", "Nothing."],
+  ["What it sends", "Nothing. It makes no network requests of its own."],
+  ["What it stores", "Your Settings: which parts of YouTube to hide. Nothing about what you watch or search."],
+  ["Where", "In Chrome's own storage for extensions (chrome.storage.sync). If you have turned on Chrome sync, Chrome copies your Settings to your other Chrome browsers through your Google account, the same way it syncs bookmarks. We never see them."],
+  ["What it can read", "Only pages on www.youtube.com, to hide parts of them. It reads nothing from them and keeps nothing."],
+  ["Tracking, ads, analytics", "None."],
+  ["Third parties", "None."],
+];
+---
+
+<Base {...pages["/privacy"]}>
+  <article class="wrap pv">
+    <header class="head">
+      <p class="label">Privacy</p>
+      <h1>{fullName}<br /><span class="second">sends nothing anywhere.</span></h1>
+      <p class="lead">Last updated <time datetime={updated.iso}>{updated.text}</time>.</p>
+    </header>
+
+    <section class="prose" aria-labelledby="short">
+      <h2 id="short">The short version</h2>
+      <p>The extension collects nothing and sends nothing. It keeps your Settings in your Chrome. That's all it stores.</p>
+    </section>
+
+    <section class="prose" aria-labelledby="ext">
+      <h2 id="ext">The extension</h2>
+      <table>
+        <tbody>
+          {extension.map(([k, v]) => <tr><th scope="row">{k}</th><td>{v}</td></tr>)}
+        </tbody>
+      </table>
+      <p>Remove D-Tox from Chrome and its Settings go with it. The code is open: <a href={repo}>read it on GitHub</a>.</p>
+    </section>
+
+    <section class="prose" aria-labelledby="site">
+      <h2 id="site">This website</h2>
+      <p>This site has no accounts, no forms and no cookies.</p>
+      {analytics.websiteId
+        ? <p>It counts visits with Umami, which we run ourselves. Umami notes the page, the site that sent you, your browser, operating system, device type, screen size, language and country. It sets no cookies and does not store your IP address.</p>
+        : <p>It does not count visits.</p>}
+      <p>Our web server logs each request (IP address, page, time and browser) to keep the site up and to stop abuse. The logs are kept for a short time, then overwritten. The server is ours, in Mumbai, India, on Oracle Cloud.</p>
+    </section>
+
+    <section class="prose" aria-labelledby="contact">
+      <h2 id="contact">Questions</h2>
+      <p>Write to <a href={mailto}>{email}</a> or <a href={`${repo}/issues`}>open an issue on GitHub</a>. When this policy changes, the date at the top changes too.</p>
+    </section>
+  </article>
+</Base>
+
+<style>
+  .pv { display: grid; gap: clamp(40px, 6vw, 64px); padding-block: clamp(48px, 8vw, 96px) 0; }
+  .head { display: grid; gap: 16px; }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { text-align: left; vertical-align: top; padding: 12px 0; border-bottom: 1px solid var(--border); }
+  th { font-weight: 500; width: 34%; padding-right: 24px; }
+  td { color: var(--text-2); }
+  @media (max-width: 560px) {
+    th, td { display: block; width: auto; padding: 0; border: 0; }
+    tr { display: block; padding: 12px 0; border-bottom: 1px solid var(--border); }
+  }
+</style>

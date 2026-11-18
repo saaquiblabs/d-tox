@@ -37,6 +37,21 @@ follows storage changes, which is how the popup applies to open tabs at once (AD
 ### Adding a Setting
 
 1. Add it to `settings.json` (id, name, "Hides …" line, group, type, Calm Default value).
+   `calmDefault` is `true`/`false` for a switch; for a choice it is the value it starts on, or
+   `false` if it starts on YouTube's own behaviour.
 2. Add its rule to `extension/src/hide.css`, gated on `html[data-dtox-<id>]`.
 3. Add a case to `extension/tests/cases.ts`; if it needs a page not yet saved, capture one with
    `node tests/fixtures/capture.mjs <name> <youtube url>`. The tests fail until both exist.
+4. If it is in the Calm Default, `/welcome` lists it on the next site build (`site/`); its "hides"
+   line is what the page shows.
+
+## Site
+
+```bash
+cd site
+npm ci                 # also turns on the pre-push hook
+npm run dev            # http://localhost:4321
+npm run verify         # tests, build, /welcome vs settings.json, links, Lighthouse 100s
+```
+
+Details and the go-live steps: `site/README.md`.

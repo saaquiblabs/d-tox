@@ -1,0 +1,69 @@
+---
+// /welcome: the page a new install opens once (not on update). What the Calm Default hides is read from
+// ../../settings.json (src/settings.ts); tests/welcome.mjs fails the build if this list and that file
+// disagree, so keep `data-calm-default` and `data-setting` on the list. The pin steps are ported from
+// the old page (najmushsaaquib.com, app/(products)/d-tox/welcome/page.tsx), with Lucide icons
+// (lucide-react 1.7.0: puzzle, pin) in place of emoji, so they match what Chrome shows.
+//
+// The puzzle and pin paths: ISC License. Copyright (c) 2026 Lucide Icons and Contributors.
+// Permission to use, copy, modify, and/or distribute this software for any purpose with or without fee
+// is hereby granted, provided that the above copyright notice and this permission notice appear in all
+// copies. THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS
+// SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR
+// BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER
+// RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+// TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+import Base from "../layouts/Base.astro";
+import { pages } from "../seo";
+import { calmDefault } from "../settings";
+import { name, repo } from "../site";
+
+const svg = (paths: string) =>
+  `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${paths}</svg>`;
+const puzzle = svg(`<path d="M15.39 4.39a1 1 0 0 0 1.68-.474 2.5 2.5 0 1 1 3.014 3.015 1 1 0 0 0-.474 1.68l1.683 1.682a2.414 2.414 0 0 1 0 3.414L19.61 15.39a1 1 0 0 1-1.68-.474 2.5 2.5 0 1 0-3.014 3.015 1 1 0 0 1 .474 1.68l-1.683 1.682a2.414 2.414 0 0 1-3.414 0L8.61 19.61a1 1 0 0 0-1.68.474 2.5 2.5 0 1 1-3.014-3.015 1 1 0 0 0 .474-1.68l-1.683-1.682a2.414 2.414 0 0 1 0-3.414L4.39 8.61a1 1 0 0 1 1.68.474 2.5 2.5 0 1 0 3.014-3.015 1 1 0 0 1-.474-1.68l1.683-1.682a2.414 2.414 0 0 1 3.414 0z"/>`);
+const pin = svg(`<path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/>`);
+---
+
+<Base {...pages["/welcome"]}>
+  <article class="wrap wl">
+    <header class="head">
+      <p class="label">Welcome</p>
+      <h1>{name} is on.<br /><span class="second">Open YouTube and see.</span></h1>
+    </header>
+
+    <section class="prose" aria-labelledby="hides">
+      <h2 id="hides">What it hides from the start</h2>
+      {calmDefault.length > 0
+        ? <p>{name} starts calm. Out of the box:</p>
+        : <p>{name} starts with nothing hidden. Choose what to hide from its menu.</p>}
+      <ul class="calm" data-calm-default>
+        {calmDefault.map((s) => <li data-setting={s.id}><b>{s.name}</b> {s.hides}</li>)}
+      </ul>
+      <p>Change any of it from the {name} menu: click its icon in Chrome's toolbar. If Chrome sync is on, your choices follow you to your other Chrome browsers.</p>
+    </section>
+
+    <section class="prose" aria-labelledby="pin">
+      <h2 id="pin">Pin {name} to the toolbar</h2>
+      <ol class="steps">
+        <li>Click the extensions icon <span class="ic"><Fragment set:html={puzzle} /></span> at the top right of Chrome.</li>
+        <li>Find {name} in the list.</li>
+        <li>Click the pin <span class="ic"><Fragment set:html={pin} /></span> beside it. Its icon stays in the toolbar.</li>
+      </ol>
+    </section>
+
+    <section class="prose" aria-labelledby="help">
+      <h2 id="help">Something not right?</h2>
+      <p>If YouTube shows something {name} should hide, or hides something it shouldn't, <a href={`${repo}/issues`}>tell us on GitHub</a>.</p>
+    </section>
+  </article>
+</Base>
+
+<style>
+  .wl { display: grid; gap: clamp(40px, 6vw, 64px); padding-block: clamp(48px, 8vw, 96px) 0; }
+  .head { display: grid; gap: 16px; }
+  .calm { display: grid; gap: 10px; margin: 0; padding-left: 1.2em; }
+  .calm:empty { display: none; }
+  .calm b { font-weight: 500; }
+  .steps { display: grid; gap: 12px; margin: 0; padding-left: 1.4em; }
+  .ic { display: inline-flex; vertical-align: -3px; padding: 2px; border: 1px solid var(--border); border-radius: 6px; }
+</style>

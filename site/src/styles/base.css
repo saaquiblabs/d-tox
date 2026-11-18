@@ -1,0 +1,53 @@
+/* Base styles, ported from the saaquiblabs studio site's src/styles/base.css (trimmed to what these
+   pages use). Tokens come from src/brand/tokens.css (npm run sync-brand). The look is a placeholder
+   until the product-page prototypes are picked (#22, #27). */
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; color-scheme: light dark; scroll-padding-top: 24px; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 400 var(--t-body)/1.65 var(--font);
+  font-kerning: normal;
+  overflow-x: clip;
+}
+img, svg { max-width: 100%; height: auto; display: block; }
+a { color: inherit; text-underline-offset: .2em; text-decoration-thickness: 1px; }
+a:hover { text-decoration-thickness: 2px; }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; border-radius: 4px; }
+h1, h2, h3, p { margin: 0; }
+h1 { font-size: var(--t-display); font-weight: 500; line-height: 1.08; letter-spacing: -.02em; }
+h2 { font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 500; line-height: 1.15; letter-spacing: -.02em; }
+h3 { font-size: var(--t-h3); font-weight: 500; line-height: 1.25; letter-spacing: -.015em; }
+code { font: .9em var(--mono); }
+
+.lead { font-size: var(--t-lead); color: var(--text-2); line-height: 1.65; }
+.label { font-size: var(--t-label); font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: var(--text-2); }
+.second { font-weight: 300; font-style: italic; color: var(--text-2); }
+.wrap { max-width: var(--container); margin-inline: auto; padding-inline: var(--gutter); }
+.prose { max-width: 44rem; display: grid; gap: 14px; }
+.prose a { text-decoration: underline; }
+
+/* Skip link: first focusable element on every page. */
+.skip {
+  position: absolute; left: 16px; top: -100px; z-index: 100;
+  background: var(--btn-bg); color: var(--btn-fg);
+  padding: 8px 14px; border-radius: var(--r-pill); text-decoration: none;
+}
+.skip:focus { top: 16px; }
+
+/* Pill buttons */
+.btn {
+  display: inline-flex; align-items: center; gap: .5em;
+  padding: .9em 1.75em; border-radius: var(--r-pill);
+  font-weight: 500; font-size: .9375rem; line-height: 1;
+  text-decoration: none; border: 1px solid transparent;
+}
+.btn-solid { background: var(--btn-bg); color: var(--btn-fg); }
+.btn-ghost { border-color: var(--border); color: var(--text); }
+.btn-ghost:hover { border-color: var(--text-2); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}

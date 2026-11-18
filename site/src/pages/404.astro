@@ -1,0 +1,22 @@
+---
+// 404: ported from the saaquiblabs studio site's 404.astro (itself from openship's not-found page,
+// Apache-2.0). Not indexed; the sitemap leaves it out (astro.config.mjs).
+import Base from "../layouts/Base.astro";
+---
+
+<Base title="Page not found" description="This page doesn't exist or has moved." noindex>
+  <section class="wrap nf">
+    <p class="label">404</p>
+    <h1>Page not<br /><span class="second">found.</span></h1>
+    <p class="lead">This page doesn't exist, or it has moved.</p>
+    <p class="ctas">
+      <a class="btn btn-solid" href="/">Back home</a>
+      <a class="btn btn-ghost" href="/privacy">Privacy</a>
+    </p>
+  </section>
+</Base>
+
+<style>
+  .nf { display: grid; gap: 16px; padding-block: clamp(64px, 10vw, 128px); }
+  .ctas { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 16px; }
+</style>
