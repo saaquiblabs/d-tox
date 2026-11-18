@@ -35,7 +35,8 @@ function autoplayOff() {
   if (!loaded || !autoplayPending || !current.enabled || current['autoplay-off'] !== true) return;
   if (location.pathname !== '/watch') return; // not the miniplayer on Home or Search
   const state = document.querySelector('ytd-watch-flexy #movie_player .ytp-autonav-toggle-button');
-  if (!state) return;
+  // In a playlist YouTube hides the button (a playlist always plays on); leave it alone there.
+  if (!state?.checkVisibility()) return;
   if (state.getAttribute('aria-checked') === 'true') (state as HTMLElement).click();
   autoplayPending = state.getAttribute('aria-checked') === 'true';
 }

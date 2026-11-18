@@ -10,9 +10,16 @@ const setting = settings.find((s) => s.id === 'autoplay-off')!;
 const c = cases['autoplay-off']!;
 const button = '#movie_player .ytp-autonav-toggle';
 
-function fakePlayer(readyAtStart: boolean) {
+function fakePlayer({ ready, hidden }: { ready: boolean; hidden?: boolean }) {
   const w = window as any;
-  w.playerReady = readyAtStart;
+  w.playerReady = ready;
+  // YouTube hides the autoplay button while a playlist plays.
+  if (hidden)
+    new MutationObserver((_, observer) => {
+      if (!document.head) return;
+      document.head.append(Object.assign(document.createElement('style'), { textContent: '.ytp-autonav-toggle { display: none }' }));
+      observer.disconnect();
+    }).observe(document, { childList: true, subtree: true });
   document.addEventListener('click', (e) => {
     const toggle = (e.target as Element).closest?.('.ytp-autonav-toggle');
     const state = toggle?.querySelector('.ytp-autonav-toggle-button');
@@ -33,18 +40,18 @@ const settled = (page: Page, on: boolean) => {
 test('the saved page starts with YouTube autoplay on', async ({ openSaved, openPopup }) => {
   const popup = await openPopup();
   await turn(popup.getByRole('checkbox', { name: 'D-Tox is on' }), false);
-  const page = await openSaved(c.fixture, c.url, fakePlayer, true);
+  const page = await openSaved(c.fixture, c.url, fakePlayer, { ready: true });
   await expect(autoplay(page)).toHaveAttribute('aria-checked', 'true');
 });
 
 test('is on in the Calm Default and turns autoplay off when the video opens', async ({ openSaved }) => {
   expect(setting.calmDefault).toBe(true);
-  const page = await openSaved(c.fixture, c.url, fakePlayer, true);
+  const page = await openSaved(c.fixture, c.url, fakePlayer, { ready: true });
   await expect(autoplay(page)).toHaveAttribute('aria-checked', 'false');
 });
 
 test('waits for the player to be ready', async ({ openSaved }) => {
-  const page = await openSaved(c.fixture, c.url, fakePlayer, false);
+  const page = await openSaved(c.fixture, c.url, fakePlayer, { ready: false });
   await settled(page, true);
   await youtube(page, 'yt-navigate-finish');
   await expect(autoplay(page)).toHaveAttribute('aria-checked', 'true');
@@ -55,7 +62,7 @@ test('waits for the player to be ready', async ({ openSaved }) => {
 });
 
 test('the Learner can switch autoplay back on, and it stays on in this tab', async ({ openSaved }) => {
-  const page = await openSaved(c.fixture, c.url, fakePlayer, true);
+  const page = await openSaved(c.fixture, c.url, fakePlayer, { ready: true });
   await expect(autoplay(page)).toHaveAttribute('aria-checked', 'false');
 
   await page.locator(button).click();
@@ -70,7 +77,15 @@ test('the Learner can switch autoplay back on, and it stays on in this tab', asy
 
 test('leaves the miniplayer alone away from the watch page', async ({ openSaved }) => {
   // The watch page's markup served at the home page URL stands in for the miniplayer.
-  const page = await openSaved(c.fixture, 'https://www.youtube.com/', fakePlayer, true);
+  const page = await openSaved(c.fixture, 'https://www.youtube.com/', fakePlayer, { ready: true });
+  await settled(page, true);
+  await youtube(page, 'yt-navigate-finish');
+  await youtube(page, 'yt-player-updated');
+  expect(await autoplay(page).getAttribute('aria-checked')).toBe('true');
+});
+
+test('leaves the hidden button alone in a playlist', async ({ openSaved }) => {
+  const page = await openSaved(c.fixture, c.url, fakePlayer, { ready: true, hidden: true });
   await settled(page, true);
   await youtube(page, 'yt-navigate-finish');
   await youtube(page, 'yt-player-updated');
@@ -80,7 +95,7 @@ test('leaves the miniplayer alone away from the watch page', async ({ openSaved 
 test('leaves autoplay alone when the Setting is off', async ({ openSaved, openPopup }) => {
   const popup = await openPopup();
   await turn(popup.getByRole('checkbox', { name: setting.name, exact: true }), false);
-  const page = await openSaved(c.fixture, c.url, fakePlayer, true);
+  const page = await openSaved(c.fixture, c.url, fakePlayer, { ready: true });
   await settled(page, false);
   await youtube(page, 'yt-navigate-finish');
   await youtube(page, 'yt-player-updated');
@@ -90,7 +105,7 @@ test('leaves autoplay alone when the Setting is off', async ({ openSaved, openPo
 test('leaves autoplay alone when the master switch is off', async ({ openSaved, openPopup }) => {
   const popup = await openPopup();
   await turn(popup.getByRole('checkbox', { name: 'D-Tox is on' }), false);
-  const page = await openSaved(c.fixture, c.url, fakePlayer, true);
+  const page = await openSaved(c.fixture, c.url, fakePlayer, { ready: true });
   await settled(page, false);
   await youtube(page, 'yt-navigate-finish');
   expect(await autoplay(page).getAttribute('aria-checked')).toBe('true');
@@ -100,7 +115,7 @@ test('switching it on in the popup turns autoplay off in the open tab', async ({
   const popup = await openPopup();
   const switchEl = popup.getByRole('checkbox', { name: setting.name, exact: true });
   await turn(switchEl, false);
-  const page = await openSaved(c.fixture, c.url, fakePlayer, true);
+  const page = await openSaved(c.fixture, c.url, fakePlayer, { ready: true });
   await settled(page, false);
   expect(await autoplay(page).getAttribute('aria-checked')).toBe('true');
 
