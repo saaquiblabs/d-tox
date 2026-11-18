@@ -11,6 +11,10 @@ finished: 32 questions, all answered by Najmush on 2026-11-18. **Read `CONTEXT.m
 - Research: `docs/research/2026-11-rebuild-grounding.md` (audit, competitors, MV3) and
   `docs/research/2026-11-product-page-organization.md` (repo and page layout).
 - Agent-skills config: `CLAUDE.md` and `docs/agents/` (GitHub Issues, default triage labels).
+- **Code exists now (#18, PR #30, merged 2026-11-18).** v1.4.1 is removed. `settings.json` (one
+  Setting so far: comments), `extension/` (esbuild build, `src/hide.css`, `src/content.ts`, plain
+  popup, saved-page Playwright tests), `.githooks/pre-push`, placeholder `site/` and `checks/`.
+  How to build, test and add a Setting: root `README.md`.
 
 ## Decisions (grill, 2026-11-18)
 
@@ -37,8 +41,9 @@ finished: 32 questions, all answered by Najmush on 2026-11-18. **Read `CONTEXT.m
 **Engineering** (ADRs 0001, 0003, 0004)
 - One static stylesheet at `document_start`, rules gated on `<html>` attributes and scoped by
   page; a ~1 KB script copies Settings; no timers or hiding observers; at most 5 `:has()`;
-  no selectors that match text. Popup in plain TS and CSS. WXT, or esbuild if WXT adds >2 KB.
-  Under 40 KB excluding icons.
+  no selectors that match text. Popup in plain TS and CSS. Under 40 KB excluding icons.
+- **Build is plain esbuild, not WXT** (measured in #18: WXT added ~4.4 KB; ADR 0001).
+  Current size 2.42 KB.
 - Repo: `extension/`, `site/` (Astro static, set up like saaquiblabs `site/`),
   `settings.json` (the single list of Settings), `checks/`, `docs/`.
 - Release Gate: a manual Openship job on the home VPS. It runs the audit with every Setting on
@@ -63,19 +68,34 @@ finished: 32 questions, all answered by Najmush on 2026-11-18. **Read `CONTEXT.m
 
 ## Pipeline
 
-research ✅ → grill ✅ → spec ✅ (#16) → tickets ✅ (#18–#28) → build (next) → prototypes of the popup,
-Intention Page and product page (seen running before anything is picked) → `/implement #n`.
+research ✅ → grill ✅ → spec ✅ (#16) → tickets ✅ (#18–#28) → build: #18 ✅ (PR #30), rest next →
+prototypes of the popup, Intention Page and product page (seen running before anything is picked).
 
 ## Next step
 
-Tickets #18–#28 are sub-issues of #16, with GitHub "blocked by" links.
+Tickets #18–#28 are sub-issues of #16, with GitHub "blocked by" links. #18 is closed.
 
-- **Start now (nothing blocks them):** #18 working skeleton (`ready-for-agent`) and #22
-  prototypes (`ready-for-human`: Najmush must see them running and pick).
-- After #18: #19 watch page, #20 Shorts/search/menu/bell, #21 Home + Calm Default + install,
-  #24 nightly check, #25 Release Gate, #26 site skeleton — all in parallel.
+- **Start now (unblocked):** #19 watch page, #20 Shorts/search/menu/bell, #21 Home + Calm Default
+  + install, #24 nightly check, #25 Release Gate, #26 site skeleton — all in parallel. #22
+  prototypes is `ready-for-human`: Najmush must see them running and pick.
 - #23 popup/Intention Page design waits on #21 + #22; #27 product page on #22 + #25 + #26;
   #28 release waits on everything.
+
+**Carry-overs from #18's review**
+- Possible flash: `content.ts` sets `<html>` attributes after an async `chrome.storage.sync.get`,
+  so the page can draw first. Invisible for comments (they load late) but it matters for
+  Settings that are on by default: fix in #19/#21 (research §3: a cached first-paint attribute).
+  The saved-page tests use `toBeHidden()`, which retries, so they can't catch a flash yet.
+- The popup builds switches only; the Home choice needs a `<select>` (#21).
+- No test yet checks a Setting hides nothing on other pages (spec #16, Testing Decisions).
+- The pre-push hook is turned on by `npm ci` in `extension/` (`prepare` sets `core.hooksPath`).
+- Root `promo-*.html` and `assets/` are v1 store material, left for #26/#28 to replace or remove.
+
+Ready prompts: `/implement #19`, `/implement #21`, `/implement #20`, `/implement #24`,
+`/implement #25`, `/implement #26`.
+
+**Workflow:** every PR updates this file in the same PR (last commit before the push). No
+separate STATUS PRs.
 
 ## Standing rules
 
