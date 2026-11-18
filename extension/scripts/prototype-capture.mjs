@@ -17,13 +17,15 @@ const id = [...createHash('sha256').update(dist).digest('hex').slice(0, 32)].map
 
 const pages = [
   { key: 'home', url: 'https://www.youtube.com/' },
-  { key: 'search', url: 'https://www.youtube.com/results?search_query=python+tutorial' },
+  { key: 'search', url: 'https://www.youtube.com/results?search_query=' + (process.env.Q ?? 'python+tutorial') },
   { key: 'watch', url: 'https://www.youtube.com/watch?v=rfscVS0vtbw' },
 ];
 
 async function open(withExtension) {
   const args = withExtension ? [`--disable-extensions-except=${dist}`, `--load-extension=${dist}`] : ['--disable-extensions'];
-  const ctx = await chromium.launchPersistentContext('', { channel: 'chromium', args, viewport: { width: 1280, height: 800 }, locale: 'en-US' });
+  const ctx = await chromium.launchPersistentContext('', { channel: 'chromium', args, viewport: { width: 1440, height: 900 }, deviceScaleFactor: 1.5, locale: 'en-US' });
+  // YouTube's dark theme (the product page is dark): PREF f6=400.
+  await ctx.addCookies([{ name: 'PREF', value: 'f6=400&hl=en', domain: '.youtube.com', path: '/' }]);
   await ctx.route(/googlevideo\.com|\/videoplayback/, (r) => r.abort());
   return ctx;
 }
@@ -50,7 +52,15 @@ async function product(withExtension) {
     await page.goto(p.url);
     await settle(page);
     await page.addStyleTag({ content: '#dtox-proto{display:none!important}' });
-    await page.screenshot({ path: `${shots}${p.key}-${withExtension ? 'after' : 'before'}.jpg`, type: 'jpeg', quality: 78 });
+    // Video is blocked, so the player shows a pre-roll ad's poster; show the video's own thumbnail.
+    await page.evaluate(async () => {
+      const v = new URLSearchParams(location.search).get('v'), p = document.querySelector('#movie_player');
+      if (!v || !p) return;
+      const i = Object.assign(document.createElement('img'), { src: `https://i.ytimg.com/vi/${v}/maxresdefault.jpg` });
+      i.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:60';
+      p.append(i); await i.decode().catch(() => {});
+    });
+    await page.screenshot({ path: `${shots}${p.key}-${withExtension ? 'after' : 'before'}.jpg`, type: 'jpeg', quality: 80 });
     await page.close();
   }
   await ctx.close();

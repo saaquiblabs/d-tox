@@ -80,6 +80,10 @@ html[dark] #dtox-i {
 #dtox-i.D nav a { display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 16px; border-radius: 18px; font-size: 14px; font-weight: 500; background: var(--yt-spec-badge-chip-background, #0000000d); }
 #dtox-i.D nav a:hover { background: var(--yt-spec-10-percent-layer, #0000001a); }
 #dtox-i.D nav svg { width: 20px; height: 20px; }
+html[dark] #dtox-i.D { color: #f1f1f1; }
+html[dark] #dtox-i.D .up, html[dark] #dtox-i.D p { color: #aaa; }
+html[dark] #dtox-i.D nav a { background: #ffffff1a; }
+html[dark] #dtox-i.D nav a:hover { background: #ffffff33; }
 
 /* ---------- prototype switcher (not part of the design) ---------- */
 #dtox-proto { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 9999; display: none; align-items: center; gap: 6px; background: #E8FF59; color: #111; font: 600 13px/1 system-ui, sans-serif; padding: 6px; border-radius: 999px; box-shadow: 0 6px 24px rgb(0 0 0 / .35); border: 2px solid #111; }

@@ -84,7 +84,23 @@ Chrome no longer takes --load-extension). Yellow bar at the bottom switches vari
   - **New mark:** a folded "D" (two slabs with gaps, like the S) with one lit dot in its counter, "the
     one thing you came for". `logo/d-ivory.svg` (hero, closest to the studio's S), `logo/d-mint.svg`,
     `logo/d-small.svg` (flat, 16–32 px). The play-button marks (`mark-*.svg`) are superseded.
-  - Next: Najmush reacts to H + popup D + the D mark; then record all three #22 picks in #22 and here.
+  - Verdict on 2c (2026-11-19): the drawn before/after "looks crap" → use **real screenshots**, shown
+    like saaquiblabs.com / mihrabummah.com (browser frames on a deep panel, numbered pill tabs,
+    neighbours peeking); the tiles section "behaves out of the box" → **Dossier-style scroll**
+    (dossier.aien.me: words scroll on the left, the product stays pinned on the right and follows);
+    the close + footer read as "two footers" → one footer fused with the giant grainy wordmark; the
+    mark was inconsistent (mint small vs ivory large).
+  - **H is now "Pass 2d · Night, real shots, story"**: showcase panel with real captures (Watch,
+    Search for "how to make pasta", Home), the neighbours peeking, ← →, and a "With D-Tox" switch that
+    crossfades before/after (flips once in view); five steps (Home, Watch, Shorts, Search, Everywhere)
+    with the popup pinned and switching tab per step, an accent progress line; one footer: the
+    privacy close, link columns and the legal line over a grainy giant "D-Tox" + mark. One mark
+    everywhere: ivory slabs + mint dot (`logo/d-ivory.svg`, flat `logo/d-small.svg`).
+  - Captures (`extension/scripts/prototype-capture.mjs product`, `Q=how+to+make+pasta`): 1440×900 @1.5,
+    **YouTube dark theme** (cookie `PREF=f6=400`), the watch player shows the video's thumbnail (video is
+    blocked, which left a pre-roll ad poster). Fixed on the way: the Intention Page prototype (D) was
+    unreadable on YouTube's dark theme (`html[dark]` overrides in `intention-proto.css`).
+  - Next: Najmush reacts to 2d (page H, popup D, the mark). Then record all three #22 picks in #22 and here.
 
 ## Decisions (grill, 2026-11-18)
 
