@@ -7,7 +7,7 @@ page are ported. Pages: `/` (a stand-in until #27), `/welcome`, `/privacy`, 404.
 
 ```sh
 cd site
-npm ci                       # also turns on the pre-push hook (.githooks/)
+npm ci
 npx playwright install chromium   # once, for Lighthouse
 npm run dev                  # http://localhost:4321
 npm run typecheck            # astro check
@@ -29,7 +29,7 @@ npm run sync-brand           # refresh the brand copies (needs your access to sa
 - **Verify:** budgets are those of the studio site (saaquiblabs ADR 0014): Lighthouse 100 in all four
   categories on phone and desktop for every sitemap page, page JS < 50 KB, page < 400 KB, every
   link answers. `node tests/verify.mjs /welcome` re-runs Lighthouse on one page after a build.
-  Callers: the Openship build and the pre-push hook. No GitHub Actions (ADR 0003).
+  Caller: the Openship build. No GitHub Actions (ADR 0003).
 - **Versions:** exact pins only (`.npmrc`). Astro 7.4.7, Node ≥ 22.12, npm 11.19.1.
 
 ## Going live: [HUMAN] steps

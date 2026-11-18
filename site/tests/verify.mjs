@@ -1,7 +1,7 @@
 // The launch gate, ported from the saaquiblabs studio site's tests/verify.mjs (saaquiblabs ADR 0014):
 // link check + Lighthouse with the studio's budgets, on the built site. `npm run verify` runs the
 // unit tests, builds, checks /welcome against settings.json (tests/welcome.mjs), then runs this. The
-// Openship build and the git pre-push hook both call that same command; keep every budget here.
+// Openship build calls that same command; keep every budget here.
 //
 // Budgets: Lighthouse 100 in all four categories, page JS < 50 KB, page < 400 KB. Bytes are what the
 // page loads, measured uncompressed (the local server doesn't gzip), so the live page is lighter.

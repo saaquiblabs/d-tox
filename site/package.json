@@ -14,8 +14,7 @@
     "typecheck": "astro check",
     "test": "node --test tests/*.test.mjs",
     "sync-brand": "node scripts/sync-brand.mjs",
-    "verify": "npm test && npm run build && node tests/welcome.mjs && node tests/verify.mjs",
-    "prepare": "git -C .. config core.hooksPath .githooks 2>/dev/null || true"
+    "verify": "npm test && npm run build && node tests/welcome.mjs && node tests/verify.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "3.7.4",
