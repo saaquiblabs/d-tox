@@ -63,13 +63,14 @@ finished: 32 questions, all answered by Najmush on 2026-11-18. **Read `CONTEXT.m
 
 ## Pipeline
 
-research ✅ → grill ✅ → `/to-spec` (next) → `/to-tickets` → prototypes of the popup,
+research ✅ → grill ✅ → spec ✅ (#16) → `/to-tickets` (next) → prototypes of the popup,
 Intention Page and product page (seen running before anything is picked) → `/implement #n`.
 
 ## Next step
 
-Najmush confirms that this summary is the shared understanding, then `/to-spec` turns it into
-a GitHub issue spec on `saaquiblabs/d-tox`.
+Najmush confirmed the shared understanding and the test points (2026-11-18). The spec is
+issue #16 (`ready-for-agent`). Next: `/to-tickets` on #16. The first tickets should be the
+Settings list and the saved-page test setup, because everything else hangs off them.
 
 ## Standing rules
 
