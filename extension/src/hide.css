@@ -9,3 +9,32 @@
 html[data-dtox-comments] ytd-watch-flexy ytd-comments#comments {
   display: none !important;
 }
+
+/*
+ * Shorts. Every way in is hidden, but never the Short itself: nothing here matches inside
+ * ytd-shorts, so a Short opened from a link still plays. More Shorts rules in hide-rys.css.
+ */
+
+/* Everywhere · the menu's Shorts link. The narrow menu links to /shorts/. The full menu's
+   Shorts entry has no link at all; it is the only entry without one in the first section. */
+html[data-dtox-shorts] ytd-mini-guide-entry-renderer > a[href="/shorts/"],
+html[data-dtox-shorts] ytd-guide-section-renderer:first-child > #items > ytd-guide-entry-renderer > a#endpoint:not([href]),
+/* Home, Subscriptions and other browse pages · Shorts shelves (signed in) */
+html[data-dtox-shorts] ytd-browse ytd-rich-shelf-renderer[is-shorts],
+/* Channel · the Shorts tab's grid, its "load more" with it. The tab itself can only be told
+   apart by its text, so it stays (ADR 0001). */
+html[data-dtox-shorts] ytd-browse[page-subtype="channels"] ytd-rich-grid-renderer[is-shorts-grid],
+/* Search · a single Short among the results. :has() 1 of 5, child steps only. */
+html[data-dtox-shorts] ytd-search ytd-item-section-renderer > #contents > ytd-video-renderer:has(> #dismissible > ytd-thumbnail > a#thumbnail[href^="/shorts/"]) {
+  display: none !important;
+}
+
+/* Search · search clean-up: the cards YouTube puts between results. Results stay. */
+html[data-dtox-search-clean-up] ytd-search ytd-item-section-renderer > #contents > ytd-horizontal-card-list-renderer {
+  display: none !important;
+}
+
+/* Everywhere · Playables in the menu */
+html[data-dtox-explore] :is(ytd-guide-renderer, ytd-mini-guide-renderer) a[href^="/playables"] {
+  display: none !important;
+}

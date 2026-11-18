@@ -29,7 +29,7 @@ const manifest = {
     {
       matches: ['https://www.youtube.com/*'],
       run_at: 'document_start',
-      css: ['hide.css'],
+      css: ['hide.css', 'hide-rys.css'],
       js: ['content.js'],
     },
   ],
@@ -40,6 +40,7 @@ const options = {
     content: join(root, 'src/content.ts'),
     popup: join(root, 'src/popup/popup.ts'),
     hide: join(root, 'src/hide.css'),
+    'hide-rys': join(root, 'src/hide-rys.css'), // MPL-2.0, kept as its own file
     'popup-style': join(root, 'src/popup/popup.css'),
   },
   outdir: out,
@@ -47,7 +48,7 @@ const options = {
   minify: true,
   format: 'iife',
   target: 'chrome120',
-  legalComments: 'none',
+  legalComments: 'inline', // keeps hide-rys.css's MPL-2.0 notice (/*! */) in dist
   define: { __DTOX_CALM_DEFAULT__: JSON.stringify(calmDefault) },
   logLevel: 'warning',
 };

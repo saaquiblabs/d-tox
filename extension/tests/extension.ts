@@ -2,6 +2,7 @@ import { test as base, chromium, type BrowserContext, type Page } from '@playwri
 import { createHash } from 'node:crypto';
 import { readFileSync, realpathSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
+import { pages, type PageName } from './cases';
 
 const dist = realpathSync(fileURLToPath(new URL('../dist', import.meta.url)));
 const fixtures = fileURLToPath(new URL('./fixtures/', import.meta.url));
@@ -12,10 +13,19 @@ const extensionId = [...createHash('sha256').update(dist).digest('hex').slice(0,
   .map((c) => String.fromCharCode(97 + parseInt(c, 16)))
   .join('');
 
+/** Which saved page answers a URL: each page at its own URL, and any other video's watch URL
+ *  gets the saved watch page (that is where the Shorts redirect lands). */
+function savedPageFor(href: string): PageName | undefined {
+  const url = new URL(href);
+  const name = (Object.keys(pages) as PageName[]).find((p) => pages[p] === url.href);
+  if (name) return name;
+  if (url.origin === 'https://www.youtube.com' && url.pathname === '/watch') return 'watch';
+}
+
 type Fixtures = {
   context: BrowserContext;
   /** Opens a saved page at its youtube.com URL. Nothing else is fetched. */
-  openSaved: (fixture: string, url: string) => Promise<Page>;
+  openSaved: (page: PageName) => Promise<Page>;
   /** Opens the extension's popup in its own tab. */
   openPopup: () => Promise<Page>;
 };
@@ -26,19 +36,19 @@ export const test = base.extend<Fixtures>({
       channel: 'chromium',
       args: [`--disable-extensions-except=${dist}`, `--load-extension=${dist}`],
     });
+    await context.route((u) => u.protocol === 'https:' || u.protocol === 'http:', (route) => {
+      const name = savedPageFor(route.request().url());
+      if (!name) return route.abort();
+      const body = readFileSync(fixtures + name + '.html', 'utf8');
+      return route.fulfill({ status: 200, contentType: 'text/html; charset=utf-8', body });
+    });
     await use(context);
     await context.close();
   },
   openSaved: async ({ context }, use) => {
-    await use(async (fixture, url) => {
-      const html = readFileSync(fixtures + fixture, 'utf8');
-      await context.route((u) => u.protocol === 'https:' || u.protocol === 'http:', (route) =>
-        route.request().url() === url
-          ? route.fulfill({ status: 200, contentType: 'text/html; charset=utf-8', body: html })
-          : route.abort(),
-      );
+    await use(async (name) => {
       const page = await context.newPage();
-      await page.goto(url);
+      await page.goto(pages[name]);
       return page;
     });
   },

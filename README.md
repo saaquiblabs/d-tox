@@ -37,6 +37,10 @@ follows storage changes, which is how the popup applies to open tabs at once (AD
 ### Adding a Setting
 
 1. Add it to `settings.json` (id, name, "Hides …" line, group, type, Calm Default value).
-2. Add its rule to `extension/src/hide.css`, gated on `html[data-dtox-<id>]`.
-3. Add a case to `extension/tests/cases.ts`; if it needs a page not yet saved, capture one with
-   `node tests/fixtures/capture.mjs <name> <youtube url>`. The tests fail until both exist.
+2. Add its rule to `extension/src/hide.css`, gated on `html[data-dtox-<id>]` and scoped to its
+   page. Selectors ported from RYS go in `extension/src/hide-rys.css`, which stays MPL-2.0.
+3. Add its pages to `extension/tests/cases.ts`: what it hides and what it keeps on each. If it
+   needs a page not yet saved, capture one with
+   `node tests/fixtures/capture.mjs <name> <youtube url> [width]` and add it to `pages`. The
+   tests fail until both exist. Every Setting is also checked on every saved page to hide
+   nothing beyond what its cases list.
