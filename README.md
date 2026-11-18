@@ -19,7 +19,7 @@ it stays measurably light. A Saaquib Labs product. MIT.
 
 ```bash
 cd extension
-npm ci                 # also turns on the pre-push hook (.githooks/)
+npm ci
 npx playwright install chromium   # once
 npm run build          # dist/ — fails above 40 KB excluding icons
 npm test               # typecheck, build, saved-page tests
@@ -60,7 +60,7 @@ observers).
 
 ```bash
 cd site
-npm ci                 # also turns on the pre-push hook
+npm ci
 npm run dev            # http://localhost:4321
 npm run verify         # tests, build, /welcome vs settings.json, links, Lighthouse 100s
 ```

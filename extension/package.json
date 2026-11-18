@@ -11,8 +11,7 @@
     "build": "node scripts/build.mjs",
     "dev": "node scripts/build.mjs --watch",
     "typecheck": "tsc --noEmit",
-    "test": "npm run typecheck && npm run build && playwright test",
-    "prepare": "git -C .. config core.hooksPath .githooks 2>/dev/null || true"
+    "test": "npm run typecheck && npm run build && playwright test"
   },
   "devDependencies": {
     "@playwright/test": "1.63.0",

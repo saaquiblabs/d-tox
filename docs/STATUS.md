@@ -13,7 +13,7 @@ finished: 32 questions, all answered by Najmush on 2026-11-18. **Read `CONTEXT.m
 - Agent-skills config: `CLAUDE.md` and `docs/agents/` (GitHub Issues, default triage labels).
 - **Code exists now (#18, PR #30, merged 2026-11-18).** v1.4.1 is removed. `settings.json` (one
   Setting so far: comments), `extension/` (esbuild build, `src/hide.css`, `src/content.ts`, plain
-  popup, saved-page Playwright tests), `.githooks/pre-push`, placeholder `site/` and `checks/`.
+  popup, saved-page Playwright tests), placeholder `site/` and `checks/`.
   How to build, test and add a Setting: root `README.md`.
 - **Site (#26) is live (2026-11-19)** at `d-tox.saaquiblabs.com`, Umami included; Najmush
   checked it. `site/`: Astro static, `/` (stand-in for #27), `/welcome`, `/privacy`, 404;
@@ -171,11 +171,14 @@ Start Claude inside the worktree and say: "Continue #19 from the STATUS table."
 **Carry-overs from #18's review** (the flash is fixed in #19)
 - The popup builds switches only; the Home choice needs a `<select>` (#21).
 - No test yet checks a Setting hides nothing on other pages (spec #16, Testing Decisions).
-- The pre-push hook is turned on by `npm ci` in `extension/` (`prepare` sets `core.hooksPath`).
 - Root `promo-*.html` and `assets/` are v1 store material, left for #26/#28 to replace or remove.
 
 **Workflow:** every PR updates this file in the same PR (last commit before the push). No
 separate STATUS PRs. Feature PRs merge only on Najmush's go-ahead.
+
+**No git hooks** (Najmush, 2026-11-19): the pre-push hook is removed. Run `npm test` in
+`extension/` and `npm run verify` in `site/` yourself before a PR; the Openship build still runs
+the site gate. On a machine that ran `npm ci` before: `git config --unset core.hooksPath`.
 
 **Code review only when it is needed** (Najmush, 2026-11-18): once per ticket, before its first PR,
 when the ticket adds or changes behaviour. Not after test runs, rebases, fixes to earlier review
