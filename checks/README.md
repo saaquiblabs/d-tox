@@ -7,19 +7,20 @@ push live with the extension in `extension/tests/`.
 ## Nightly check
 
 For every Setting in `settings.json`, in English and then in Hindi: open its page from
-`extension/tests/cases.ts` on live YouTube, scroll until each of its Distractions is in the page
-with D-Tox off, turn the Setting on and expect a rule in `hide.css` to match each one. Chromium
-loads only `extension/src/hide.css`, injected by Chrome before the page draws, as the real
-extension does; the check's copy marks each hide rule with a custom property, so "the rule
-matches" is checked directly, even for things YouTube isn't showing. Video, images and ads are
-never fetched, so nothing plays. Distractions YouTube builds only once a video plays or ends
-(`needPlayback` in `cases.ts`, such as the end-screen grid) are left to the saved-page tests and the
-Release Gate.
+`extension/tests/cases.ts` on live YouTube (its `liveUrl` if it has one, at its `width`), scroll
+until each of its Distractions is in the page with D-Tox off, turn the Setting on and expect a
+hide rule to match each one. Chromium loads only the extension's stylesheets (every `.css` at the
+top of `extension/src/`), injected by Chrome before the page draws, as the real extension does;
+the check's copy marks each hide rule with a custom property, so "the rule matches" is checked
+directly, even for things YouTube isn't showing. Video, images and ads are never fetched, so
+nothing plays, and the check is signed out. Distractions that need a playing video or a signed-in
+account (`needs` in `cases.ts`: the end-screen grid, the bell) are left to the saved-page tests
+and the Release Gate. A full run (9 Settings) takes about 3 minutes.
 
 ```bash
 cd checks
 npm ci
-npm run nightly        # about a minute per Setting; exit 1 on any failure
+npm run nightly        # exit 1 on any failure
 npm test               # typecheck + the checker against saved pages and a fake GitHub
 ```
 
@@ -27,8 +28,9 @@ npm test               # typecheck + the checker against saved pages and a fake 
 |------|-------|-----|
 | `✓ Comments (comments), Hindi` | found and hidden | — |
 | `✓ … (2 of 5 Distractions need a playing video: not checked)` | the rest were found and hidden | — |
-| `not found` | YouTube no longer builds the Distraction as `cases.ts` describes it | update the selector in `cases.ts`, recapture the saved page |
-| `still visible` | the rule in `hide.css` no longer matches | fix the rule |
+| `not found` | YouTube no longer builds the Distraction as `cases.ts` describes it, or not on that page today | look at the page in a browser; update the selector in `cases.ts` (no text: it runs in Hindi too) and recapture the saved page, or pick a better `liveUrl` |
+| `still visible` | the rule in `extension/src/*.css` no longer matches | fix the rule |
+| `skipped, its Distractions need a signed-in account` | nothing it hides shows to a signed-out visitor (the bell) | — |
 | `skipped, it changes a behaviour` | behaviour Settings (Autoplay off) are tested by their own spec, not here | — |
 | `BLOCKED in Hindi` | bot check, consent page, page in the wrong language, or YouTube didn't load | not a pass: nothing was checked in that language |
 | `skipped, choice Settings…` | choice Settings (Home) have no live check yet | add one with #21 |

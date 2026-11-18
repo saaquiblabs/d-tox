@@ -1,11 +1,11 @@
 // Checks Settings against live YouTube. Chromium loads a stripped-down D-Tox: only
-// extension/src/hide.css, injected by Chrome at document_start exactly as the real extension
+// its stylesheets (extension/src/*.css), injected by Chrome at document_start exactly as the real extension
 // does. For each Setting the check finds each of its Distractions in the page with D-Tox off,
 // then puts the Setting's attribute on <html> (what content.ts does) and expects a hide rule to
 // match it. Matching, not visibility: end screens only show when a video ends, and no video plays.
 // Video and images are never fetched, so nothing plays.
 import { chromium, type BrowserContext, type Page } from 'playwright';
-import { mkdtemp, writeFile } from 'node:fs/promises';
+import { mkdtemp, readdir, readFile, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import type { Case, Hides } from '../../extension/tests/cases.ts';
@@ -23,6 +23,13 @@ export const languages: Language[] = [
 /** Media, images and ads: aborted so no video plays and the check stays light. */
 const blocked = /googlevideo\.com|\/ytimg|ggpht\.com|doubleclick|googlesyndication|\.(jpg|jpeg|png|webp|gif|mp4|webm)(\?|$)/;
 
+/** Every stylesheet the extension injects, joined: the .css files at the top of extension/src (the popup's is in src/popup/). */
+export async function readStylesheets() {
+  const src = new URL('../../extension/src/', import.meta.url);
+  const sheets = (await readdir(src)).filter((f) => f.endsWith('.css')).sort();
+  return (await Promise.all(sheets.map((f) => readFile(new URL(f, src), 'utf8')))).join('\n');
+}
+
 /** Proves the stylesheet loaded: without it every Setting would look broken. */
 const probe = 'html[data-dtox-nightly-probe] { --dtox-nightly-probe: 1; }';
 
@@ -33,7 +40,7 @@ const probe = 'html[data-dtox-nightly-probe] { --dtox-nightly-probe: 1; }';
 const hiddenMark = '--dtox-nightly-hidden';
 export function markHideRules(css: string) {
   const marked = css.replace(/display\s*:\s*none\s*!important\s*;?/g, `display: none !important; ${hiddenMark}: 1;`);
-  if (marked === css) throw new Error('the check is broken: hide.css has no `display: none !important` rule to mark');
+  if (marked === css) throw new Error('the check is broken: the stylesheets have no `display: none !important` rule to mark');
   return marked;
 }
 
@@ -127,27 +134,31 @@ async function setAttribute(page: Page, name: string) {
 type Outcome = { blocked: string } | { problem: string } | { ok: true };
 
 /** The Distractions the check can find without playing a video. */
-const checkable = (c: Hides) => c.distractions.filter((s) => !c.needPlayback?.includes(s));
+const checkable = (c: Hides) => c.distractions.filter((s) => !c.needs?.[s]);
+/** What the unchecked Distractions need, e.g. "a playing video". */
+const needed = (c: Hides) => [...new Set(Object.values(c.needs ?? {}))].join(' or ');
 
 async function checkOnce(context: BrowserContext, language: Language, setting: Setting, c: Hides, o: Required<Options>): Promise<Outcome> {
+  const url = c.liveUrl ?? c.url;
   const page = await context.newPage();
+  if (c.width) await page.setViewportSize({ width: c.width, height: 900 });
   try {
     try {
-      await page.goto(withHl(c.url, language.hl), { waitUntil: 'domcontentloaded', timeout: 45_000 });
+      await page.goto(withHl(url, language.hl), { waitUntil: 'domcontentloaded', timeout: 45_000 });
     } catch (e) {
-      return { blocked: `YouTube did not load ${c.url}: ${(e as Error).message.split('\n')[0]}` };
+      return { blocked: `YouTube did not load ${url}: ${(e as Error).message.split('\n')[0]}` };
     }
     const why = await blockedReason(page, language);
     if (why) return { blocked: why };
 
     await setAttribute(page, 'data-dtox-nightly-probe');
     const loaded = await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--dtox-nightly-probe').trim());
-    if (loaded !== '1') throw new Error('the check is broken: Chrome did not apply hide.css to the page');
+    if (loaded !== '1') throw new Error('the check is broken: Chrome did not apply the stylesheets to the page');
 
     const list = (sels: string[]) => sels.map((s) => `\`${s}\``).join(', ');
     const distractions = checkable(c);
     const missing = await reveal(page, distractions, o.revealTries, o.settleMs);
-    if (missing.length) return { problem: `not found: nothing matches ${list(missing)} on ${c.url}` };
+    if (missing.length) return { problem: `not found: nothing matches ${list(missing)} on ${url}` };
 
     if ((await unmatched(page, distractions)).length < distractions.length)
       throw new Error('the check is broken: a Distraction is marked hidden with every Setting off');
@@ -155,7 +166,7 @@ async function checkOnce(context: BrowserContext, language: Language, setting: S
     let left = await unmatched(page, distractions);
     for (const end = Date.now() + o.hideTimeoutMs; left.length && Date.now() < end; left = await unmatched(page, distractions))
       await page.waitForTimeout(100);
-    if (left.length) return { problem: `still visible: no hide rule matches ${list(left)} on ${c.url} with the Setting on` };
+    if (left.length) return { problem: `still visible: no hide rule matches ${list(left)} on ${url} with the Setting on` };
     return { ok: true };
   } finally {
     await page.close();
@@ -193,6 +204,10 @@ export async function checkLanguage(
       lines.push(`  -  ${label}: skipped, it changes a behaviour (tested in extension/tests/${c.spec})`);
       continue;
     }
+    if (checkable(c).length === 0) {
+      lines.push(`  -  ${label}: skipped, its Distractions need ${needed(c)} (tested on saved pages)`);
+      continue;
+    }
     // A block on any try wins over a later problem: a half-loaded retry must not blame the Setting.
     let outcome = await checkOnce(context, language, setting, c, o);
     for (let i = 1; i < o.tries && !('ok' in outcome); i++) {
@@ -210,7 +225,7 @@ export async function checkLanguage(
       lines.push(`  ✗  ${label}: ${outcome.problem}`);
     } else {
       const unchecked = c.distractions.length - checkable(c).length;
-      lines.push(`  ✓  ${label}${unchecked ? ` (${unchecked} of ${c.distractions.length} Distractions need a playing video: not checked)` : ''}`);
+      lines.push(`  ✓  ${label}${unchecked ? ` (${unchecked} of ${c.distractions.length} Distractions need ${needed(c)}: not checked)` : ''}`);
     }
   }
   return { results, lines };

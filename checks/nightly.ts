@@ -3,14 +3,13 @@
 //   npm run nightly                 check, print the result, exit 1 on any failure
 //   DTOX_ISSUES_TOKEN=… npm run nightly   also open a needs-triage issue per broken Setting
 // On the home VPS this runs as the Openship job `d-tox nightly` through job.mjs.
-import { readFile } from 'node:fs/promises';
 import settings from '../settings.json' with { type: 'json' };
 import { cases } from '../extension/tests/cases.ts';
 import { fileIssues, type Result } from './lib/issues.ts';
-import { checkLanguage, languages, launch } from './lib/live.ts';
+import { checkLanguage, languages, launch, readStylesheets } from './lib/live.ts';
 
 const repo = 'saaquiblabs/d-tox';
-const hideCss = await readFile(new URL('../extension/src/hide.css', import.meta.url), 'utf8');
+const hideCss = await readStylesheets();
 
 console.log(`\nD-Tox nightly check: ${settings.length} Settings × ${languages.map((l) => l.name).join(', ')}`);
 const results: Result[] = [];

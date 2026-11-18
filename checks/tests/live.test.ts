@@ -5,10 +5,10 @@ import { readFileSync } from 'node:fs';
 import { test, type TestContext } from 'node:test';
 import type { BrowserContext } from 'playwright';
 import { cases, type Case, type Hides } from '../../extension/tests/cases.ts';
-import { checkLanguage, languages, launch, type Setting } from '../lib/live.ts';
+import { checkLanguage, languages, launch, readStylesheets, type Setting } from '../lib/live.ts';
 
 const watchHtml = readFileSync(new URL('../../extension/tests/fixtures/watch.html', import.meta.url), 'utf8');
-const hideCss = readFileSync(new URL('../../extension/src/hide.css', import.meta.url), 'utf8');
+const hideCss = await readStylesheets();
 const [english, hindi] = languages;
 const fast = { revealTries: 2, settleMs: 100, hideTimeoutMs: 1500, tries: 1 };
 
@@ -144,7 +144,7 @@ test('a Distraction that needs a playing video is not looked for', async (t) => 
   // Comment threads are missing, as end screens are when no video has played.
   await serve(context, { '/watch': watchHtml.replaceAll('ytd-comment-thread-renderer', 'x-gone') });
   const thread = 'ytd-watch-flexy #comments ytd-comment-thread-renderer';
-  const c: Case = { ...(cases.comments as Hides), distractions: [thread, 'ytd-watch-flexy ytd-comments#comments'], needPlayback: [thread] };
+  const c: Case = { ...(cases.comments as Hides), distractions: [thread, 'ytd-watch-flexy ytd-comments#comments'], needs: { [thread]: 'a playing video' } };
   const { results } = await checkLanguage(context, english!, [comments], { comments: c }, fast);
   assert.deepEqual(results, []);
 });
@@ -171,4 +171,35 @@ test('a block on the first try is not turned into a broken Setting by a half-loa
   assert.equal(loads, 2);
   assert.equal(results.length, 1);
   assert.equal(results[0]!.kind, 'blocked');
+});
+
+test('every stylesheet the extension injects is loaded, not only hide.css', async (t) => {
+  // Search clean-up's rule is in hide-rys.css.
+  const searchHtml = readFileSync(new URL('../../extension/tests/fixtures/search.html', import.meta.url), 'utf8');
+  const context = await open(t);
+  await serve(context, { '/results': searchHtml });
+  const cleanUp: Setting = { id: 'search-clean-up', name: 'Search clean-up', type: 'switch' };
+  const { results } = await checkLanguage(context, english!, [cleanUp], cases, fast);
+  assert.deepEqual(results, []);
+});
+
+test('a Setting whose every Distraction needs sign-in is skipped with the reason', async (t) => {
+  const context = await open(t);
+  await serve(context, {});
+  const bell: Setting = { id: 'bell', name: 'Notifications bell', type: 'switch' };
+  const { results, lines } = await checkLanguage(context, english!, [bell], cases, fast);
+  assert.deepEqual(results, []);
+  assert.match(lines.join('\n'), /bell.*skipped.*a signed-in account/);
+});
+
+test('a page captured wide is opened at that width', async (t) => {
+  const gamingHtml = readFileSync(new URL('../../extension/tests/fixtures/gaming.html', import.meta.url), 'utf8');
+  const context = await open(t);
+  await serve(context, { '/gaming': gamingHtml });
+  let width = 0;
+  context.on('page', (p) => p.on('domcontentloaded', () => (width = p.viewportSize()!.width)));
+  const explore: Setting = { id: 'explore', name: 'Explore', type: 'switch' };
+  const { results } = await checkLanguage(context, english!, [explore], cases, fast);
+  assert.deepEqual(results, []);
+  assert.equal(width, 1600);
 });
