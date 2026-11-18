@@ -43,7 +43,8 @@ Chrome no longer takes --load-extension). Yellow bar at the bottom switches vari
   saaquiblabs.com. Asked for its own identity: better colour and composition, **dark by default**,
   rich. (Dark by default departs from the studio's ADR 0011, follow-the-system; record in #27.)
   Variant E ("own identity, dark") built: spruce/plum/amber palettes (`?palette=`), mint = calm, ember = the pull,
-  serif italic second beats. Waiting for his verdict.
+  serif italic second beats. Verdict (2026-11-19): "closer, not there"; no specifics yet. Next session: ask what
+  to change, then another pass on E. When all three are picked, record them in #22 and here.
 
 ## Decisions (grill, 2026-11-18)
 
