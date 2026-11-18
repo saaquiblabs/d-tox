@@ -31,76 +31,52 @@ finished: 32 questions, all answered by Najmush on 2026-11-18. **Read `CONTEXT.m
 
 How to see them: `python3 -m http.server 4322 --bind 127.0.0.1` at the repo root, then in
 `extension/`: `npm ci && npm run build && node scripts/prototype-open.mjs` (Playwright Chromium; branded
-Chrome no longer takes --load-extension). Yellow bar at the bottom switches variants.
+Chrome no longer takes --load-extension). It opens YouTube (Intention Page), the popup in a tab, and the
+product page; the profile lives in `extension/proto-profile/` (git-ignored).
 
-- **Popup: B, "Graphite card + tabs"** (Najmush, 2026-11-19). `extension/src/popup/popup-proto.*`.
+- **Popup: D, "B with air"** (B "Graphite card + tabs" picked 2026-11-19, then made calmer after the H
+  verdict): 400 px, one line per Setting, the "what it hides" line behind "?", text tabs with a dot.
+  `extension/src/popup/popup-proto.*`. The product page shows the same popup.
 - **Intention Page: D, "No second search box"** (Najmush, 2026-11-19): no search box of its own;
   asks "What are you here for?", points up at YouTube's search and puts the cursor there, keeps
   Subscriptions and Watch later. Najmush: "we already have a search button on youtube then WHY
   this?" This changes the grill decision (Intention Page had its own search box): update CONTEXT.md
   in #21. `extension/src/intention-proto.*`.
-- **Product page: not picked yet.** A–C seen; D ("the mix") was rejected as looking exactly like
-  saaquiblabs.com. Asked for its own identity: better colour and composition, **dark by default**,
-  rich. (Dark by default departs from the studio's ADR 0011, follow-the-system; record in #27.)
-  Variant E ("own identity, dark") built: spruce/plum/amber palettes (`?palette=`), mint = calm, ember = the pull,
-  serif italic second beats. Verdict (2026-11-19): "closer, not there", then this brief (Najmush's words):
-  "we need better color composition and richness design and SPECIALLY Better Typography while keeping
-  things Simple and DO not BLAB everything - specially do not compare with UnHook that makes us small
-  ... just say what we offer as Value - infact the logo will also be affected now we need a better color
-  compsition logo just like we have for saaquiblabs - 3d and what not BUT still so far E is something we
-  have done good - there are tons of awsome products which showcase theirself in a minimal soft approach
-  without being too much loud ... so do due deligence research and surprise me"
-
-  **Pass 2 built (2026-11-19), waiting for Najmush to pick.** Research:
-  `docs/research/2026-11-product-page-direction.md` (Satoshi/General Sans are out: their licence
-  forbids public repos; the OFL fonts are fine as woff2 + `OFL.txt`).
-  - **F, "Night":** Instrument Serif + Inter, spruce near-black, mint mark, centred hero with the
-    Intention Page rising below it.
-  - **G, "Dawn":** Fraunces (SOFT 100) + Hanken Grotesk, plum near-black, peach→violet mark, split hero
-    with the mark lit like a sunrise.
-  - Both: no Unhook/RYS comparison (Najmush's call; still to record in CONTEXT.md and #27), one short
-    line per heading, sections: hero, before/after, ten switches + popup, three numbers, privacy close.
-    Fonts load from Google Fonts in the prototype only.
-  - **New mark** (`site/prototype-home/logo/`): a "D" that is also a play button, two folded slabs with
-    a gap, like the Saaquib Labs S. `mark-a.svg` (mint), `mark-dawn.svg`, `mark-ivory.svg` for 64 px and
-    up; `mark-small*.svg` flat for 16–32 px. The prototype popup shows it (`extension/public/proto-mark-*.png`);
-    the real `icon-*.png` are unchanged until a pick.
-  - Verdict on F/G (2026-11-19): "cramped, literally no breathing space"; the before/after showed no
-    difference (signed-out captures: Home and Search barely change, only Watch does); no real header;
-    wants a giant footer like px0.ai; G's first look beats F's.
-  - **H, "Dawn, roomy"** (built from G): sticky glass header (nav, GitHub, Add to Chrome); sections
-    ~120–220 px apart; the before/after is a *drawn* watch page whose suggestions, Shorts, comments, end
-    screen and bell blur away when "With D-Tox" is on (flips once by itself in view); Settings as roomy
-    tiles with names only (descriptions live in the popup beside them); giant footer: four link columns,
-    then a huge faded "D-Tox" wordmark with the mark.
-  - Verdict on H (2026-11-19): keep **F's colour and type** (Instrument Serif + Inter, spruce/mint);
-    the *popup* was the cramped part ("so much information bombarded"); too many dividing lines near
-    the footer; the play-button mark "looks like a player".
-  - So H is now **"Night, roomy, new mark"**: F's tokens and fonts on H's layout; dividers above and in
-    the footer removed; header shadow instead of a line. **Popup D** ("B with air",
-    `extension/src/popup/popup-proto.*`): 400 px wide, one line per Setting, the "what it hides"
-    sentence behind a "?" button, text tabs with a dot when a group has something on; the page shows
-    the same popup.
-  - **New mark:** a folded "D" (two slabs with gaps, like the S) with one lit dot in its counter, "the
-    one thing you came for". `logo/d-ivory.svg` (hero, closest to the studio's S), `logo/d-mint.svg`,
-    `logo/d-small.svg` (flat, 16–32 px). The play-button marks (`mark-*.svg`) are superseded.
-  - Verdict on 2c (2026-11-19): the drawn before/after "looks crap" → use **real screenshots**, shown
-    like saaquiblabs.com / mihrabummah.com (browser frames on a deep panel, numbered pill tabs,
-    neighbours peeking); the tiles section "behaves out of the box" → **Dossier-style scroll**
-    (dossier.aien.me: words scroll on the left, the product stays pinned on the right and follows);
-    the close + footer read as "two footers" → one footer fused with the giant grainy wordmark; the
-    mark was inconsistent (mint small vs ivory large).
-  - **H is now "Pass 2d · Night, real shots, story"**: showcase panel with real captures (Watch,
-    Search for "how to make pasta", Home), the neighbours peeking, ← →, and a "With D-Tox" switch that
-    crossfades before/after (flips once in view); five steps (Home, Watch, Shorts, Search, Everywhere)
-    with the popup pinned and switching tab per step, an accent progress line; one footer: the
-    privacy close, link columns and the legal line over a grainy giant "D-Tox" + mark. One mark
-    everywhere: ivory slabs + mint dot (`logo/d-ivory.svg`, flat `logo/d-small.svg`).
-  - Captures (`extension/scripts/prototype-capture.mjs product`, `Q=how+to+make+pasta`): 1440×900 @1.5,
-    **YouTube dark theme** (cookie `PREF=f6=400`), the watch player shows the video's thumbnail (video is
-    blocked, which left a pre-roll ad poster). Fixed on the way: the Intention Page prototype (D) was
-    unreadable on YouTube's dark theme (`html[dark]` overrides in `intention-proto.css`).
-  - Next: Najmush reacts to 2d (page H, popup D, the mark). Then record all three #22 picks in #22 and here.
+- **Product page: direction H ("Night"), still being refined.** Najmush (2026-11-19): keep only H;
+  variants A–G are deleted from `site/prototype-home/index.html` (git history has them, up to bf69d88).
+  The page is now H alone, standalone, dark only, at `http://127.0.0.1:4322/site/prototype-home/`.
+  - Look: Instrument Serif + Inter (OFL; Google Fonts in the prototype only, the real site self-hosts),
+    spruce near-black `#090F0D`, mint `#7CF0C4`. Mark: folded "D" (two slabs, like the studio's S)
+    with one mint dot, `logo/d-ivory.svg` (64 px and up), flat `logo/d-small.svg` (16–32 px). The
+    play-button marks are deleted.
+  - Copy rules (Najmush): one short line per heading, say what we offer, **no comparison with Unhook
+    or RYS** (still to record in CONTEXT.md and #27; dark by default departs from studio ADR 0011).
+  - Research: `docs/research/2026-11-product-page-direction.md` (Satoshi/General Sans are out: their
+    licence forbids public repos).
+  - History of verdicts: E "closer, not there" → F/G "cramped", before/after showed no difference →
+    H: G's layout in F's colour/type, popup D ("B with air") → 2c: drawn before/after "looks crap",
+    use real screenshots, Dossier-style scroll, one footer → 2d: showcase "purely broken" (frame
+    taller than the screen, empty column after, stray tooltip, peeking neighbours), story section
+    "not much feedback on the right", close + footer "ugly, use the space".
+  - **Pass 2e (this session, not yet seen by Najmush):**
+    - Showcase: one frame sized to fit the screen (no neighbours), page pills + "With D-Tox" switch
+      above it; dashed mint boxes mark what D-Tox hides (from `shots/regions.json`), the vacated
+      column says "Recommendations · hidden"; plays by itself (as it comes → with D-Tox → next page,
+      progress line in the pill) until touched.
+    - Story ("Ten switches. Four already on."): the right side pins the real page in a frame with the
+      popup docked below it; each step moves the camera (Shorts zooms to the shelf, Everywhere to the
+      menu's Explore section), then flips that group's switches one by one and the page changes;
+      the count climbs 4 → 10. Chips removed. Phone: each step shows its "after" shot instead.
+    - Close: "Nothing else." with YouTube's noise (Up next, 9+, Shorts, thumbnails, Trending…) around
+      it, drifting away and blurring as you scroll; privacy line + CTA. Footer: links, legal line, then
+      "D-Tox" set full width, lit by a mint spotlight that follows the pointer.
+  - Captures: `extension/scripts/prototype-capture.mjs product` (`Q=how+to+make+pasta`), 1440×900 @1.5,
+    YouTube dark theme (cookie `PREF=f6=400`), video blocked (player shows the thumbnail), **every
+    Setting on in the "after" shots** (except the redirect), YouTube's popups/tooltips hidden, and the
+    hidden parts' positions written to `shots/regions.json`. Watch after still leaves YouTube's empty
+    right column (the real extension does that too; maybe worth widening the player in #21).
+  - Next: Najmush reacts to 2e. Then record the three #22 picks (Popup B→D, Intention Page D, page H)
+    in #22 and here.
 
 ## Decisions (grill, 2026-11-18)
 

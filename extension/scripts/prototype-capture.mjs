@@ -5,7 +5,7 @@
 //   node scripts/prototype-capture.mjs [reviewDir]
 import { chromium } from '@playwright/test';
 import { createHash } from 'node:crypto';
-import { mkdirSync, realpathSync } from 'node:fs';
+import { mkdirSync, readFileSync, realpathSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
 const dist = realpathSync(fileURLToPath(new URL('../dist', import.meta.url)));
@@ -44,14 +44,16 @@ async function product(withExtension) {
   if (withExtension) {
     const pop = await ctx.newPage();
     await pop.goto(`chrome-extension://${id}/popup.html`);
-    await pop.evaluate(() => Promise.all([chrome.storage.sync.set({ 'search-clean-up': true }), chrome.storage.local.set({ protoIntention: 'D' })]));
+    // Every Setting on, so "With D-Tox" shows all it can hide (the redirect stays off: it changes pages).
+    const all = Object.fromEntries(JSON.parse(readFileSync(new URL('../../settings.json', import.meta.url))).map((s) => [s.id, s.id !== 'shorts-redirect']));
+    await pop.evaluate((all) => Promise.all([chrome.storage.sync.set(all), chrome.storage.local.set({ protoIntention: 'D' })]), all);
     await pop.close();
   }
   for (const p of pages) {
     const page = await ctx.newPage();
     await page.goto(p.url);
     await settle(page);
-    await page.addStyleTag({ content: '#dtox-proto{display:none!important}' });
+    await page.addStyleTag({ content: '#dtox-proto,tp-yt-paper-tooltip,ytd-popup-container,tp-yt-iron-dropdown,yt-tooltip-renderer{display:none!important}' });
     // Video is blocked, so the player shows a pre-roll ad's poster; show the video's own thumbnail.
     await page.evaluate(async () => {
       const v = new URLSearchParams(location.search).get('v'), p = document.querySelector('#movie_player');
@@ -59,6 +61,17 @@ async function product(withExtension) {
       const i = Object.assign(document.createElement('img'), { src: `https://i.ytimg.com/vi/${v}/maxresdefault.jpg` });
       i.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:60';
       p.append(i); await i.decode().catch(() => {});
+    });
+    // No hover or focus tooltips in the shot.
+    await page.mouse.move(1439, 899);
+    await page.evaluate(() => document.activeElement?.blur());
+    await page.waitForTimeout(600);
+    // Where the things D-Tox hides sit (in % of the window), for the page's annotations.
+    if (!withExtension) regions[p.key] = await page.evaluate(() => {
+      const pct = (el) => { const r = el?.getBoundingClientRect(); return r && r.width && r.height ? [r.x / innerWidth * 100, r.y / innerHeight * 100, r.width / innerWidth * 100, Math.min(r.height, innerHeight - r.y) / innerHeight * 100].map((n) => +n.toFixed(2)) : null; };
+      const section = (title) => [...document.querySelectorAll('ytd-guide-section-renderer')].find((s) => s.querySelector('#guide-section-title')?.textContent.trim() === title);
+      const shorts = [...document.querySelectorAll('ytd-reel-shelf-renderer, grid-shelf-view-model, ytd-rich-shelf-renderer[is-shorts]')].find((e) => e.getBoundingClientRect().height);
+      return { recommendations: pct(document.querySelector('#secondary')), shorts: pct(shorts), explore: pct(section('Explore')), shortsLink: pct(document.querySelector('ytd-guide-entry-renderer a[title="Shorts"]')?.closest('ytd-guide-entry-renderer')) };
     });
     await page.screenshot({ path: `${shots}${p.key}-${withExtension ? 'after' : 'before'}.jpg`, type: 'jpeg', quality: 80 });
     await page.close();
@@ -88,6 +101,7 @@ async function variants() {
 }
 
 const only = process.argv[3];
-if (!only || only === 'product') { await product(false); await product(true); }
+const regions = {};
+if (!only || only === 'product') { await product(false); await product(true); writeFileSync(`${shots}regions.json`, JSON.stringify(regions, null, 1)); }
 if (!only || only === 'variants') await variants();
 console.log('product shots:', shots, '\nreview shots:', review);

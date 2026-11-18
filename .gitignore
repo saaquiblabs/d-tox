@@ -36,3 +36,6 @@ yarn-debug.log*
 # Playwright
 test-results/
 playwright-report/
+
+# Prototype browser profile (#22)
+extension/proto-profile/

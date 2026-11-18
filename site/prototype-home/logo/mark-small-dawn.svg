@@ -1,7 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="D-Tox">
-  <defs><linearGradient id="g" x1="5" y1="4" x2="26" y2="20" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FFD3BF"/><stop offset="1" stop-color="#E879B9"/></linearGradient></defs>
-  <g stroke-linejoin="round" stroke-width="2.4">
-    <path d="M6 4.5 L27 15 L20 15 L13 11.5 L13 21 L6 24.5 Z" fill="url(#g)" stroke="url(#g)"/>
-    <path d="M21 18.5 L27 18.5 L8 28 L8 26 L14 23 Z" fill="#7C4DD6" stroke="#7C4DD6"/>
-  </g>
-</svg>

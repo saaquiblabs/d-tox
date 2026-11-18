@@ -1,1396 +1,430 @@
 <!doctype html>
 <!--
-  PROTOTYPE (#22), throwaway. What should d-tox.saaquiblabs.com/ look like? Three structurally
-  different variants of the six agreed sections (hero, before/after, the 10 Settings, measured
-  numbers, comparison with Unhook and RYS, privacy in one line) plus the footer, on one page,
-  switched by ?variant=A…H and ?theme=system|light|dark (the theme switch is for review only;
-  the real site follows the system, ADR 0011). Bar at the bottom, or ← →.
-  Run from the repo root: python3 -m http.server 4322  →  http://localhost:4322/site/prototype-home/?variant=A
-  Tokens: src/brand/tokens.css (Saaquib Labs). Screenshots: extension/scripts/prototype-capture.mjs
-  (live YouTube, signed out, video blocked). Numbers marked PLACEHOLDER are made up until #25.
+  PROTOTYPE (#22), throwaway. The product page d-tox.saaquiblabs.com/, direction H ("Night"):
+  Instrument Serif + Inter, spruce near-black, mint accent, the folded-D mark. Variants A–G were
+  dropped (git history has them, up to bf69d88).
+  Run from the repo root: python3 -m http.server 4322  →  http://127.0.0.1:4322/site/prototype-home/
+  Screenshots + regions.json: extension/scripts/prototype-capture.mjs product (live YouTube, signed
+  out, dark theme, video blocked, every Setting on in the "after" shots). Numbers marked
+  PLACEHOLDER are made up until #25. Fonts load from Google Fonts here only; the real site
+  self-hosts the woff2 + OFL.txt (docs/research/2026-11-product-page-direction.md).
 -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="color-scheme" content="light dark">
+<meta name="color-scheme" content="dark">
 <title>D-Tox for YouTube (prototype)</title>
-<!-- Pass 2 fonts (OFL 1.1). Prototype loads them from Google Fonts; the real site self-hosts woff2 + OFL.txt (docs/research/2026-11-product-page-direction.md). -->
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:opsz,wght@14..32,400..700&family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..700,0..100,0..1;1,9..144,300..700,0..100,0..1&family=Hanken+Grotesk:wght@400..700&display=swap">
-<link rel="icon" href="../../extension/public/icon-48.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:opsz,wght@14..32,400..700&display=swap">
+<link rel="icon" href="logo/d-small.svg">
 <style>
 :root{
-  --font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-  --bg:#F7F4EE;--bg-shade:#EFEBE3;--surface:#FCFAF6;--flap:#E6E0D5;--text:#202124;--text-2:#4D4F54;--border:#E3DDD2;
-  --btn-bg:#202124;--btn-fg:#F7F4EE;--focus:#202124;--lit:color-mix(in srgb,var(--bg) 55%,#fff);
-  --stage:#17191E;--stage-text:#F7F4EE;--stage-text-2:#C9CCD1;
-  --term-bg:#151A22;--term-fg:#E9E6DF;--term-dim:#A9AFB8;--term-ok:#8FD6A4;
-  --t-display:clamp(2.5rem,5.5vw,4.6rem);--t-h2:clamp(2.2rem,4vw,3.4rem);--t-h3:1.375rem;--t-lead:1.125rem;--t-small:.875rem;--t-label:.75rem;
-  --r-sm:8px;--r-md:16px;--r-lg:clamp(28px,3.5vw,44px);--r-pill:999px;
-  --container:1160px;--gutter:clamp(16px,4vw,32px);--section:clamp(48px,7vw,96px);
-  --shadow:0 1px 2px rgb(32 33 36 / .05),0 12px 32px rgb(32 33 36 / .07);
-  --tint-core:139 92 246;--tint-warm:245 158 11;--tint-soft:251 191 36;
-  --ph:#B45309;
+  --bg:#090F0D;--bg2:#0D1512;--line:rgb(255 255 255 / .07);--text:#EEF3F0;--t2:#A2B1AB;--t3:#6C7B75;
+  --acc:#7CF0C4;--acc-rgb:124 240 196;--ink:#04140E;--em:#A8E6CE;
+  --disp:"Instrument Serif",ui-serif,Georgia,serif;--sans:"Inter",ui-sans-serif,system-ui,sans-serif;
+  --wrap:1200px;--gut:clamp(16px,4vw,40px);
+  --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
-@media (prefers-color-scheme:dark){:root:not([data-theme=light]){
-  --bg:#151A22;--bg-shade:#11151C;--surface:#1B212B;--flap:#2A323E;--text:#F7F4EE;--text-2:#B9BDC4;--border:#2A313C;
-  --btn-bg:#F7F4EE;--btn-fg:#151A22;--focus:#F7F4EE;--lit:color-mix(in srgb,var(--bg) 88%,#fff);--term-bg:#0E1218;
-  --shadow:0 1px 2px rgb(0 0 0 / .3),0 12px 32px rgb(0 0 0 / .35);--ph:#FBBF24}}
-:root[data-theme=dark]{
-  --bg:#151A22;--bg-shade:#11151C;--surface:#1B212B;--flap:#2A323E;--text:#F7F4EE;--text-2:#B9BDC4;--border:#2A313C;
-  --btn-bg:#F7F4EE;--btn-fg:#151A22;--focus:#F7F4EE;--lit:color-mix(in srgb,var(--bg) 88%,#fff);--term-bg:#0E1218;
-  --shadow:0 1px 2px rgb(0 0 0 / .3),0 12px 32px rgb(0 0 0 / .35);--ph:#FBBF24;color-scheme:dark}
-:root[data-theme=light]{color-scheme:light}
-
 *,*::before,*::after{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--bg);color:var(--text);font:400 1rem/1.65 var(--font);overflow-x:clip}
-img{max-width:100%;height:auto;display:block}
-a{color:inherit;text-underline-offset:.2em;text-decoration-thickness:1px}
-:focus-visible{outline:2px solid var(--focus);outline-offset:4px;border-radius:4px}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font:400 17px/1.6 var(--sans);font-feature-settings:"cv01","ss03";overflow-x:clip}
+body::before{content:"";position:fixed;inset:0;z-index:100;pointer-events:none;opacity:.045;background:var(--grain)}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--acc);outline-offset:4px;border-radius:6px}
 h1,h2,h3,p{margin:0}
-h1{font-size:var(--t-display);font-weight:500;line-height:1.08;letter-spacing:-.02em}
-h2{font-size:clamp(1.75rem,3.4vw,2.6rem);font-weight:500;line-height:1.1;letter-spacing:-.025em}
-h3{font-size:var(--t-h3);font-weight:500;line-height:1.25;letter-spacing:-.015em}
-.second{display:block;font-weight:300;font-style:italic;color:var(--text-2)}
-.lead{font-size:var(--t-lead);color:var(--text-2)}
-.label{font-size:var(--t-label);font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--text-2)}
-.wrap{max-width:var(--container);margin-inline:auto;padding-inline:var(--gutter)}
-.btn{display:inline-flex;align-items:center;gap:.6em;padding:.95em 1.75em;border-radius:var(--r-pill);font-weight:500;font-size:.9375rem;line-height:1;text-decoration:none;border:1px solid transparent;white-space:nowrap}
-.btn-solid{background:var(--btn-bg);color:var(--btn-fg)}
-.btn-ghost{border-color:var(--border)}
-.btn-ghost:hover{border-color:var(--text-2)}
-.btn svg{width:18px;height:18px}
-.ph{display:inline-block;font:600 10px/1 var(--font);letter-spacing:.08em;text-transform:uppercase;color:var(--ph);border:1px dashed currentColor;border-radius:4px;padding:3px 5px;vertical-align:middle;white-space:nowrap}
-.mark{display:inline-flex;align-items:center;gap:10px;font-weight:600;font-size:1.0625rem;text-decoration:none;letter-spacing:-.01em}
-.mark img{width:26px;height:26px}
-.s-mask{display:inline-block;width:16px;height:16px;background:currentColor;-webkit-mask:url(../public/brand/symbol-flat.svg) center/contain no-repeat;mask:url(../public/brand/symbol-flat.svg) center/contain no-repeat;vertical-align:-3px}
-.fold{position:relative}
-.fold::after{content:"";position:absolute;top:0;right:0;width:var(--fold,36px);height:var(--fold,36px);background:linear-gradient(225deg,var(--bg) 50%,var(--flap) 50%);border-bottom-left-radius:8px;box-shadow:-2px 2px 6px rgb(0 0 0 / .1)}
-.win{border-radius:12px;overflow:hidden;border:1px solid var(--border);background:var(--surface);box-shadow:var(--shadow)}
-.win .bar{display:flex;gap:6px;padding:9px 12px;border-bottom:1px solid var(--border)}
-.win .bar i{width:9px;height:9px;border-radius:50%;background:var(--border)}
-.glow{position:absolute;inset:auto 0 -30% 0;height:70%;pointer-events:none;background:radial-gradient(35% 55% at 50% 60%,rgb(var(--tint-core) / .18),transparent 70%),radial-gradient(25% 45% at 25% 65%,rgb(var(--tint-warm) / .16),transparent 70%),radial-gradient(25% 45% at 75% 65%,rgb(var(--tint-soft) / .14),transparent 70%)}
-table{border-collapse:collapse;width:100%}
-.yes{color:var(--text)}.no{color:var(--text-2)}
+h1,h2,h3{font-family:var(--disp);font-weight:400}
+h1{font-size:clamp(52px,8vw,92px);line-height:1;letter-spacing:-.02em;text-wrap:balance}
+h2{font-size:clamp(38px,5vw,64px);line-height:1.04;letter-spacing:-.015em;text-wrap:balance}
+em{font-style:italic;color:var(--em)}
+.wrap{max-width:var(--wrap);margin-inline:auto;padding-inline:var(--gut)}
+.lead{font-size:clamp(17px,1.5vw,20px);color:var(--t2);line-height:1.55;text-wrap:balance}
+.small{font-size:13px;font-weight:500;color:var(--t3)}
+.ph{display:inline-block;font:600 10px/1 var(--sans);letter-spacing:.06em;text-transform:uppercase;color:#FBBF24;border:1px dashed currentColor;border-radius:4px;padding:3px 5px;vertical-align:middle}
+.btn{display:inline-flex;align-items:center;gap:.6em;padding:.95em 1.5em;border-radius:999px;font:500 15px/1 var(--sans);white-space:nowrap;background:var(--text);color:var(--bg);box-shadow:0 0 0 1px rgb(255 255 255 / .2),0 12px 40px -10px rgb(var(--acc-rgb) / .55);transition:transform .2s,box-shadow .2s}
+.btn:hover{transform:translateY(-1px);box-shadow:0 0 0 1px rgb(255 255 255 / .3),0 16px 50px -8px rgb(var(--acc-rgb) / .75)}
+.btn svg{width:17px;height:17px}
+.btn.sm{padding:.7em 1.15em;font-size:14px}
+.brand{display:inline-flex;align-items:center;gap:10px;font:600 17px/1 var(--sans);letter-spacing:-.01em}
+.brand img{width:26px;height:26px}
+.s-mask{display:inline-block;width:14px;height:14px;background:currentColor;-webkit-mask:url(../public/brand/symbol-flat.svg) center/contain no-repeat;mask:url(../public/brand/symbol-flat.svg) center/contain no-repeat;vertical-align:-2px}
+.sw{all:unset;cursor:pointer;flex:none;width:38px;height:22px;border-radius:12px;background:rgb(255 255 255 / .1);position:relative;transition:background .25s}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:var(--t2);transition:transform .3s cubic-bezier(.22,.8,.24,1),background .25s}
+.sw[aria-checked=true]{background:var(--acc)}
+.sw[aria-checked=true]::after{transform:translateX(16px);background:var(--ink)}
 
-.variant{display:none}
-body[data-variant=A] #A,body[data-variant=B] #B,body[data-variant=C] #C{display:block}
-footer.site{border-top:1px solid var(--border);margin-top:var(--section)}
-footer.site .in{display:grid;gap:10px;padding-block:36px 96px;font-size:var(--t-small);color:var(--text-2)}
-footer.site nav{display:flex;flex-wrap:wrap;gap:8px 24px}
-footer.site a{text-decoration:none}
-footer.site a:hover{color:var(--text)}
-
-/* ================= A · Calm editorial ================= */
-#A header{position:sticky;top:14px;z-index:10;max-width:1200px;margin:14px auto 0;padding-inline:var(--gutter)}
-#A header .in{display:flex;align-items:center;justify-content:space-between;padding:8px 8px 8px 18px;border-radius:var(--r-pill);background:color-mix(in srgb,var(--surface) 82%,transparent);backdrop-filter:blur(22px) saturate(1.6);border:1px solid var(--border);box-shadow:var(--shadow)}
-#A header nav{display:flex;gap:22px;font-size:var(--t-small);color:var(--text-2)}
-#A header nav a{text-decoration:none}
-#A header .btn{padding:.75em 1.3em}
-#A .hero{position:relative;text-align:center;padding-block:clamp(72px,11vw,140px) clamp(40px,6vw,72px)}
-#A .hero h1{max-width:15ch;margin-inline:auto}
-#A .hero .lead{max-width:38rem;margin:24px auto 0}
-#A .hero .cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:32px}
-#A .hero small{display:block;margin-top:16px;color:var(--text-2);font-size:var(--t-small)}
-#A section.blk{padding-block:var(--section)}
-#A .head{text-align:center;max-width:40rem;margin:0 auto 36px;display:grid;gap:12px}
-#A .tabs{display:flex;justify-content:center;gap:6px;margin-bottom:20px}
-#A .tabs button{all:unset;cursor:pointer;padding:8px 16px;border-radius:var(--r-pill);font-size:var(--t-small);font-weight:500;color:var(--text-2);border:1px solid var(--border)}
-#A .tabs button[aria-selected=true]{background:var(--btn-bg);color:var(--btn-fg);border-color:var(--btn-bg)}
-#A .cmp{position:relative;max-width:1000px;margin-inline:auto;aspect-ratio:1280/800;border-radius:var(--r-md);overflow:hidden;border:1px solid var(--border);box-shadow:var(--shadow);--x:50%;user-select:none;touch-action:none;cursor:ew-resize}
-#A .cmp img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top}
-#A .cmp .after{clip-path:inset(0 0 0 var(--x))}
-#A .cmp .line{position:absolute;top:0;bottom:0;left:var(--x);width:2px;background:var(--btn-bg);transform:translateX(-1px)}
-#A .cmp .knob{position:absolute;top:50%;left:var(--x);transform:translate(-50%,-50%);width:44px;height:44px;border-radius:50%;background:var(--btn-bg);color:var(--btn-fg);display:grid;place-items:center;font-size:14px;box-shadow:var(--shadow)}
-#A .cmp .tag{position:absolute;top:14px;padding:5px 10px;border-radius:var(--r-pill);font-size:12px;font-weight:600;background:rgb(0 0 0 / .72);color:#fff}
-#A .cmp .tag.l{left:14px}#A .cmp .tag.r{right:14px}
-#A .caption{text-align:center;margin-top:16px;color:var(--text-2);font-size:var(--t-small);min-height:3.2em}
-#A .groups{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:28px 32px}
-#A .groups h3{font-size:var(--t-label);font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--text-2);padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:12px}
-#A .groups dl{margin:0;display:grid;gap:14px}
-#A .groups dt{font-weight:500}
-#A .groups dd{margin:2px 0 0;font-size:var(--t-small);color:var(--text-2);line-height:1.55}
-#A .cd{font-size:11px;font-weight:600;color:var(--text);background:var(--bg-shade);border:1px solid var(--border);border-radius:var(--r-pill);padding:1px 8px;margin-left:6px;vertical-align:2px;white-space:nowrap}
-#A .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-block:1px solid var(--border)}
-#A .stat{padding:28px 24px;display:grid;gap:8px;align-content:start}
-#A .stat+.stat{border-left:1px solid var(--border)}
-#A .stat .n{font-size:clamp(2.25rem,1.6rem + 2.2vw,3.5rem);font-weight:500;letter-spacing:-.04em;line-height:1;font-variant-numeric:tabular-nums}
-#A .stat p{font-size:var(--t-small);color:var(--text-2);max-width:24ch}
-#A .when{text-align:center;margin-top:16px;font-size:var(--t-small);color:var(--text-2)}
-#A table{max-width:860px;margin-inline:auto;font-size:.9375rem}
-#A th,#A td{padding:14px 16px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top}
-#A thead th{font-size:var(--t-label);letter-spacing:.1em;text-transform:uppercase;color:var(--text-2);font-weight:600}
-#A tbody th{font-weight:500}
-#A td.us{background:var(--lit)}
-#A .src{text-align:center;margin-top:14px;font-size:var(--t-small);color:var(--text-2)}
-#A .privacy{--fold:56px;max-width:900px;margin-inline:auto;padding:clamp(40px,6vw,72px);border-radius:var(--r-lg);background:var(--surface);border:1px solid var(--border);box-shadow:var(--shadow);text-align:center}
-#A .privacy p{font-size:clamp(1.4rem,2.6vw,2rem);line-height:1.3;letter-spacing:-.015em;font-weight:500;max-width:28ch;margin-inline:auto}
-#A .privacy a{display:inline-block;margin-top:16px;font-size:var(--t-small);color:var(--text-2)}
-@media (max-width:760px){#A header nav{display:none}#A .stats{grid-template-columns:repeat(2,minmax(0,1fr))}#A .stat:nth-child(3){border-left:0}#A .stat:nth-child(n+3){border-top:1px solid var(--border)}#A td,#A th{padding:10px 8px}}
-
-/* ================= B · Graphite stage ================= */
-#B header .in{display:flex;align-items:center;justify-content:space-between;padding-block:22px}
-#B .hero{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(32px,5vw,72px);align-items:center;padding-block:clamp(32px,5vw,64px) var(--section)}
-#B .hero .lead{margin-top:22px;max-width:34rem}
-#B .hero .cta{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-top:30px;font-size:var(--t-small);color:var(--text-2)}
-#B .stage{position:relative;overflow:hidden;border-radius:var(--r-lg);background:var(--stage);padding:clamp(28px,4vw,48px);display:grid;place-items:center;min-height:520px;--fold:56px}
-#B .stage .glow{inset:auto -20% -40% -20%;height:90%;opacity:1.6}
-#B .stage.fold::after{background:linear-gradient(225deg,var(--bg) 50%,#2A323E 50%)}
-#B .pop{position:relative;width:320px;border-radius:14px;background:#151A22;color:#F7F4EE;font-size:13px;box-shadow:0 30px 60px rgb(0 0 0 / .5);border:1px solid #2A313C;overflow:hidden}
-#B .pop .top{display:flex;justify-content:space-between;align-items:center;padding:14px 14px 10px}
-#B .pop .mark{font-size:14px}#B .pop .mark img{width:20px;height:20px}
-#B .pop .st{padding:0 14px 10px;color:#B9BDC4;font-size:11.5px;border-bottom:1px solid #2A313C}
-#B .pop h6{margin:0;padding:10px 14px 4px;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#B9BDC4}
-#B .pop .r{display:flex;justify-content:space-between;align-items:center;padding:6px 14px}
-#B .pop .ft{display:flex;gap:12px;padding:10px 14px;border-top:1px solid #2A313C;color:#B9BDC4;font-size:11px;margin-top:6px}
-#B .sw{width:32px;height:18px;border-radius:9px;background:#3A4350;position:relative;flex:none}
-#B .sw::after{content:"";position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:#fff}
-#B .sw.on{background:#F7F4EE}#B .sw.on::after{left:16px;background:#151A22}
-#B section.blk{padding-block:var(--section)}
-#B .head{display:flex;justify-content:space-between;align-items:end;gap:24px;margin-bottom:32px;flex-wrap:wrap}
-#B .head .lead{max-width:30rem}
-#B .pairs{display:grid;gap:40px}
-#B .pair{display:grid;grid-template-columns:1fr 1fr;gap:20px}
-#B .pair figure{margin:0}
-#B .pair figcaption{display:flex;justify-content:space-between;font-size:var(--t-small);color:var(--text-2);margin-top:10px}
-#B .pair figcaption b{color:var(--text);font-weight:500}
-#B .pair .win img{aspect-ratio:1280/800;object-fit:cover;object-position:top}
-#B .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
-#B .card{--fold:28px;padding:22px 22px 20px;border-radius:var(--r-md);background:var(--surface);border:1px solid var(--border);display:grid;gap:8px;align-content:start}
-#B .card .g{font-size:var(--t-label);letter-spacing:.12em;text-transform:uppercase;color:var(--text-2);font-weight:600}
-#B .card h3{font-size:1.125rem}
-#B .card p{font-size:var(--t-small);color:var(--text-2);line-height:1.55}
-#B .card .cd{justify-self:start;font-size:11px;font-weight:600;padding:2px 8px;border-radius:var(--r-pill);background:var(--btn-bg);color:var(--btn-fg)}
-#B .term{border-radius:var(--r-md);background:var(--term-bg);color:var(--term-fg);font:400 .875rem/1.8 var(--mono);padding:24px 28px;overflow-x:auto;box-shadow:var(--shadow)}
-#B .term .d{color:var(--term-dim)}#B .term .ok{color:var(--term-ok)}#B .term .phm{color:#FBBF24}
-#B .three{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-#B .who{padding:26px;border-radius:var(--r-md);border:1px solid var(--border);display:grid;gap:14px;align-content:start}
-#B .who.us{background:var(--stage);color:var(--stage-text);border-color:var(--stage)}
-#B .who.us .k,#B .who.us li::marker{color:var(--stage-text-2)}
-#B .who .k{font-size:var(--t-small);color:var(--text-2)}
-#B .who h3 small{font-size:var(--t-small);font-weight:400;color:inherit;opacity:.7;margin-left:6px}
-#B .who ul{margin:0;padding-left:18px;display:grid;gap:6px;font-size:var(--t-small)}
-#B .who .wins{font-size:var(--t-small);padding-top:12px;border-top:1px solid color-mix(in srgb,currentColor 18%,transparent)}
-#B .band{margin-top:var(--section);background:var(--stage);color:var(--stage-text)}
-#B .band .in{display:flex;align-items:center;justify-content:space-between;gap:24px;padding-block:44px;flex-wrap:wrap}
-#B .band p{font-size:clamp(1.25rem,2.4vw,1.75rem);font-weight:500;letter-spacing:-.015em}
-#B .band a{color:var(--stage-text-2);font-size:var(--t-small)}
-#B footer.site{margin-top:0}
-@media (max-width:900px){#B .hero,#B .pair,#B .three{grid-template-columns:1fr}#B .stage{min-height:0}}
-
-/* ================= C · Single-column dossier ================= */
-#C .layout{display:grid;grid-template-columns:200px minmax(0,680px);gap:clamp(32px,6vw,96px);justify-content:center;padding-inline:var(--gutter)}
-#C aside{position:sticky;top:0;align-self:start;padding-top:40px;height:100vh;display:flex;flex-direction:column;gap:28px}
-#C aside ol{list-style:none;margin:0;padding:0;display:grid;gap:8px;font-size:var(--t-small);color:var(--text-2);counter-reset:n}
-#C aside li{counter-increment:n}
-#C aside li a{text-decoration:none;display:flex;gap:10px}
-#C aside li a::before{content:"0" counter(n);font-variant-numeric:tabular-nums;opacity:.6}
-#C aside li a:hover,#C aside li a.on{color:var(--text)}
-#C aside .btn{align-self:start;padding:.8em 1.3em}
-#C article{padding-block:40px 0}
-#C .hero{padding-block:clamp(40px,10vh,120px) 56px;border-bottom:1px solid var(--border)}
-#C .hero h1{font-size:clamp(2.4rem,4.6vw,3.6rem)}
-#C .hero .lead{margin-top:22px}
-#C .hero .cta{display:flex;gap:16px;align-items:center;margin-top:28px;flex-wrap:wrap;font-size:var(--t-small);color:var(--text-2)}
-#C section{padding-block:56px;border-bottom:1px solid var(--border);scroll-margin-top:20px}
-#C section > .label{display:block;margin-bottom:12px}
-#C section h2{font-size:clamp(1.6rem,2.8vw,2.1rem)}
-#C section > p{margin-top:14px;color:var(--text-2)}
-#C .seg{display:inline-flex;margin:24px 0 14px;padding:3px;border-radius:var(--r-pill);background:var(--bg-shade);border:1px solid var(--border)}
-#C .seg button{all:unset;cursor:pointer;padding:7px 16px;border-radius:var(--r-pill);font-size:var(--t-small);font-weight:500;color:var(--text-2)}
-#C .seg button[aria-pressed=true]{background:var(--surface);color:var(--text);box-shadow:0 1px 2px rgb(0 0 0 / .12)}
-#C .shot{display:grid;gap:10px}
-#C .shot .row{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:var(--t-small);color:var(--text-2)}
-#C .shot .flip{display:inline-flex;gap:4px}
-#C .shot .flip button{all:unset;cursor:pointer;padding:4px 10px;border-radius:6px;font-weight:500}
-#C .shot .flip button[aria-pressed=true]{background:var(--btn-bg);color:var(--btn-fg)}
-#C .shot .win img{aspect-ratio:1280/800;object-fit:cover;object-position:top}
-#C dl{margin:24px 0 0;display:grid}
-#C dl .it{display:grid;grid-template-columns:120px 1fr;gap:4px 20px;padding:14px 0;border-top:1px solid var(--border)}
-#C dl .g{font-size:var(--t-small);color:var(--text-2)}
-#C dt{font-weight:500}
-#C dd{margin:0;grid-column:2;font-size:var(--t-small);color:var(--text-2)}
-#C dt small{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-2);margin-left:8px}
-#C table{margin-top:24px;font-size:var(--t-small)}
-#C th,#C td{text-align:left;padding:11px 10px 11px 0;border-bottom:1px solid var(--border);vertical-align:top}
-#C thead th{color:var(--text-2);font-weight:500}
-#C td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
-#C .note{margin-top:12px;font-size:var(--t-small);color:var(--text-2)}
-#C .one{font-size:clamp(1.3rem,2.4vw,1.7rem);line-height:1.35;letter-spacing:-.015em;color:var(--text);font-weight:500}
-#C footer.site{margin-top:0;border-top:0}
-@media (max-width:900px){#C .layout{grid-template-columns:1fr}#C aside{position:static;height:auto;padding-top:24px;flex-direction:row;align-items:center;justify-content:space-between}#C aside ol{display:none}#C dl .it{grid-template-columns:1fr}#C dd{grid-column:1}}
-
-/* ================= D · The mix (A's calm hero + B's stage and cards + C's numbered rhythm) ================= */
-body[data-variant=D] #D{display:block}
-#D header{position:sticky;top:14px;z-index:10;max-width:1200px;margin:14px auto 0;padding-inline:var(--gutter)}
-#D header .in{display:flex;align-items:center;justify-content:space-between;padding:8px 8px 8px 18px;border-radius:var(--r-pill);background:color-mix(in srgb,var(--surface) 82%,transparent);backdrop-filter:blur(22px) saturate(1.6);-webkit-backdrop-filter:blur(22px) saturate(1.6);border:1px solid var(--border);box-shadow:var(--shadow),inset 0 1px 0 var(--lit)}
-#D header nav{display:flex;gap:4px;font-size:var(--t-small);color:var(--text-2)}
-#D header nav a{text-decoration:none;padding:8px 14px;border-radius:var(--r-pill)}
-#D header nav a:hover{color:var(--text);background:var(--bg-shade)}
-#D header .btn{padding:.75em 1.3em}
-#D .hero{position:relative;text-align:center;padding-block:clamp(80px,12vw,150px) clamp(48px,6vw,80px)}
-#D .pill{display:inline-flex;align-items:center;gap:10px;padding:6px 14px 6px 6px;border-radius:var(--r-pill);border:1px solid var(--border);background:var(--surface);font-size:var(--t-small);color:var(--text-2);text-decoration:none;margin-bottom:28px}
-#D .pill b{font-weight:600;color:var(--btn-fg);background:var(--btn-bg);border-radius:var(--r-pill);padding:3px 10px;font-size:12px}
-#D .hero h1{max-width:15ch;margin-inline:auto;font-size:clamp(2.75rem,6.4vw,5.4rem);letter-spacing:-.035em}
-#D .hero .lead{max-width:36rem;margin:26px auto 0;font-size:clamp(1.0625rem,1.4vw,1.25rem)}
-#D .hero .cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:34px}
-#D .hero small{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;margin-top:18px;color:var(--text-2);font-size:var(--t-small)}
-#D .hero small span::before{content:"✓ ";color:var(--text)}
-#D .hero .glow{inset:auto -10% -20% -10%;height:80%}
-/* the stage */
-#D .stage{--fold:76px;position:relative;margin-inline:clamp(8px,1.4vw,16px);border-radius:var(--r-lg);background:var(--stage);color:var(--stage-text);overflow:hidden;padding:clamp(40px,6vw,88px) var(--gutter) clamp(56px,7vw,104px)}
-#D .stage.fold::after{background:linear-gradient(225deg,var(--bg) 50%,#2A323E 50%);border-bottom-left-radius:14px}
-#D .stage .glow{inset:auto -10% -25% -10%;height:70%;opacity:1.5}
-#D .stage .k{text-align:center;display:grid;gap:12px;max-width:40rem;margin:0 auto 28px;position:relative}
-#D .stage .k .label{color:var(--stage-text-2)}
-#D .stage h2{font-size:var(--t-h2);letter-spacing:-.03em;line-height:1.06}
-#D .stage .tabs{position:relative;display:flex;justify-content:center;gap:4px;margin:0 auto 36px;padding:4px;width:max-content;border-radius:var(--r-pill);background:#ffffff10;border:1px solid #ffffff1a}
-#D .stage .tabs button{all:unset;cursor:pointer;padding:9px 20px;border-radius:var(--r-pill);font-size:var(--t-small);font-weight:500;color:var(--stage-text-2)}
-#D .stage .tabs button[aria-selected=true]{background:var(--stage-text);color:var(--stage)}
-#D .scene{position:relative;max-width:1040px;margin-inline:auto}
-#D .browser{border-radius:14px;overflow:hidden;background:#0E1218;border:1px solid #2A313C;box-shadow:0 2px 4px rgb(0 0 0 / .3),0 24px 48px rgb(0 0 0 / .45),0 60px 120px rgb(0 0 0 / .35)}
-#D .browser .bar{display:flex;align-items:center;gap:7px;padding:11px 14px;background:#1B212B;border-bottom:1px solid #2A313C}
-#D .browser .bar i{width:10px;height:10px;border-radius:50%;background:#3A4350}
-#D .browser .bar span{margin-left:14px;flex:1;max-width:420px;padding:4px 12px;border-radius:999px;background:#11151C;color:#B9BDC4;font:12px var(--mono)}
-#D .cmp{position:relative;aspect-ratio:1280/800;--x:50%;user-select:none;touch-action:none;cursor:ew-resize}
-#D .cmp img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top}
-#D .cmp .after{clip-path:inset(0 0 0 var(--x))}
-#D .cmp .line{position:absolute;top:0;bottom:0;left:var(--x);width:2px;background:#F7F4EE;transform:translateX(-1px);box-shadow:0 0 12px rgb(0 0 0 / .4)}
-#D .cmp .knob{position:absolute;top:50%;left:var(--x);transform:translate(-50%,-50%);width:48px;height:48px;border-radius:50%;background:#F7F4EE;color:#151A22;display:grid;place-items:center;font-size:15px;box-shadow:0 6px 20px rgb(0 0 0 / .45)}
-#D .cmp .tag{position:absolute;bottom:14px;padding:6px 12px;border-radius:999px;font-size:12px;font-weight:600;background:rgb(17 21 28 / .82);color:#F7F4EE}
-#D .cmp .tag.l{left:14px}#D .cmp .tag.r{right:14px}
-#D .cap{position:relative;text-align:center;margin:26px auto 0;max-width:46ch;color:var(--stage-text-2);min-height:3.3em}
-/* the popup (variant B, picked) floating at the window's corner */
-#D .pop{position:absolute;right:-28px;bottom:-44px;width:300px;padding:10px;border-radius:18px;background:#151A22;border:1px solid #2A313C;box-shadow:0 30px 70px rgb(0 0 0 / .6),0 2px 6px rgb(0 0 0 / .4);font-size:12.5px;color:#F7F4EE;transform:rotate(1.5deg)}
-#D .pop .card{position:relative;overflow:hidden;padding:13px;border-radius:12px;background:#0E1218}
-#D .pop .card::before{content:"";position:absolute;inset:auto -20% -80% -20%;height:130%;background:radial-gradient(50% 50% at 50% 50%,rgb(var(--tint-core) / .4),transparent 70%),radial-gradient(30% 40% at 20% 40%,rgb(var(--tint-warm) / .3),transparent 70%)}
-#D .pop .card>*{position:relative}
-#D .pop .top{display:flex;justify-content:space-between;align-items:center}
-#D .pop .mark{font-size:13px;gap:7px}#D .pop .mark img{width:18px;height:18px}
-#D .pop .card b{display:block;margin-top:10px;font-weight:500;font-size:15px;letter-spacing:-.01em}
-#D .pop .card small{color:#C9CCD1;font-size:11px}
-#D .pop .pt{display:grid;grid-template-columns:repeat(5,auto);gap:2px;margin:8px 0 6px;padding:3px;border-radius:10px;background:#11151C;border:1px solid #2A313C}
-#D .pop .pt button{all:unset;cursor:pointer;text-align:center;padding:4px 3px;border-radius:7px;font-size:10.5px;font-weight:500;color:#B9BDC4}
-#D .pop .pt button[aria-selected=true]{background:#F7F4EE;color:#151A22}
-#D .pop .items{display:grid;gap:6px;min-height:150px;align-content:start}
-#D .pop .it{padding:9px 10px;border-radius:10px;background:#1B212B;border:1px solid #2A313C}
-#D .pop .it .h{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:500}
-#D .pop .it p{color:#B9BDC4;font-size:10.5px;line-height:1.4;margin-top:3px}
-#D .psw{all:unset;cursor:pointer;width:30px;height:17px;border-radius:9px;background:#3A4350;position:relative;flex:none;transition:background .15s}
-#D .psw::after{content:"";position:absolute;top:2px;left:2px;width:13px;height:13px;border-radius:50%;background:#fff;transition:transform .18s var(--ease-glide,ease)}
-#D .psw[aria-checked=true]{background:#F7F4EE}#D .psw[aria-checked=true]::after{transform:translateX(13px);background:#151A22}
-/* sections */
-#D section.blk{padding-block:var(--section)}
-#D .head{display:grid;grid-template-columns:auto 1fr;gap:6px 40px;align-items:end;margin-bottom:40px}
-#D .head .num{grid-row:span 2;font:500 clamp(3rem,6vw,5rem)/.9 var(--font);letter-spacing:-.05em;color:var(--border);font-variant-numeric:tabular-nums}
-#D .head h2{font-size:var(--t-h2);letter-spacing:-.03em;line-height:1.06}
-#D .head p{color:var(--text-2);max-width:40rem}
-#D .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
-#D .card{--fold:30px;padding:22px;border-radius:var(--r-md);background:var(--surface);border:1px solid var(--border);display:grid;gap:8px;align-content:start;transition:transform .25s var(--ease-glide,ease),box-shadow .25s}
-#D .card:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
-#D .card .g{font-size:var(--t-label);letter-spacing:.12em;text-transform:uppercase;color:var(--text-2);font-weight:600}
-#D .card h3{font-size:1.125rem}
-#D .card p{font-size:var(--t-small);color:var(--text-2);line-height:1.55}
-#D .card.calm{background:var(--stage);color:var(--stage-text);border-color:var(--stage)}
-#D .card.calm .g,#D .card.calm p{color:var(--stage-text-2)}
-#D .card.calm.fold::after{background:linear-gradient(225deg,var(--bg) 50%,#2A323E 50%)}
-#D .card .cd{justify-self:start;margin-top:4px;font-size:11px;font-weight:600;padding:3px 9px;border-radius:var(--r-pill);background:var(--stage-text);color:var(--stage)}
-#D .legend{display:flex;gap:10px;align-items:center;margin-top:18px;font-size:var(--t-small);color:var(--text-2)}
-#D .legend i{width:14px;height:14px;border-radius:4px;background:var(--stage)}
-#D .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-radius:var(--r-md);border:1px solid var(--border);background:var(--surface);overflow:hidden}
-#D .stat{padding:30px 26px;display:grid;gap:10px;align-content:start}
-#D .stat+.stat{border-left:1px solid var(--border)}
-#D .stat .n{font-size:clamp(2.4rem,1.6rem + 2.4vw,3.8rem);font-weight:500;letter-spacing:-.045em;line-height:1;font-variant-numeric:tabular-nums}
-#D .stat p{font-size:var(--t-small);color:var(--text-2);max-width:24ch}
-#D details.gate{margin-top:16px}
-#D details.gate summary{cursor:pointer;font-size:var(--t-small);color:var(--text-2);max-width:100%}
-#D .hero{overflow-x:clip}
-:root[data-theme=dark] #D .stage{box-shadow:inset 0 0 0 1px #2A313C}
-@media (prefers-color-scheme:dark){:root:not([data-theme=light]) #D .stage{box-shadow:inset 0 0 0 1px #2A313C}}
-#D details.gate pre{margin:14px 0 0;border-radius:var(--r-md);background:var(--term-bg);color:var(--term-fg);font:400 .8125rem/1.8 var(--mono);padding:22px 26px;overflow-x:auto}
-#D .d{color:var(--term-dim)}#D .ok{color:var(--term-ok)}#D .phm{color:#FBBF24}
-#D .vs{border-radius:var(--r-md);border:1px solid var(--border);overflow:hidden;background:var(--surface)}
-#D .vs table{font-size:.9375rem}
-#D .vs th,#D .vs td{padding:15px 20px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top}
-#D .vs thead th{font-size:var(--t-label);letter-spacing:.1em;text-transform:uppercase;color:var(--text-2);font-weight:600;background:var(--bg-shade)}
-#D .vs thead th.us{background:var(--stage);color:var(--stage-text)}
-#D .vs tbody th{font-weight:500}
-#D .vs td.us{background:color-mix(in srgb,var(--bg-shade) 60%,transparent);font-weight:500}
-#D .vs tr.wins td{font-size:var(--t-small);color:var(--text-2);border-bottom:0}
-#D .src{margin-top:14px;font-size:var(--t-small);color:var(--text-2)}
-#D .closing{--fold:56px;position:relative;overflow:hidden;max-width:960px;margin-inline:auto;padding:clamp(48px,7vw,88px) clamp(28px,5vw,64px);border-radius:var(--r-lg);background:var(--surface);border:1px solid var(--border);box-shadow:var(--shadow);text-align:center}
-#D .closing .glow{inset:auto -10% -55% -10%;height:100%}
-#D .closing p{position:relative;font-size:clamp(1.6rem,3.2vw,2.5rem);line-height:1.2;letter-spacing:-.025em;font-weight:500;max-width:22ch;margin-inline:auto}
-#D .closing p span{font-weight:300;font-style:italic;color:var(--text-2)}
-#D .closing .cta{position:relative;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:28px}
-#D footer.dft{margin-top:var(--section);border-top:1px solid var(--border)}
-#D footer.dft .top{display:grid;grid-template-columns:1.4fr repeat(3,1fr);gap:32px;padding-block:48px 32px}
-#D footer.dft h4{margin:0 0 12px;font-size:var(--t-label);letter-spacing:.12em;text-transform:uppercase;color:var(--text-2);font-weight:600}
-#D footer.dft ul{list-style:none;margin:0;padding:0;display:grid;gap:8px;font-size:var(--t-small)}
-#D footer.dft a{text-decoration:none;color:var(--text-2)}#D footer.dft a:hover{color:var(--text)}
-#D footer.dft .brand p{margin-top:12px;font-size:var(--t-small);color:var(--text-2);max-width:30ch}
-#D footer.dft .bot{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-block:20px 96px;border-top:1px solid var(--border);font-size:var(--t-small);color:var(--text-2)}
-@media (prefers-reduced-motion:no-preference){@supports (animation-timeline:view()){
-  #D .rise{animation:d-rise linear both;animation-timeline:view();animation-range:entry 0% entry 55%}
-  @keyframes d-rise{from{opacity:0;transform:translateY(36px) scale(.985)}to{opacity:1;transform:none}}
-}}
-@media (max-width:900px){#D header nav{display:none}#D .pop{position:relative;right:auto;bottom:auto;margin:-40px auto 0;transform:none}#D .stats{grid-template-columns:repeat(2,minmax(0,1fr))}#D .stat:nth-child(3){border-left:0}#D .stat:nth-child(n+3){border-top:1px solid var(--border)}#D .head{grid-template-columns:1fr}#D .head .num{grid-row:auto}#D footer.dft .top{grid-template-columns:1fr 1fr}#D .vs{overflow-x:auto}#D .vs th,#D .vs td{padding:10px 10px}}
-
-/* ================= E · Its own identity: dark by default ================= */
-body[data-variant=E]{background:var(--e-bg)}
-body[data-variant=E] #E{display:block}
-#E{--e-bg:#07110F;--e-bg2:#0B1814;--e-surface:#0F1F1A;--e-line:#1B2F29;--e-text:#EAF4EF;--e-text2:#9FB8AE;--e-acc:#6EE7B7;--e-acc-ink:#03140E;--e-acc-rgb:110 231 183;--e-noise:#FF6B4A;--e-noise-rgb:255 107 74;
-  --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
-  background:var(--e-bg);color:var(--e-text);color-scheme:dark}
-body[data-palette=plum] #E{--e-bg:#0D0A13;--e-bg2:#130F1B;--e-surface:#1A1524;--e-line:#2A2338;--e-text:#F3EFF8;--e-text2:#B6ACC7;--e-acc:#C4B5FD;--e-acc-ink:#120A24;--e-acc-rgb:196 181 253}
-body[data-palette=amber] #E{--e-bg:#0A0C11;--e-bg2:#10131A;--e-surface:#151922;--e-line:#242A36;--e-text:#F6F2EA;--e-text2:#B2B7C2;--e-acc:#FBBF24;--e-acc-ink:#1A1204;--e-acc-rgb:251 191 36;--e-noise:#FF5A5F;--e-noise-rgb:255 90 95}
-#E a{color:inherit}
-#E :focus-visible{outline-color:var(--e-acc)}
-#E .ebtn{display:inline-flex;align-items:center;gap:.6em;padding:1em 1.6em;border-radius:12px;font-weight:600;font-size:.9375rem;line-height:1;text-decoration:none;border:1px solid transparent;white-space:nowrap;transition:transform .2s,box-shadow .2s}
-#E .ebtn svg{width:18px;height:18px}
-#E .ebtn.solid{background:var(--e-acc);color:var(--e-acc-ink);box-shadow:0 0 0 1px rgb(var(--e-acc-rgb) / .4),0 10px 40px -8px rgb(var(--e-acc-rgb) / .55)}
-#E .ebtn.solid:hover{transform:translateY(-1px);box-shadow:0 0 0 1px rgb(var(--e-acc-rgb) / .6),0 14px 50px -6px rgb(var(--e-acc-rgb) / .7)}
-#E .ebtn.ghost{border-color:var(--e-line);color:var(--e-text)}
-#E .ebtn.ghost:hover{border-color:var(--e-text2)}
-#E .kick{font:600 12px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--e-acc)}
-#E .kick.noise{color:var(--e-noise)}
-#E .ser{font-family:var(--serif);font-style:italic;font-weight:400;letter-spacing:-.01em;color:var(--e-acc)}
-#E header{position:absolute;inset:0 0 auto;z-index:5}
-#E header .in{display:flex;align-items:center;justify-content:space-between;padding-block:22px}
-#E header nav{display:flex;gap:28px;font-size:var(--t-small);color:var(--e-text2)}
-#E header nav a{text-decoration:none}#E header nav a:hover{color:var(--e-text)}
-#E header .ebtn{padding:.75em 1.2em;font-size:.875rem}
-/* hero: noise behind, calm in front */
-#E .hero{position:relative;min-height:min(100dvh,940px);display:grid;align-items:center;overflow:hidden;isolation:isolate}
-#E .hero::before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(60% 50% at 78% 55%,rgb(var(--e-acc-rgb) / .14),transparent 70%),radial-gradient(40% 40% at 95% 10%,rgb(var(--e-noise-rgb) / .12),transparent 70%)}
-#E .noisewall{position:absolute;z-index:-1;right:-6%;top:6%;width:62%;height:92%;perspective:1400px;pointer-events:none;-webkit-mask:linear-gradient(90deg,transparent,#000 35%,#000 80%,transparent),linear-gradient(transparent,#000 15%,#000 70%,transparent);-webkit-mask-composite:source-in;mask:linear-gradient(90deg,transparent,#000 35%,#000 80%,transparent) intersect,linear-gradient(transparent,#000 15%,#000 70%,transparent)}
-#E .noisewall .tiles{position:absolute;inset:0;display:grid;grid-template-columns:1fr 1fr;gap:18px;transform:rotateY(-24deg) rotateX(8deg) translateZ(-120px);transform-origin:right center}
-#E .noisewall img{width:100%;border-radius:10px;filter:saturate(1.3) brightness(.55);box-shadow:0 0 0 1px rgb(var(--e-noise-rgb) / .35)}
-#E .calmshot{position:absolute;z-index:0;right:4%;bottom:9%;width:min(38%,540px);border-radius:16px;overflow:hidden;border:1px solid rgb(var(--e-acc-rgb) / .45);box-shadow:0 0 0 6px rgb(var(--e-acc-rgb) / .06),0 40px 100px -20px rgb(0 0 0 / .8),0 0 120px -10px rgb(var(--e-acc-rgb) / .35)}
-#E .calmshot img{aspect-ratio:1280/800;object-fit:cover;object-position:top;filter:brightness(.9)}
-#E .calmshot span{position:absolute;z-index:1;left:12px;top:12px;font:600 11px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;padding:6px 9px;border-radius:6px;background:var(--e-acc);color:var(--e-acc-ink)}
-#E .noisetag{position:absolute;z-index:0;right:6%;top:13%;font:600 11px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;padding:6px 9px;border-radius:6px;background:rgb(var(--e-noise-rgb) / .14);color:var(--e-noise);border:1px solid rgb(var(--e-noise-rgb) / .4)}
-#E .hero .txt{position:relative;z-index:1;max-width:min(560px,52%);padding-block:120px 80px}
-#E .hero h1{font-size:clamp(3rem,5.4vw,5.4rem);line-height:.98;letter-spacing:-.045em;font-weight:600;margin-top:22px}
-#E .hero h1 .ser{display:block;font-size:1.02em;margin-top:.08em}
-#E .hero .lead{color:var(--e-text2);font-size:clamp(1.0625rem,1.4vw,1.25rem);margin-top:26px;max-width:32rem}
-#E .hero .cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:34px}
-#E .hero .facts{display:flex;gap:22px;flex-wrap:wrap;margin-top:26px;font:500 12px/1 var(--mono);color:var(--e-text2);letter-spacing:.04em}
-#E .hero .facts span::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--e-acc);margin-right:8px;vertical-align:1px}
-/* sections */
-#E section.sec{padding-block:clamp(72px,10vw,140px);border-top:1px solid var(--e-line)}
-#E .sh{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px 64px;align-items:end;margin-bottom:48px}
-#E .sh h2{font-size:clamp(2.2rem,4.6vw,4rem);line-height:1;letter-spacing:-.04em;font-weight:600;margin-top:16px}
-#E .sh p{color:var(--e-text2);max-width:34rem}
-/* before / after */
-#E .ba{display:grid;grid-template-columns:220px minmax(0,1fr);gap:40px;align-items:start}
-#E .ba .list{display:grid;gap:4px;position:sticky;top:24px}
-#E .ba .list button{all:unset;cursor:pointer;display:grid;gap:6px;padding:16px 18px;border-radius:12px;border:1px solid transparent;color:var(--e-text2)}
-#E .ba .list button b{font-size:1.375rem;font-weight:600;letter-spacing:-.02em;color:var(--e-text2)}
-#E .ba .list button small{font-size:var(--t-small);line-height:1.45}
-#E .ba .list button[aria-selected=true]{border-color:var(--e-line);background:var(--e-surface)}
-#E .ba .list button[aria-selected=true] b{color:var(--e-text)}
-#E .ecmp{position:relative;aspect-ratio:1280/800;border-radius:18px;overflow:hidden;--x:50%;user-select:none;touch-action:none;cursor:ew-resize;box-shadow:0 0 0 1px var(--e-line),0 50px 120px -30px rgb(0 0 0 / .9)}
-#E .ecmp img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top}
-#E .ecmp .after{clip-path:inset(0 0 0 var(--x))}
-#E .ecmp .before{filter:saturate(1.15)}
-#E .ecmp .line{position:absolute;top:0;bottom:0;left:var(--x);width:2px;background:var(--e-acc);transform:translateX(-1px);box-shadow:0 0 24px rgb(var(--e-acc-rgb) / .9)}
-#E .ecmp .knob{position:absolute;top:50%;left:var(--x);transform:translate(-50%,-50%);width:52px;height:52px;border-radius:50%;background:var(--e-acc);color:var(--e-acc-ink);display:grid;place-items:center;font-weight:700;box-shadow:0 0 0 8px rgb(var(--e-acc-rgb) / .18),0 10px 30px rgb(0 0 0 / .5)}
-#E .ecmp .tag{position:absolute;top:16px;font:600 11px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;padding:7px 10px;border-radius:6px}
-#E .ecmp .tag.l{left:16px;background:var(--e-noise);color:#1A0602}
-#E .ecmp .tag.r{right:16px;background:var(--e-acc);color:var(--e-acc-ink)}
-/* switchboard */
-#E .board{display:grid;grid-template-columns:340px minmax(0,1fr);gap:56px;align-items:start}
-#E .board .side{position:sticky;top:24px;display:grid;gap:20px}
-#E .board .side p{color:var(--e-text2);font-size:var(--t-small)}
-#E .epop{width:100%;padding:12px;border-radius:20px;background:#151A22;border:1px solid #2A313C;box-shadow:0 40px 90px -20px rgb(0 0 0 / .8),0 0 80px -20px rgb(var(--e-acc-rgb) / .3);font-size:13px;color:#F7F4EE}
-#E .epop .card{position:relative;overflow:hidden;padding:14px;border-radius:14px;background:#0E1218}
-#E .epop .card::before{content:"";position:absolute;inset:auto -20% -80% -20%;height:130%;background:radial-gradient(50% 50% at 50% 50%,rgb(139 92 246 / .4),transparent 70%),radial-gradient(30% 40% at 20% 40%,rgb(245 158 11 / .3),transparent 70%)}
-#E .epop .card>*{position:relative}
-#E .epop .top{display:flex;justify-content:space-between;align-items:center}
-#E .epop .mark{font-size:13px;gap:7px}#E .epop .mark img{width:18px;height:18px}
-#E .epop .card b{display:block;margin-top:10px;font-weight:500;font-size:16px}
-#E .epop .card small{color:#C9CCD1;font-size:11px}
-#E .epop .pt{display:grid;grid-template-columns:repeat(5,auto);gap:2px;margin:9px 0 7px;padding:3px;border-radius:10px;background:#11151C;border:1px solid #2A313C}
-#E .epop .pt button{all:unset;cursor:pointer;text-align:center;padding:5px 3px;border-radius:7px;font-size:10.5px;font-weight:500;color:#B9BDC4}
-#E .epop .pt button[aria-selected=true]{background:#F7F4EE;color:#151A22}
-#E .epop .it{padding:10px;border-radius:10px;background:#1B212B;border:1px solid #2A313C;margin-top:6px}
-#E .epop .it .h{display:flex;justify-content:space-between;align-items:center;font-weight:500}
-#E .epop .it p{color:#B9BDC4;font-size:10.5px;margin-top:3px;line-height:1.4}
-#E .esw{all:unset;cursor:pointer;flex:none;width:40px;height:23px;border-radius:12px;background:var(--e-line);position:relative;transition:background .2s}
-#E .esw::after{content:"";position:absolute;top:3px;left:3px;width:17px;height:17px;border-radius:50%;background:var(--e-text2);transition:transform .22s cubic-bezier(.22,.8,.24,1),background .2s}
-#E .esw[aria-checked=true]{background:var(--e-acc);box-shadow:0 0 18px rgb(var(--e-acc-rgb) / .45)}
-#E .esw[aria-checked=true]::after{transform:translateX(17px);background:var(--e-acc-ink)}
-#E .epop .esw{width:30px;height:17px}#E .epop .esw::after{width:13px;height:13px;top:2px;left:2px}#E .epop .esw[aria-checked=true]::after{transform:translateX(13px)}
-#E .rows{display:grid}
-#E .rows .grp{font:600 11px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--e-text2);padding:26px 0 10px}
-#E .rows .grp:first-child{padding-top:0}
-#E .row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 28px;align-items:center;padding:18px 0;border-top:1px solid var(--e-line)}
-#E .row h3{font-size:1.1875rem;font-weight:600;letter-spacing:-.015em}
-#E .row h3 em{font-style:normal;font:600 10px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--e-acc);border:1px solid rgb(var(--e-acc-rgb) / .4);border-radius:5px;padding:4px 6px;margin-left:10px;vertical-align:3px}
-#E .row p{grid-column:1;font-size:var(--t-small);color:var(--e-text2);max-width:52ch}
-#E .row .esw{grid-row:1 / span 2;grid-column:2}
-/* numbers */
-#E .nums{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--e-line);border-radius:20px;overflow:hidden;background:linear-gradient(180deg,var(--e-bg2),var(--e-bg))}
-#E .num{padding:34px 28px 30px;display:grid;gap:14px;align-content:start}
-#E .num+.num{border-left:1px solid var(--e-line)}
-#E .num b{font:500 clamp(2.6rem,5vw,4.4rem)/1 var(--mono);letter-spacing:-.06em;color:var(--e-acc);text-shadow:0 0 40px rgb(var(--e-acc-rgb) / .35)}
-#E .num p{font-size:var(--t-small);color:var(--e-text2)}
-#E .ph{color:#FBBF24}
-#E .gl{margin-top:14px;font:500 12px/1.6 var(--mono);color:var(--e-text2)}
-/* compare */
-#E .vs{border:1px solid var(--e-line);border-radius:20px;overflow:hidden}
-#E .vs table{font-size:.9375rem}
-#E .vs th,#E .vs td{padding:16px 22px;text-align:left;border-bottom:1px solid var(--e-line);vertical-align:top}
-#E .vs thead th{font:600 12px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--e-text2);background:var(--e-bg2)}
-#E .vs thead th.us{color:var(--e-acc-ink);background:var(--e-acc)}
-#E .vs tbody th{font-weight:500;color:var(--e-text)}
-#E .vs td{color:var(--e-text2)}
-#E .vs td.us{background:rgb(var(--e-acc-rgb) / .06);color:var(--e-text)}
-#E .vs td.yes::before{content:"●";color:var(--e-acc);margin-right:8px;font-size:10px;vertical-align:2px}
-#E .vs td.no::before{content:"○";color:var(--e-text2);margin-right:8px;font-size:10px;vertical-align:2px}
-#E .vs tr:last-child td,#E .vs tr:last-child th{border-bottom:0}
-#E .src{margin-top:14px;font-size:var(--t-small);color:var(--e-text2)}
-/* privacy + close */
-#E .close{text-align:center;padding-block:clamp(96px,14vw,180px);position:relative;overflow:hidden;border-top:1px solid var(--e-line)}
-#E .close::before{content:"";position:absolute;inset:0;background:radial-gradient(45% 55% at 50% 100%,rgb(var(--e-acc-rgb) / .16),transparent 70%)}
-#E .close p{position:relative;font-size:clamp(2rem,5vw,4.2rem);line-height:1.02;letter-spacing:-.04em;font-weight:600;max-width:16ch;margin-inline:auto}
-#E .close .cta{position:relative;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:40px}
-#E footer.ef{border-top:1px solid var(--e-line);font-size:var(--t-small);color:var(--e-text2)}
-#E footer.ef .in{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;padding-block:32px 100px}
-#E footer.ef nav{display:flex;gap:22px;flex-wrap:wrap}
-#E footer.ef a{text-decoration:none}#E footer.ef a:hover{color:var(--e-text)}
-@media (prefers-reduced-motion:no-preference){@supports (animation-timeline:view()){
-  #E .up{animation:e-up linear both;animation-timeline:view();animation-range:entry 0% entry 50%}
-  @keyframes e-up{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:none}}
-}}
-@media (max-width:960px){#E header nav{display:none}#E .noisewall{width:100%;right:-30%;opacity:.5}#E .calmshot{position:relative;right:auto;bottom:auto;width:100%;margin:-20px 0 60px}#E .noisetag{display:none}#E .hero{min-height:0}#E .hero .txt{padding-block:110px 40px;max-width:none}#E .sh,#E .ba,#E .board{grid-template-columns:1fr}#E .ba .list{position:static;grid-template-columns:repeat(3,1fr)}#E .ba .list small{display:none}#E .board .side{position:static}#E .nums{grid-template-columns:1fr 1fr}#E .num:nth-child(3){border-left:0}#E .num:nth-child(n+3){border-top:1px solid var(--e-line)}#E .vs{overflow-x:auto}#E .vs th,#E .vs td{padding:12px}}
-
-/* ================= F / G · Pass 2: quiet, rich type, no comparison (shared .q) ================= */
-body[data-variant=F],body[data-variant=G]{background:var(--q-bg)}
-body[data-variant=F] #F,body[data-variant=G] #G{display:block}
-body[data-variant=F]{--q-bg:#090F0D}body[data-variant=G]{--q-bg:#0D0A12}
-#F{--q-bg:#090F0D;--q-bg2:#0D1512;--q-line:rgb(255 255 255 / .07);--q-text:#EEF3F0;--q-2:#A2B1AB;--q-3:#6C7B75;--q-acc:#7CF0C4;--q-acc-rgb:124 240 196;--q-ink:#04140E;--q-em:#A8E6CE;--q-warm-rgb:255 196 140;
-  --q-disp:"Instrument Serif",ui-serif,Georgia,serif;--q-sans:"Inter",ui-sans-serif,system-ui,sans-serif;--q-dw:400;--q-dt:-.02em;--q-hs:-.01em}
-#G{--q-bg:#0D0A12;--q-bg2:#140F1B;--q-line:rgb(255 255 255 / .07);--q-text:#F5F0F6;--q-2:#B5A9BE;--q-3:#7A6F84;--q-acc:#FFB59A;--q-acc-rgb:255 181 154;--q-ink:#1C0B12;--q-em:#F2B8CC;--q-warm-rgb:232 121 185;
-  --q-disp:"Fraunces",ui-serif,Georgia,serif;--q-sans:"Hanken Grotesk",ui-sans-serif,system-ui,sans-serif;--q-dw:360;--q-dt:-.025em;--q-hs:-.015em}
-.q{color:var(--q-text);font:400 17px/1.6 var(--q-sans);font-feature-settings:"cv01","ss03";position:relative;isolation:isolate}
-.q::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:.05;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
-.q a{color:inherit}
-.q :focus-visible{outline-color:var(--q-acc)}
-.q h1,.q h2,.q .disp{font-family:var(--q-disp);font-weight:var(--q-dw);color:var(--q-text)}
-#G h1,#G h2,#G .disp{font-variation-settings:"opsz" 144,"SOFT" 100,"WONK" 0}
-.q h1{font-size:clamp(52px,8vw,88px);line-height:1;letter-spacing:var(--q-dt)}
-.q h2{font-size:clamp(34px,4.4vw,52px);line-height:1.08;letter-spacing:var(--q-hs)}
-.q em{font-style:italic;color:var(--q-em)}
-#G em{font-variation-settings:"opsz" 144,"SOFT" 100,"WONK" 1}
-.q h1,.q h2,.q .lead{text-wrap:balance}
-.q .lead{font-size:clamp(17px,1.5vw,20px);color:var(--q-2);line-height:1.55}
-.q .small{font-size:13px;font-weight:500;letter-spacing:.01em;color:var(--q-3)}
-.q .qbtn{display:inline-flex;align-items:center;gap:.6em;padding:.95em 1.5em;border-radius:999px;font:500 15px/1 var(--q-sans);text-decoration:none;white-space:nowrap;background:var(--q-text);color:var(--q-bg);box-shadow:0 0 0 1px rgb(255 255 255 / .2),0 12px 40px -10px rgb(var(--q-acc-rgb) / .55);transition:transform .2s,box-shadow .2s}
-.q .qbtn:hover{transform:translateY(-1px);box-shadow:0 0 0 1px rgb(255 255 255 / .3),0 16px 50px -8px rgb(var(--q-acc-rgb) / .75)}
-.q .qbtn svg{width:17px;height:17px}
-.q .qbtn.sm{padding:.7em 1.15em;font-size:14px}
-.q .qhead .in{display:flex;align-items:center;justify-content:space-between;padding-block:22px}
-.q .brand{display:inline-flex;align-items:center;gap:10px;font:600 17px/1 var(--q-sans);letter-spacing:-.01em;text-decoration:none}
-.q .brand img{width:28px;height:28px}
-.q section{padding-block:clamp(72px,9vw,128px)}
-.q .sh{max-width:40rem;margin-bottom:48px}
-.q .sh .lead{margin-top:16px}
-.q .center{text-align:center;margin-inline:auto}
-/* hero F: centred, the mark above, the calm page rising below */
-#F .qhead{position:absolute;inset:0 0 auto;z-index:2}
-#F .hero{text-align:center;padding-block:clamp(120px,13vw,170px) 0;position:relative;overflow:hidden}
-#F .hero::before{content:"";position:absolute;inset:-10% -10% auto;height:120%;z-index:-1;background:radial-gradient(38% 30% at 50% 22%,rgb(var(--q-acc-rgb) / .13),transparent 70%),radial-gradient(30% 25% at 70% 60%,rgb(var(--q-warm-rgb) / .06),transparent 70%)}
-#F .hero .big{width:clamp(96px,11vw,132px);margin:0 auto 36px;filter:drop-shadow(0 24px 40px rgb(var(--q-acc-rgb) / .25))}
-#F .hero h1{max-width:12ch;margin-inline:auto}
-#F .hero .lead{max-width:30rem;margin:28px auto 0}
-#F .hero .cta{margin-top:36px;display:grid;justify-items:center;gap:16px}
-#F .rise{margin:clamp(56px,8vw,96px) auto 0;max-width:1040px;perspective:1600px}
-#F .rise .win{transform:rotateX(14deg);transform-origin:50% 0;border-radius:16px 16px 0 0;overflow:hidden;box-shadow:0 0 0 1px var(--q-line),0 -20px 120px -30px rgb(var(--q-acc-rgb) / .35);-webkit-mask:linear-gradient(#000 55%,transparent);mask:linear-gradient(#000 40%,transparent)}
-#F .rise img{aspect-ratio:1280/440;object-fit:cover;object-position:top;filter:brightness(.92)}
-/* hero G: split, the mark lit like a sunrise */
-#G .hero{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center;min-height:min(86vh,820px);padding-block:40px 0}
-#G .hero .lead{max-width:28rem;margin-top:28px}
-#G .hero .cta{margin-top:40px;display:flex;gap:20px;align-items:center;flex-wrap:wrap}
-#G .sun{position:relative;aspect-ratio:1;display:grid;place-items:center}
-#G .sun::before{content:"";position:absolute;inset:4%;border-radius:50%;background:radial-gradient(closest-side,rgb(255 181 154 / .32),rgb(232 121 185 / .16) 45%,rgb(124 77 214 / .1) 70%,transparent);filter:blur(10px)}
-#G .sun::after{content:"";position:absolute;inset:18%;border-radius:50%;border:1px solid rgb(255 255 255 / .06);box-shadow:0 0 0 60px rgb(255 255 255 / .015),0 0 0 120px rgb(255 255 255 / .01)}
-#G .sun img{position:relative;z-index:1;width:56%;filter:drop-shadow(0 40px 60px rgb(124 77 214 / .45))}
-/* before/after */
-.q .tabs{display:inline-flex;gap:4px;padding:4px;border-radius:999px;background:rgb(255 255 255 / .04);border:1px solid var(--q-line);margin-bottom:24px}
-.q .tabs button{all:unset;cursor:pointer;padding:9px 18px;border-radius:999px;font:500 14px/1 var(--q-sans);color:var(--q-2)}
-.q .tabs button[aria-selected=true]{background:var(--q-text);color:var(--q-bg)}
-.q .qcmp{position:relative;aspect-ratio:1280/800;border-radius:18px;overflow:hidden;--x:50%;user-select:none;touch-action:none;cursor:ew-resize;box-shadow:0 0 0 1px var(--q-line),0 60px 140px -40px rgb(0 0 0 / .9),0 0 160px -40px rgb(var(--q-acc-rgb) / .25)}
-.q .qcmp img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top}
-.q .qcmp .after{clip-path:inset(0 0 0 var(--x))}
-.q .qcmp .before{filter:saturate(.7) brightness(.85)}
-.q .qcmp .line{position:absolute;top:0;bottom:0;left:var(--x);width:1px;background:#fff;transform:translateX(-.5px)}
-.q .qcmp .knob{position:absolute;top:50%;left:var(--x);transform:translate(-50%,-50%);width:44px;height:44px;border-radius:50%;background:rgb(255 255 255 / .9);color:#111;display:grid;place-items:center;font-size:14px;box-shadow:0 8px 30px rgb(0 0 0 / .4);backdrop-filter:blur(8px)}
-.q .qcmp .tag{position:absolute;bottom:16px;font:500 12px/1 var(--q-sans);padding:7px 11px;border-radius:999px;background:rgb(0 0 0 / .55);color:#fff;backdrop-filter:blur(8px)}
-.q .qcmp .tag.l{left:16px}.q .qcmp .tag.r{right:16px}
-.q .cap{margin-top:18px;color:var(--q-2);font-size:15px;min-height:1.6em}
-/* settings */
-.q .board{display:grid;grid-template-columns:320px minmax(0,1fr);gap:72px;align-items:start}
-.q .board .side{position:sticky;top:32px}
-.q .rows .grp{font:500 13px/1 var(--q-sans);letter-spacing:.01em;color:var(--q-3);padding:32px 0 12px}
-.q .rows .grp:first-child{padding-top:0}
-.q .row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 28px;align-items:center;padding:16px 0;border-top:1px solid var(--q-line)}
-.q .row h3{font:500 17px/1.35 var(--q-sans);letter-spacing:-.01em}
-.q .row h3 i{font-style:normal;font-size:12px;font-weight:500;color:var(--q-acc);margin-left:10px}
-.q .row p{font-size:14px;color:var(--q-3);line-height:1.5;max-width:56ch}
-.q .row .qsw{grid-row:1 / span 2;grid-column:2}
-.q .qsw{all:unset;cursor:pointer;flex:none;width:38px;height:22px;border-radius:12px;background:rgb(255 255 255 / .1);position:relative;transition:background .2s}
-.q .qsw::after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:var(--q-2);transition:transform .22s cubic-bezier(.22,.8,.24,1),background .2s}
-.q .qsw[aria-checked=true]{background:var(--q-acc)}
-.q .qsw[aria-checked=true]::after{transform:translateX(16px);background:var(--q-ink)}
-#G .qsw[aria-checked=true]{background:linear-gradient(90deg,#FFB59A,#E879B9)}
-/* popup */
-.q .qpop{padding:12px;border-radius:22px;background:#12161D;border:1px solid rgb(255 255 255 / .08);box-shadow:0 40px 90px -20px rgb(0 0 0 / .85),0 0 90px -30px rgb(var(--q-acc-rgb) / .35);font:400 13px/1.45 var(--q-sans);color:#F2F2F0}
-.q .qpop .card{position:relative;overflow:hidden;padding:16px;border-radius:15px;background:#0B0E13}
-.q .qpop .card::before{content:"";position:absolute;inset:auto -20% -90% -20%;height:140%;background:radial-gradient(50% 50% at 50% 50%,rgb(var(--q-acc-rgb) / .3),transparent 70%),radial-gradient(30% 40% at 20% 40%,rgb(var(--q-warm-rgb) / .2),transparent 70%)}
-.q .qpop .card>*{position:relative}
-.q .qpop .top{display:flex;justify-content:space-between;align-items:center}
-.q .qpop .brand{font-size:14px;gap:8px}.q .qpop .brand img{width:22px;height:22px}
-.q .qpop .card b{display:block;margin-top:14px;font:var(--q-dw) 21px/1.15 var(--q-disp);letter-spacing:-.01em}
-#G .qpop .card b{font-variation-settings:"opsz" 72,"SOFT" 100}
-.q .qpop .card small{color:#A9AEB6;font-size:11.5px}
-.q .qpop .pt{display:grid;grid-template-columns:repeat(5,auto);gap:2px;margin:10px 0 8px;padding:3px;border-radius:11px;background:#0E1218;border:1px solid rgb(255 255 255 / .07)}
-.q .qpop .pt button{all:unset;cursor:pointer;text-align:center;padding:6px 3px;border-radius:8px;font-size:10.5px;font-weight:500;color:#A9AEB6}
-.q .qpop .pt button[aria-selected=true]{background:#F2F2F0;color:#12161D}
-.q .qpop .it{padding:11px;border-radius:11px;background:#181D25;margin-top:6px}
-.q .qpop .it .h{display:flex;justify-content:space-between;align-items:center;font-weight:500}
-.q .qpop .it p{color:#9BA1AA;font-size:10.5px;margin-top:3px}
-.q .qpop .qsw{width:30px;height:17px}.q .qpop .qsw::after{width:13px;height:13px;top:2px;left:2px}.q .qpop .qsw[aria-checked=true]::after{transform:translateX(13px)}
-.q .side .small{margin-top:16px;text-align:center}
-/* numbers */
-.q .nums{display:grid;grid-template-columns:repeat(3,1fr);gap:0}
-.q .num{padding:8px 32px 0;border-left:1px solid var(--q-line)}
-.q .num:first-child{border-left:0;padding-left:0}
-.q .num b{display:block;font:var(--q-dw) clamp(56px,7vw,96px)/1 var(--q-disp);letter-spacing:-.03em;background:linear-gradient(180deg,var(--q-text),rgb(var(--q-acc-rgb)));-webkit-background-clip:text;background-clip:text;color:transparent}
-#G .num b{font-variation-settings:"opsz" 144,"SOFT" 100;background-image:linear-gradient(120deg,#FFD3BF,#E879B9 60%,#A78BFA)}
-.q .num p{margin-top:14px;color:var(--q-2);font-size:15px;max-width:22ch}
-.q .ph{display:inline-block;font:600 10px/1 var(--q-sans);letter-spacing:.06em;text-transform:uppercase;color:#FBBF24;border:1px dashed currentColor;border-radius:4px;padding:3px 5px;vertical-align:middle}
-.q .when{margin-top:40px}
-/* close + footer */
-.q .close{text-align:center;position:relative;overflow:hidden}
-.q .close::before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(40% 50% at 50% 100%,rgb(var(--q-acc-rgb) / .14),transparent 70%)}
-.q .close h2{font-size:clamp(44px,7vw,84px);line-height:1;max-width:12ch;margin-inline:auto;letter-spacing:var(--q-dt)}
-.q .close .cta{margin-top:44px;display:grid;justify-items:center;gap:16px}
-.q .close .small a{text-decoration:none}
-.q footer{border-top:1px solid var(--q-line);font-size:13px;color:var(--q-3)}
-.q footer .in{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;padding-block:36px 100px}
-.q footer nav{display:flex;gap:24px}
-.q footer a{text-decoration:none}.q footer a:hover{color:var(--q-text)}
-.q footer .s{display:inline-flex;align-items:center;gap:8px}
-@media (prefers-reduced-motion:no-preference){@supports (animation-timeline:view()){
-  .q .up{animation:q-up linear both;animation-timeline:view();animation-range:entry 0% entry 45%}
-  @keyframes q-up{from{opacity:0;transform:translateY(32px)}to{opacity:1;transform:none}}
-}}
-@media (max-width:900px){#G .hero{grid-template-columns:1fr;min-height:0}#G .sun{max-width:360px;margin-inline:auto}.q .board{grid-template-columns:1fr;gap:40px}.q .board .side{position:static;max-width:340px}.q .nums{grid-template-columns:1fr;gap:36px}.q .num{border-left:0;padding:0}#F .rise .win{transform:none}}
-
-/* ================= H · Pass 2b: G's look, room to breathe, header, drawn before/after, giant footer ================= */
-body[data-variant=H]{--q-bg:#090F0D;background:var(--q-bg)}
-body[data-variant=H] #H{display:block}
-#H{--q-bg:#090F0D;--q-bg2:#0D1512;--q-line:rgb(255 255 255 / .07);--q-text:#EEF3F0;--q-2:#A2B1AB;--q-3:#6C7B75;--q-acc:#7CF0C4;--q-acc-rgb:124 240 196;--q-ink:#04140E;--q-warm-rgb:255 196 140;--q-em:#A8E6CE;
-  --q-disp:"Instrument Serif",ui-serif,Georgia,serif;--q-sans:"Inter",ui-sans-serif,system-ui,sans-serif;--q-dw:400;--q-dt:-.02em;--q-hs:-.01em}
-#H section{padding-block:clamp(120px,15vw,220px)}
-#H .sh{margin-bottom:clamp(56px,7vw,96px)}
 /* header */
-#H .hbar{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--q-bg) 70%,transparent);backdrop-filter:blur(20px) saturate(1.4);-webkit-backdrop-filter:blur(20px) saturate(1.4);border-bottom:1px solid transparent;transition:border-color .3s}
-#H .hbar.stuck{box-shadow:0 10px 30px -20px rgb(0 0 0 / .8)}
-#H .hbar .in{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;height:72px}
-#H .hbar nav{display:flex;gap:32px;font-size:15px;color:var(--q-2)}
-#H .hbar nav a{text-decoration:none;transition:color .2s}#H .hbar nav a:hover{color:var(--q-text)}
-#H .hbar .right{display:flex;gap:10px;justify-content:end;align-items:center}
-#H .gh{display:inline-flex;align-items:center;gap:8px;padding:.7em 1.05em;border-radius:999px;border:1px solid var(--q-line);font:500 14px/1 var(--q-sans);text-decoration:none;color:var(--q-2)}
-#H .gh:hover{color:var(--q-text);border-color:rgb(255 255 255 / .16)}
-#H .gh svg{width:16px;height:16px}
-/* hero (G's) */
-#H .hero{display:grid;grid-template-columns:1.1fr .9fr;gap:56px;align-items:center;min-height:calc(100vh - 72px);padding-block:24px 64px}
-#H .hero .lead{max-width:28rem;margin-top:32px}
-#H .hero .cta{margin-top:48px;display:flex;gap:22px;align-items:center;flex-wrap:wrap}
-#H .sun{position:relative;aspect-ratio:1;display:grid;place-items:center}
-#H .sun::before{content:"";position:absolute;inset:4%;border-radius:50%;background:radial-gradient(closest-side,rgb(124 240 196 / .22),rgb(124 240 196 / .08) 50%,rgb(255 196 140 / .05) 72%,transparent);filter:blur(10px)}
-#H .sun::after{content:"";position:absolute;inset:18%;border-radius:50%;border:1px solid rgb(255 255 255 / .06);box-shadow:0 0 0 60px rgb(255 255 255 / .015),0 0 0 120px rgb(255 255 255 / .01)}
-#H .sun img{position:relative;z-index:1;width:56%;filter:drop-shadow(0 40px 60px rgb(0 0 0 / .55)) drop-shadow(0 0 50px rgb(124 240 196 / .18))}
-@media (prefers-reduced-motion:no-preference){#H .sun img{animation:h-float 7s ease-in-out infinite}@keyframes h-float{50%{transform:translateY(-10px) rotate(-1deg)}}}
-/* the drawn page */
-#H .flip{display:flex;justify-content:center;margin-bottom:40px}
-#H .flip .seg{display:inline-flex;padding:5px;border-radius:999px;background:rgb(255 255 255 / .04);border:1px solid var(--q-line);position:relative}
-#H .flip button{all:unset;cursor:pointer;position:relative;z-index:1;padding:12px 26px;border-radius:999px;font:500 15px/1 var(--q-sans);color:var(--q-2);transition:color .3s}
-#H .flip button[aria-pressed=true]{color:var(--q-ink)}
-#H .flip .pill{position:absolute;top:5px;bottom:5px;left:5px;border-radius:999px;background:var(--q-text);transition:transform .45s cubic-bezier(.22,.8,.24,1),width .45s,background .45s}
-#H .flip .seg.on .pill{background:var(--q-acc)}
-#H .yt{--t:.7s;max-width:1080px;margin-inline:auto;border-radius:20px;overflow:hidden;background:#15121B;box-shadow:0 0 0 1px var(--q-line),0 80px 160px -50px rgb(0 0 0 / .9),0 0 200px -60px rgb(var(--q-warm-rgb) / .35)}
-#H .yt .chrome{display:flex;gap:7px;padding:14px 16px;border-bottom:1px solid var(--q-line)}
-#H .yt .chrome i{width:10px;height:10px;border-radius:50%;background:rgb(255 255 255 / .1)}
-#H .yt .bar{display:grid;grid-template-columns:140px 1fr 140px;align-items:center;gap:20px;padding:16px 24px}
-#H .yt .logo{display:flex;gap:8px;align-items:center}#H .yt .logo b{width:28px;height:19px;border-radius:5px;background:#E5484D}#H .yt .logo s{width:64px;height:9px;border-radius:5px;background:rgb(255 255 255 / .22)}
-#H .yt .search{height:34px;border-radius:999px;border:1px solid rgb(255 255 255 / .12);max-width:480px;width:100%;justify-self:center;transition:box-shadow var(--t),border-color var(--t)}
-#H .yt .icons{display:flex;gap:14px;justify-content:end;align-items:center}
-#H .yt .icons span{width:24px;height:24px;border-radius:50%;background:rgb(255 255 255 / .12);position:relative}
-#H .yt .bell::after{content:"9+";position:absolute;top:-7px;right:-10px;font:700 9px/1 var(--q-sans);padding:3px 4px;border-radius:999px;background:#E5484D;color:#fff}
-#H .yt .body{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:24px;padding:4px 24px 28px;transition:grid-template-columns var(--t) cubic-bezier(.22,.8,.24,1),padding var(--t)}
-#H .yt .player{position:relative;aspect-ratio:16/9;border-radius:14px;background:radial-gradient(60% 80% at 30% 30%,#3A2E5A,#17131F);display:grid;place-items:center;overflow:hidden}
-#H .yt .player .play{width:64px;height:64px;border-radius:50%;background:rgb(255 255 255 / .12);display:grid;place-items:center}
-#H .yt .player .play::before{content:"";border-left:18px solid rgb(255 255 255 / .85);border-block:11px solid transparent;margin-left:5px}
-#H .yt .player .prog{position:absolute;left:16px;right:16px;bottom:14px;height:4px;border-radius:2px;background:rgb(255 255 255 / .18)}
-#H .yt .player .prog::before{content:"";display:block;width:62%;height:100%;border-radius:2px;background:#E5484D;transition:background var(--t)}
-#H .yt .endgrid{position:absolute;inset:0 8% 12%;display:grid;grid-template-columns:repeat(4,1fr);gap:10px;align-content:center}
-#H .yt .endgrid i{aspect-ratio:16/9;border-radius:8px}
-#H .yt .meta{margin-top:16px;display:grid;gap:10px}
-#H .yt .meta s{display:block;height:12px;border-radius:6px;background:rgb(255 255 255 / .2)}
-#H .yt .meta s:first-child{width:62%;height:16px;background:rgb(255 255 255 / .32)}
-#H .yt .meta s:last-child{width:34%}
-#H .yt .shelf{margin-top:24px;display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
-#H .yt .shelf i{aspect-ratio:9/16;border-radius:10px}
-#H .yt .comments{margin-top:24px;display:grid;gap:14px}
-#H .yt .comments div{display:grid;grid-template-columns:28px 1fr;gap:12px;align-items:center}
-#H .yt .comments b{width:28px;height:28px;border-radius:50%;background:rgb(255 255 255 / .14)}
-#H .yt .comments s{height:10px;border-radius:5px;background:rgb(255 255 255 / .14)}
-#H .yt .recs{display:grid;gap:12px;align-content:start}
-#H .yt .rec{display:grid;grid-template-columns:132px 1fr;gap:10px}
-#H .yt .rec i{aspect-ratio:16/9;border-radius:8px}
-#H .yt .rec div{display:grid;gap:7px;align-content:start;padding-top:4px}
-#H .yt .rec s{height:8px;border-radius:4px;background:rgb(255 255 255 / .2)}#H .yt .rec s+s{width:60%;background:rgb(255 255 255 / .12)}
-#H .yt .hot{background:linear-gradient(135deg,var(--a),var(--b))}
-#H .nz{position:relative;transition:opacity var(--t),filter var(--t),transform var(--t),max-height var(--t),margin var(--t)}
-#H .nz .lbl{position:absolute;z-index:2;top:8px;left:8px;font:600 11px/1 var(--q-sans);letter-spacing:.02em;padding:5px 8px;border-radius:999px;background:rgb(229 72 77 / .9);color:#fff;white-space:nowrap;transition:opacity .3s}
-#H .yt.on .nz{opacity:0;filter:blur(14px);transform:scale(.97);pointer-events:none}
-#H .yt.on .body{grid-template-columns:minmax(0,1fr) 0px;gap:0;padding-inline:120px}
-#H .yt.on .shelf,#H .yt.on .comments{max-height:0;margin-top:0}
-#H .yt .shelf,#H .yt .comments{max-height:400px}
-#H .yt.on .bell::after{opacity:0}
-#H .yt.on .search{border-color:rgb(var(--q-acc-rgb) / .7);box-shadow:0 0 0 4px rgb(var(--q-acc-rgb) / .12)}
-#H .yt.on .player .prog::before{background:var(--q-acc)}
-#H .yt .bell::after{transition:opacity var(--t)}
-#H .ytcap{text-align:center;margin-top:36px;color:var(--q-2);font-size:16px;min-height:1.6em}
-/* switches: popup + roomy tiles, names only */
-#H .board{display:grid;grid-template-columns:380px minmax(0,1fr);gap:clamp(56px,7vw,112px);align-items:start}
-#H .tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
-#H .tile{all:unset;box-sizing:border-box;cursor:pointer;display:grid;grid-template-columns:1fr auto;align-items:center;gap:6px 16px;padding:26px 26px;border-radius:18px;background:rgb(255 255 255 / .025);border:1px solid var(--q-line);transition:background .25s,border-color .25s}
-#H .tile:hover{background:rgb(255 255 255 / .045)}
-#H .tile[aria-checked=true]{background:linear-gradient(135deg,rgb(124 240 196 / .08),rgb(124 240 196 / .03));border-color:rgb(var(--q-acc-rgb) / .28)}
-#H .tile .g{grid-column:1 / -1;font:500 12px/1 var(--q-sans);letter-spacing:.04em;color:var(--q-3)}
-#H .tile b{font:500 19px/1.3 var(--q-sans);letter-spacing:-.01em}
-#H .tile .qsw{pointer-events:none}
-#H .tile.home{cursor:default}
-#H .tile.home small{font-size:13px;color:var(--q-acc)}
-#H .tiles-note{margin-top:28px}
-/* giant footer */
-#H .gf{position:relative;overflow:hidden;border-top:0;padding-top:clamp(80px,9vw,120px)}
-#H .gf .cols{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:48px}
-#H .gf .about .brand{color:var(--q-text)}
-#H .gf .about p{margin-top:20px;color:var(--q-2);max-width:26ch;font-size:16px}
-#H .gf .about .qbtn{margin-top:28px}
-#H .gf h4{margin:0 0 20px;font:500 13px/1 var(--q-sans);letter-spacing:.04em;color:var(--q-3)}
-#H .gf ul{list-style:none;margin:0;padding:0;display:grid;gap:14px;font-size:15px;color:var(--q-2)}
-#H .gf ul a{text-decoration:none}#H .gf ul a:hover{color:var(--q-text)}
-#H .gf .legal{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-top:clamp(64px,8vw,112px);padding-block:24px;font-size:13px;color:var(--q-3)}
-#H .gf .legal a{text-decoration:none}
-#H .gf .giant{display:flex;justify-content:center;align-items:flex-end;gap:2vw;margin-top:24px;height:clamp(140px,22vw,330px);overflow:hidden;pointer-events:none;user-select:none}
-#H .gf .giant img{width:15vw;max-width:230px;flex:none;transform:translateY(16%);opacity:.9}
-#H .gf .giant span{font:360 clamp(120px,21vw,330px)/.8 var(--q-disp);font-variation-settings:"opsz" 144,"SOFT" 100;letter-spacing:-.05em;background:linear-gradient(180deg,rgb(238 243 240 / .5),rgb(124 240 196 / .2) 55%,rgb(124 240 196 / 0) 92%);-webkit-background-clip:text;background-clip:text;color:transparent;transform:translateY(12%)}
-#H .gf::after{content:"";position:absolute;inset:auto 0 0;height:60%;z-index:-1;background:radial-gradient(50% 60% at 50% 100%,rgb(124 240 196 / .1),transparent 70%)}
-#H .close::before{display:none}
-#H .close{padding-bottom:clamp(80px,10vw,140px)}
-@media (max-width:900px){#H .hbar nav,#H .hbar .gh{display:none}#H .hbar .in{grid-template-columns:1fr auto}#H .hero{grid-template-columns:1fr;min-height:0}#H .sun{max-width:340px;margin-inline:auto}#H .board{grid-template-columns:1fr}#H .tiles{grid-template-columns:1fr}#H .yt .body{grid-template-columns:1fr}#H .yt .recs{display:none}#H .yt.on .body{padding-inline:24px}#H .gf .cols{grid-template-columns:1fr 1fr}}
+.hbar{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--bg) 70%,transparent);backdrop-filter:blur(20px) saturate(1.4);-webkit-backdrop-filter:blur(20px) saturate(1.4);transition:box-shadow .3s}
+.hbar.stuck{box-shadow:0 10px 30px -20px rgb(0 0 0 / .8)}
+.hbar .in{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;height:72px}
+.hbar nav{display:flex;gap:32px;font-size:15px;color:var(--t2)}
+.hbar nav a:hover{color:var(--text)}
+.hbar .right{display:flex;gap:10px;justify-content:end;align-items:center}
+.gh{display:inline-flex;align-items:center;gap:8px;padding:.7em 1.05em;border-radius:999px;border:1px solid var(--line);font:500 14px/1 var(--sans);color:var(--t2)}
+.gh:hover{color:var(--text);border-color:rgb(255 255 255 / .16)}
+.gh svg{width:16px;height:16px}
 
-/* H's popup: the same calm popup as the extension's D */
-#H .hpop{width:100%;max-width:380px;padding:22px 22px 10px;border-radius:22px;background:#12171B;border:1px solid rgb(255 255 255 / .07);box-shadow:0 50px 100px -30px rgb(0 0 0 / .85),0 0 100px -40px rgb(124 240 196 / .3);font:400 14px/1.45 var(--q-sans);color:#EEF3F0}
-#H .hpop header{display:flex;justify-content:space-between;align-items:center}
-#H .hpop .brand{font-size:15px}#H .hpop .brand img{width:22px;height:22px}
-#H .hpop h5{margin:26px 0 0;font:500 20px/1.2 var(--q-sans);letter-spacing:-.02em}
-#H .hpop .st{margin:6px 0 22px;font-size:13px;color:#8E9C96}
-#H .hpop nav{display:flex;gap:16px;border-bottom:1px solid rgb(255 255 255 / .08)}
-#H .hpop nav button{all:unset;cursor:pointer;position:relative;padding-bottom:12px;font-size:13px;font-weight:500;color:#8E9C96}
-#H .hpop nav button i{position:absolute;top:-1px;right:-7px;width:5px;height:5px;border-radius:50%;background:var(--q-acc)}
-#H .hpop nav button[aria-selected=true]{color:#EEF3F0}
-#H .hpop nav button[aria-selected=true]::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;border-radius:2px;background:#EEF3F0}
-#H .hpop .list{min-height:232px;padding:6px 0 10px}
-#H .hpop .row{display:flex;justify-content:space-between;align-items:center;padding:14px 0;font-size:15px;font-weight:500}
-#H .hpop .row+.row{border-top:1px solid rgb(255 255 255 / .05)}
-#H .hpop .row small{display:block;font-size:12.5px;font-weight:400;color:#8E9C96;margin-top:2px}
-#H .hpop .ft{display:flex;gap:14px;padding:14px 0 6px;border-top:1px solid rgb(255 255 255 / .08);font-size:12px;color:#8E9C96}
-#H .hpop .ft span:last-child{margin-left:auto}
-/* ---- H, pass 2d: real screenshots in a showcase, Dossier-style scroll, one fused footer ---- */
-#H .show{position:relative;margin-inline:clamp(12px,2vw,28px);border-radius:clamp(24px,3vw,40px);padding:clamp(72px,9vw,120px) 0 clamp(56px,7vw,96px);background:radial-gradient(80% 60% at 50% 0%,#12382D,#0B1F19 60%,#081511);overflow:hidden;isolation:isolate}
-#H .show::before{content:"";position:absolute;inset:0;z-index:-1;opacity:.07;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
-#H .show h2{text-align:center}
-#H .pills{display:flex;justify-content:center;margin:40px 0 20px}
-#H .pills .in{display:inline-flex;gap:4px;padding:5px;border-radius:999px;background:rgb(0 0 0 / .25);border:1px solid rgb(255 255 255 / .08)}
-#H .pills button{all:unset;cursor:pointer;display:inline-flex;gap:10px;align-items:center;padding:11px 20px;border-radius:999px;font:500 15px/1 var(--q-sans);color:var(--q-2);transition:background .3s,color .3s}
-#H .pills button span{font-size:12px;opacity:.6;font-variant-numeric:tabular-nums}
-#H .pills button[aria-selected=true]{background:var(--q-text);color:var(--q-bg)}
-#H .show .say{text-align:center;color:var(--q-2);font-size:18px;min-height:1.6em;margin-bottom:48px}
-#H .stage{position:relative;height:clamp(300px,46vw,640px)}
-#H .frame{position:absolute;top:0;left:50%;width:min(1040px,78vw);transform:translateX(-50%);border-radius:14px;overflow:hidden;background:#0f0f0f;box-shadow:0 0 0 1px rgb(255 255 255 / .1),0 60px 120px -30px rgb(0 0 0 / .8);transition:transform .7s cubic-bezier(.22,.8,.24,1),opacity .7s,filter .7s}
-#H .frame .tb{display:grid;grid-template-columns:60px 1fr 60px;align-items:center;height:38px;padding:0 14px;background:#1d1d1f;border-bottom:1px solid rgb(255 255 255 / .06)}
-#H .frame .tb i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;background:#ff5f57}#H .frame .tb i+i{background:#febc2e}#H .frame .tb i+i+i{background:#28c840}
-#H .frame .url{justify-self:center;padding:5px 16px;border-radius:8px;background:rgb(255 255 255 / .07);font:400 12px/1 var(--q-sans);color:#b8b8b8;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-#H .frame .shot{position:relative;aspect-ratio:1440/900}
-#H .frame .shot img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top;transition:opacity .8s}
-#H .frame .shot .b{opacity:0}
-#H .frame.raw .shot .b{opacity:1}#H .frame.raw .shot .a{opacity:0}
-#H .frame.side{pointer-events:none;filter:brightness(.45) saturate(.6)}
-#H .frame.l{transform:translateX(-128%) scale(.82)}#H .frame.r{transform:translateX(28%) scale(.82)}
-#H .frame.c{z-index:2}
-#H .frame.hide{opacity:0}
-#H .ctrl{display:flex;justify-content:center;align-items:center;gap:16px;margin-top:40px}
-#H .ctrl .arr{all:unset;cursor:pointer;width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:rgb(255 255 255 / .9);color:#0b1f19;font-size:18px;box-shadow:0 10px 30px rgb(0 0 0 / .4)}
-#H .ctrl .tog{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:12px;padding:12px 20px;border-radius:999px;background:rgb(0 0 0 / .3);border:1px solid rgb(255 255 255 / .1);font:500 15px/1 var(--q-sans);color:var(--q-text)}
-#H .ctrl .tog .qsw{pointer-events:none}
-/* Dossier-style: words scroll on the left, the popup stays on the right and follows */
-#H .story{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(48px,7vw,120px)}
-#H .steps{position:relative;padding-left:32px}
-#H .steps::before{content:"";position:absolute;left:0;top:0;bottom:0;width:1px;background:var(--q-line)}
-#H .steps .bar{position:absolute;left:0;top:0;width:1px;height:var(--p,0%);background:var(--q-acc);box-shadow:0 0 12px rgb(var(--q-acc-rgb) / .6);transition:height .2s linear}
-#H .step{min-height:78vh;display:flex;flex-direction:column;justify-content:center;opacity:.28;transition:opacity .5s}
-#H .step.on{opacity:1}
-#H .step .n{font:italic 400 22px/1 var(--q-disp);color:var(--q-acc)}
-#H .step h3{margin-top:18px;font:400 clamp(36px,4vw,52px)/1.05 var(--q-disp);letter-spacing:-.01em}
-#H .step p{margin-top:20px;font-size:18px;color:var(--q-2);max-width:26rem}
-#H .step ul{list-style:none;padding:0;margin:28px 0 0;display:flex;flex-wrap:wrap;gap:8px}
-#H .step li{padding:7px 13px;border-radius:999px;border:1px solid var(--q-line);font-size:13px;color:var(--q-2)}
-#H .pin{position:sticky;top:0;height:100vh;display:grid;place-items:center}
-#H .pin .glow{position:absolute;inset:20% 10%;border-radius:50%;background:radial-gradient(closest-side,rgb(124 240 196 / .14),transparent);filter:blur(30px);inset-block:25%}
-#H .pin .hpop{position:relative;transform:scale(1.08)}
-/* one footer: the close, the links, all over a grainy giant wordmark */
-#H .fuse{position:relative;overflow:hidden;isolation:isolate;padding-top:clamp(120px,14vw,200px)}
-#H .fuse .giant{position:absolute;left:50%;bottom:-6vw;transform:translateX(-50%);z-index:-1;display:flex;align-items:flex-end;gap:2vw;pointer-events:none;user-select:none;white-space:nowrap}
-#H .fuse .giant span{font:400 clamp(180px,30vw,480px)/.8 var(--q-disp);letter-spacing:-.04em;background:linear-gradient(180deg,rgb(124 240 196 / .16),rgb(124 240 196 / .05) 60%,transparent);-webkit-background-clip:text;background-clip:text;color:transparent}
-#H .fuse .giant img{width:22vw;max-width:340px;opacity:.22;filter:blur(.5px) saturate(.6)}
-#H .fuse::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:.12;mix-blend-mode:overlay;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
-#H .fuse::before{content:"";position:absolute;inset:auto 0 0;height:80%;z-index:-2;background:radial-gradient(60% 70% at 50% 100%,rgb(124 240 196 / .1),transparent 70%)}
-#H .fuse .end{text-align:center}
-#H .fuse .end h2{font-size:clamp(44px,7vw,84px);line-height:1;max-width:12ch;margin-inline:auto;letter-spacing:var(--q-dt)}
-#H .fuse .end .cta{margin-top:44px;display:grid;justify-items:center;gap:16px}
-#H .fuse .cols{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:48px;margin-top:clamp(120px,14vw,200px)}
-#H .fuse .cols p{margin-top:16px;color:var(--q-2);max-width:26ch;font-size:15px}
-#H .fuse h4{margin:0 0 18px;font:500 12px/1 var(--q-sans);letter-spacing:.12em;text-transform:uppercase;color:var(--q-3)}
-#H .fuse ul{list-style:none;margin:0;padding:0;display:grid;gap:12px;font-size:15px;color:var(--q-2)}
-#H .fuse ul a{text-decoration:none}#H .fuse ul a:hover{color:var(--q-text)}
-#H .fuse .legal{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-top:clamp(56px,7vw,96px);padding-bottom:clamp(160px,22vw,340px);font-size:13px;color:var(--q-3)}
-#H .fuse .legal a{text-decoration:none}
-@media (max-width:900px){#H .story{grid-template-columns:1fr}#H .pin{display:none}#H .step{min-height:0;padding-block:40px;opacity:1}#H .frame{width:92vw}#H .frame.side{display:none}#H .stage{height:62vw}#H .fuse .cols{grid-template-columns:1fr 1fr}}
-/* ---------- prototype switcher (not part of the design) ---------- */
-.proto{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:99;display:flex;align-items:center;gap:6px;background:#E8FF59;color:#111;font:600 13px/1 system-ui,sans-serif;padding:6px;border-radius:999px;box-shadow:0 6px 24px rgb(0 0 0 / .35);border:2px solid #111}
-.proto button{all:unset;cursor:pointer;padding:8px 12px;border-radius:999px}
-.proto button:hover{background:#111;color:#E8FF59}
-.proto .lbl{min-width:180px;text-align:center}
+/* hero */
+.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:56px;align-items:center;min-height:calc(100svh - 72px);padding-block:24px 64px}
+.hero .lead{max-width:28rem;margin-top:32px}
+.hero .cta{margin-top:48px;display:flex;gap:22px;align-items:center;flex-wrap:wrap}
+.sun{position:relative;aspect-ratio:1;display:grid;place-items:center}
+.sun::before{content:"";position:absolute;inset:4%;border-radius:50%;background:radial-gradient(closest-side,rgb(var(--acc-rgb) / .22),rgb(var(--acc-rgb) / .08) 50%,rgb(255 196 140 / .05) 72%,transparent);filter:blur(10px)}
+.sun::after{content:"";position:absolute;inset:18%;border-radius:50%;border:1px solid rgb(255 255 255 / .06);box-shadow:0 0 0 60px rgb(255 255 255 / .015),0 0 0 120px rgb(255 255 255 / .01)}
+.sun img{position:relative;z-index:1;width:56%;filter:drop-shadow(0 40px 60px rgb(0 0 0 / .55)) drop-shadow(0 0 50px rgb(var(--acc-rgb) / .18))}
+@media (prefers-reduced-motion:no-preference){.sun img{animation:float 7s ease-in-out infinite}@keyframes float{50%{transform:translateY(-10px) rotate(-1deg)}}}
+
+/* a browser frame holding a real capture; .cam zooms, .a/.b crossfade, .rg marks what D-Tox hides */
+.frame{border-radius:14px;overflow:hidden;background:#0f0f0f;box-shadow:0 0 0 1px rgb(255 255 255 / .1),0 60px 120px -30px rgb(0 0 0 / .85)}
+.frame .tb{display:grid;grid-template-columns:70px 1fr 70px;align-items:center;height:36px;padding:0 14px;background:#1b1c1e;border-bottom:1px solid rgb(255 255 255 / .06)}
+.frame .tb i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;background:#ff5f57}.frame .tb i+i{background:#febc2e}.frame .tb i+i+i{background:#28c840}
+.frame .url{justify-self:center;padding:5px 16px;border-radius:8px;background:rgb(255 255 255 / .07);font:400 12px/1 var(--sans);color:#b8b8b8;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.frame .ext{justify-self:end;width:20px;height:20px;border-radius:5px;display:grid;place-items:center;transition:background .3s,box-shadow .3s}
+.frame .ext img{width:16px;height:16px}
+.frame .ext.lit{background:rgb(var(--acc-rgb) / .16);box-shadow:0 0 0 1px rgb(var(--acc-rgb) / .4)}
+.shot{position:relative;aspect-ratio:1440/900;overflow:hidden}
+.cam{position:absolute;inset:0;transition:transform 1.1s cubic-bezier(.65,0,.25,1)}
+.cam>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top;transition:opacity .9s ease}
+.cam>.b{opacity:0}
+.raw .cam>.b{opacity:1}.raw .cam>.a{opacity:0}
+.rg{position:absolute;border-radius:10px;pointer-events:none;transition:opacity .6s,box-shadow .6s,background .6s}
+.rg::before{content:"";position:absolute;inset:0;border-radius:inherit;border:1.5px dashed rgb(var(--acc-rgb) / .9);opacity:0;transition:opacity .5s}
+.rg span{position:absolute;top:10px;left:10px;font:600 var(--lbl,12px)/1 var(--sans);letter-spacing:.01em;padding:6px 9px;border-radius:999px;white-space:nowrap;transition:opacity .4s,transform .4s}
+.rg .x{background:var(--acc);color:var(--ink);opacity:0;transform:translateY(4px)}
+.rg .g{background:rgb(255 255 255 / .06);color:rgb(238 243 240 / .55);border:1px solid rgb(255 255 255 / .1);opacity:0}
+.raw .rg{background:rgb(var(--acc-rgb) / .07);box-shadow:0 0 0 9999px rgb(0 0 0 / .0)}
+.raw .rg::before{opacity:1}
+.raw .rg .x{opacity:1;transform:none}
+.frame:not(.raw) .rg.ghost .g{opacity:1;transition-delay:.6s}
+.rg.ghost span.g{top:50%;left:50%;transform:translate(-50%,-50%)}
+
+/* showcase */
+.show{position:relative;margin-inline:clamp(10px,1.6vw,24px);border-radius:clamp(24px,3vw,40px);padding:clamp(72px,8vw,112px) 0 clamp(48px,5vw,72px);background:radial-gradient(80% 60% at 50% 0%,#12382D,#0B1F19 60%,#081511);overflow:hidden;isolation:isolate}
+.show::before{content:"";position:absolute;inset:0;z-index:-1;opacity:.08;background:var(--grain)}
+.show h2{text-align:center}
+.show .sub{text-align:center;margin-top:14px}
+.deck{width:min(1120px,calc(100% - 2 * var(--gut)),calc((100svh - 330px) * 1.6));margin:clamp(36px,4vw,56px) auto 0}
+.deck .top{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:18px}
+.pills{display:inline-flex;gap:4px;padding:5px;border-radius:999px;background:rgb(0 0 0 / .28);border:1px solid rgb(255 255 255 / .08)}
+.pills button{all:unset;cursor:pointer;position:relative;overflow:hidden;display:inline-flex;gap:9px;align-items:center;padding:10px 18px;border-radius:999px;font:500 14px/1 var(--sans);color:var(--t2);transition:background .3s,color .3s}
+.pills button span{font-size:11px;opacity:.6;font-variant-numeric:tabular-nums}
+.pills button[aria-selected=true]{background:var(--text);color:var(--bg)}
+.pills button i{position:absolute;left:14px;right:14px;bottom:4px;height:2px;border-radius:2px;background:rgb(9 15 13 / .25);transform-origin:left;transform:scaleX(0)}
+.pills button[aria-selected=true].run i{animation:fill var(--dur,6s) linear forwards}
+@keyframes fill{to{transform:scaleX(1)}}
+.tog{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:12px;padding:9px 16px 9px 10px;border-radius:999px;background:rgb(0 0 0 / .28);border:1px solid rgb(255 255 255 / .08);font:500 14px/1 var(--sans);color:var(--text)}
+.tog .sw{pointer-events:none}
+.deck .say{margin-top:22px;text-align:center;color:var(--t2);font-size:17px;min-height:1.6em;transition:opacity .3s}
+
+/* story: words scroll on the left; on the right the real page stays pinned, the camera moves to
+   what each step hides and the popup flips the switch */
+.story-h{display:flex;justify-content:space-between;align-items:end;gap:32px;flex-wrap:wrap}
+.story{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:clamp(40px,6vw,96px);margin-top:clamp(24px,3vw,40px)}
+.steps{position:relative;padding-left:32px}
+.steps::before{content:"";position:absolute;left:0;top:12vh;bottom:12vh;width:1px;background:var(--line)}
+.steps .bar{position:absolute;left:0;top:12vh;width:1px;height:var(--p,0%);max-height:calc(100% - 24vh);background:var(--acc);box-shadow:0 0 12px rgb(var(--acc-rgb) / .6)}
+.step{min-height:72vh;display:flex;flex-direction:column;justify-content:center;opacity:.25;transition:opacity .5s}
+.step.on{opacity:1}
+.step .n{font:italic 400 22px/1 var(--disp);color:var(--acc)}
+.step h3{margin-top:16px;font-size:clamp(34px,3.6vw,50px);line-height:1.05;letter-spacing:-.01em}
+.step p{margin-top:18px;font-size:18px;color:var(--t2);max-width:24rem}
+.step .mini{display:none}
+.step:last-child{min-height:60vh}
+.step:first-child{min-height:62vh;justify-content:flex-start;padding-top:14vh}
+.pin{position:sticky;top:72px;height:calc(100vh - 72px);display:grid;align-items:center}
+.pin .glow{position:absolute;inset:15% 5%;border-radius:50%;background:radial-gradient(closest-side,rgb(var(--acc-rgb) / .12),transparent);filter:blur(40px)}
+.rig{position:relative;padding:0 0 clamp(200px,24vh,260px)}
+.rig .frame{position:relative}
+.rig .lbl-sm{--lbl:10px}
+.pop{position:absolute;right:-20px;bottom:0;width:320px;padding:18px 18px 8px;border-radius:20px;background:#12171B;border:1px solid rgb(255 255 255 / .08);box-shadow:0 40px 80px -20px rgb(0 0 0 / .9),0 0 0 1px rgb(0 0 0 / .4),0 0 90px -30px rgb(var(--acc-rgb) / .35);font:400 13px/1.45 var(--sans);color:#EEF3F0;z-index:3}
+.pop header{display:flex;justify-content:space-between;align-items:center}
+.pop .brand{font-size:14px;gap:8px}.pop .brand img{width:20px;height:20px}
+.pop .st{margin:12px 0 14px;font-size:12.5px;color:#8E9C96}.pop .st b{color:var(--acc);font-weight:600}
+.pop nav{display:flex;gap:14px;border-bottom:1px solid rgb(255 255 255 / .08)}
+.pop nav button{all:unset;cursor:pointer;position:relative;padding-bottom:10px;font-size:12.5px;font-weight:500;color:#8E9C96;transition:color .3s}
+.pop nav button i{position:absolute;top:0;right:-6px;width:5px;height:5px;border-radius:50%;background:var(--acc)}
+.pop nav button[aria-selected=true]{color:#EEF3F0}
+.pop nav button[aria-selected=true]::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;border-radius:2px;background:#EEF3F0}
+.pop .list{min-height:0;padding:4px 0 6px}
+.pop .row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:11px 8px;margin-inline:-8px;border-radius:10px;font-size:14px;font-weight:500;transition:background .5s}
+.pop .row.hit{background:rgb(var(--acc-rgb) / .08)}
+.pop .row small{display:block;font-size:12px;font-weight:400;color:#8E9C96;margin-top:1px}
+.pop .ok{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:var(--acc);color:var(--ink);font-size:12px;font-weight:700}
+.pop .ft{display:flex;gap:12px;padding:10px 0 4px;border-top:1px solid rgb(255 255 255 / .08);font-size:11.5px;color:#8E9C96}
+.pop .ft span:last-child{margin-left:auto}
+
+/* numbers */
+.nums{display:grid;grid-template-columns:repeat(3,1fr);margin-top:clamp(40px,5vw,64px)}
+.num{padding:8px 32px 0;border-left:1px solid var(--line)}
+.num:first-child{border-left:0;padding-left:0}
+.num b{display:block;font:400 clamp(60px,7.5vw,104px)/1 var(--disp);letter-spacing:-.03em;background:linear-gradient(180deg,var(--text),rgb(var(--acc-rgb)));-webkit-background-clip:text;background-clip:text;color:transparent}
+.num p{margin-top:14px;color:var(--t2);font-size:15px;max-width:22ch}
+.when{margin-top:40px}
+
+section.pad{padding-block:clamp(96px,11vw,160px)}
+
+/* the close: YouTube's noise drifts away as you scroll, until only the line is left */
+.calm{position:relative;height:170vh}
+.calm .stick{position:sticky;top:0;height:100vh;display:grid;place-items:center;overflow:hidden;isolation:isolate}
+.calm .stick::before{content:"";position:absolute;inset:0;z-index:-2;background:radial-gradient(40% 45% at 50% 50%,rgb(var(--acc-rgb) / calc(.04 + var(--p,0) * .12)),transparent 70%)}
+.noise{position:absolute;inset:0;z-index:-1;pointer-events:none}
+.nz{position:absolute;left:50%;top:50%;--q:var(--p,0);transform:translate(calc(-50% + var(--x) * (1 + var(--q) * 1.4)),calc(-50% + var(--y) * (1 + var(--q) * 1.4))) rotate(var(--r)) scale(calc(var(--s) * (1 + var(--q) * .25)));opacity:calc(var(--o) * (1 - var(--q) * 1.35));filter:blur(calc(var(--bl) + var(--q) * 12px));will-change:transform,opacity,filter}
+.nz.pill{padding:9px 14px;border-radius:10px;background:#272727;color:#f1f1f1;font:500 14px/1 Roboto,Arial,var(--sans);white-space:nowrap}
+.nz.pill.w{background:#f1f1f1;color:#0f0f0f}
+.nz.badge{padding:4px 7px;border-radius:999px;background:#CC0000;color:#fff;font:700 13px/1 Roboto,Arial,var(--sans)}
+.nz.thumb{width:176px;display:grid;gap:7px}
+.nz.thumb i{display:block;aspect-ratio:16/9;border-radius:10px;background:linear-gradient(135deg,var(--a),var(--b));position:relative}
+.nz.thumb i::after{content:attr(data-t);position:absolute;right:6px;bottom:6px;padding:2px 4px;border-radius:4px;background:rgb(0 0 0 / .8);color:#fff;font:500 11px/1 Roboto,Arial,sans-serif}
+.nz.thumb s{display:block;height:8px;border-radius:4px;background:rgb(255 255 255 / .22)}.nz.thumb s+s{width:60%;background:rgb(255 255 255 / .12)}
+.nz.short{width:92px;aspect-ratio:9/16;border-radius:12px;background:linear-gradient(180deg,var(--a),var(--b))}
+.calm .end{text-align:center;padding-inline:var(--gut)}
+.calm .end img{width:72px;margin:0 auto 32px;filter:drop-shadow(0 18px 30px rgb(0 0 0 / .6)) drop-shadow(0 0 calc(10px + var(--p,0) * 40px) rgb(var(--acc-rgb) / calc(.1 + var(--p,0) * .5)))}
+.calm .end h2{font-size:clamp(64px,11vw,160px);line-height:.95;letter-spacing:-.025em}
+.calm .end p{margin:28px auto 0;max-width:30rem}
+.calm .end .cta{margin-top:40px;display:grid;justify-items:center;gap:14px}
+.calm .end .cta a.small:hover{color:var(--text)}
+
+/* footer: one row of links, then the name, full width, lit where the pointer is */
+footer{position:relative;overflow:hidden;padding-top:clamp(32px,4vw,56px)}
+footer .row1{display:grid;grid-template-columns:1.3fr 2fr;gap:48px;align-items:start}
+footer .about p{margin-top:16px;color:var(--t2);max-width:28ch;font-size:15px}
+footer .links{display:grid;grid-template-columns:repeat(3,1fr);gap:32px}
+footer h4{margin:0 0 16px;font:500 13px/1 var(--sans);color:var(--t3)}
+footer ul{list-style:none;margin:0;padding:0;display:grid;gap:11px;font-size:15px;color:var(--t2)}
+footer ul a:hover{color:var(--text)}
+footer .legal{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-top:clamp(48px,6vw,80px);font-size:13px;color:var(--t3)}
+footer .legal a:hover{color:var(--text)}
+.giant{--mx:50%;--my:30%;display:block;margin-top:clamp(8px,2vw,24px);text-align:center;font:400 41vw/.84 var(--disp);letter-spacing:-.045em;white-space:nowrap;user-select:none;padding-top:.04em;
+  background:radial-gradient(28vw circle at var(--mx) var(--my),rgb(var(--acc-rgb) / .75),rgb(var(--acc-rgb) / .18) 45%,transparent 70%),linear-gradient(180deg,rgb(238 243 240 / .16),rgb(238 243 240 / .03) 85%);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:-.1em}
+
+@media (prefers-reduced-motion:no-preference){@supports (animation-timeline:view()){
+  .up{animation:up linear both;animation-timeline:view();animation-range:entry 0% entry 45%}
+  @keyframes up{from{opacity:0;transform:translateY(32px)}to{opacity:1;transform:none}}
+}}
+@media (prefers-reduced-motion:reduce){.cam{transition:none}.nz{--q:.5}.calm{height:auto}.calm .stick{position:relative;height:100vh}}
+@media (max-width:1000px){
+  .hbar nav,.hbar .gh{display:none}.hbar .in{grid-template-columns:1fr auto}
+  .hero{grid-template-columns:1fr;min-height:0;padding-top:48px}.sun{max-width:320px;margin-inline:auto}
+  .deck{width:calc(100% - 2 * var(--gut))}.deck .top{flex-wrap:wrap;justify-content:center}
+  .rg span{--lbl:10px;top:6px;left:6px;padding:4px 6px}
+  .story{grid-template-columns:1fr}.pin{display:none}.steps{padding-left:22px}
+  .step{min-height:0;padding-block:44px;opacity:1}.step .mini{display:block;margin-top:24px}
+  .nums{grid-template-columns:1fr;gap:36px}.num{border-left:0;padding:0}
+  footer .row1{grid-template-columns:1fr}footer .links{grid-template-columns:1fr 1fr}
+  .nz.thumb{width:120px}.nz.short{width:64px}
+}
+@media (max-width:560px){.pills button{padding:9px 12px}.pills button span{display:none}.rg span.x{display:none}}
 </style>
 </head>
-<body data-variant="A">
-
-<!-- ======================= A · Calm editorial ======================= -->
-<div class="variant" id="A" data-name="Calm editorial">
-  <header><div class="in">
-    <a class="mark" href="#"><img src="../../extension/public/icon-48.png" alt="">D-Tox</a>
-    <nav><a href="#A-ba">Before and after</a><a href="#A-set">Settings</a><a href="#A-num">Numbers</a><a href="#A-vs">Compared</a></nav>
-    <a class="btn btn-solid" href="#">Add to Chrome</a>
-  </div></header>
-  <section class="wrap hero">
-    <div class="glow"></div>
-    <p class="label" style="margin-bottom:22px">D-Tox for YouTube</p>
-    <h1>YouTube for what you came for.<span class="second">Nothing else.</span></h1>
-    <p class="lead">D-Tox hides the parts of YouTube that pull you elsewhere: the feed, the suggestions, Shorts. It stays measurably light, and it sends nothing anywhere.</p>
-    <div class="cta"><a class="btn btn-solid" href="#">${chrome}Add to Chrome</a><a class="btn btn-ghost" href="#A-ba">See the difference</a></div>
-    <small>Free and open source (MIT). Chrome, on www.youtube.com.</small>
-  </section>
-  <section class="wrap blk" id="A-ba">
-    <div class="head"><p class="label">Before and after</p><h2>The same page, without the pull.</h2></div>
-    <div class="tabs" role="tablist"></div>
-    <div class="cmp" aria-label="Drag to compare"><img class="before" alt=""><img class="after" alt=""><span class="tag l">YouTube</span><span class="tag r">With D-Tox</span><span class="line"></span><span class="knob">⇆</span></div>
-    <p class="caption"></p>
-  </section>
-  <section class="wrap blk" id="A-set">
-    <div class="head"><p class="label">The 10 Settings</p><h2>Each one hides one thing. You choose.</h2><p class="lead">A fresh install starts calm: the four marked <span class="cd" style="margin:0">Calm Default</span> are on. Change any of them from the D-Tox button.</p></div>
-    <div class="groups" data-settings="A"></div>
-  </section>
-  <section class="wrap blk" id="A-num">
-    <div class="head"><p class="label">Measured, every release</p><h2>Light enough to forget it's there.</h2><p class="lead">Every release runs YouTube with every Setting on and compares it with YouTube alone. A release that slows YouTube down doesn't ship.</p></div>
-    <div class="stats">
-      <div class="stat"><span class="n">7 KB</span><p>the whole extension, icons aside</p></div>
-      <div class="stat"><span class="n">+2%</span><p>long-task time against YouTube alone <span class="ph">placeholder</span></p></div>
-      <div class="stat"><span class="n">−31%</span><p>page size on Home, with the feed gone <span class="ph">placeholder</span></p></div>
-      <div class="stat"><span class="n">0</span><p>timers or observers watching the page</p></div>
-    </div>
-    <p class="when">Release Gate run of v2.0.0, <time>2026-11-—</time> <span class="ph">placeholder until #25</span></p>
-  </section>
-  <section class="wrap blk" id="A-vs">
-    <div class="head"><p class="label">Compared</p><h2>Unhook and RYS are good too.</h2><p class="lead">Here's where each one wins, so you can pick the right one.</p></div>
-    <table data-compare="A"></table>
-    <p class="src">From each store listing and repository, read 2026-11-18. <span class="ph">re-check in #27</span></p>
-  </section>
-  <section class="wrap blk">
-    <div class="privacy fold"><p>D-Tox sends nothing anywhere. Your Settings stay in your Chrome.</p><a href="#">Read the privacy page</a></div>
-  </section>
-  <footer class="site"><div class="wrap in" data-footer></div></footer>
-</div>
-
-<!-- ======================= B · Graphite stage ======================= -->
-<div class="variant" id="B" data-name="Graphite stage">
-  <header class="wrap"><div class="in">
-    <a class="mark" href="#"><img src="../../extension/public/icon-48.png" alt="">D-Tox</a>
-    <a class="btn btn-ghost" href="#">Add to Chrome</a>
-  </div></header>
-  <section class="wrap hero">
-    <div>
-      <h1>YouTube for what you came for.<span class="second">Nothing else.</span></h1>
-      <p class="lead">Ten Settings, one switch. D-Tox hides the feed, the suggestions and Shorts, starts calm, and sends nothing anywhere.</p>
-      <div class="cta"><a class="btn btn-solid" href="#">Add to Chrome — free</a><span>MIT · Chrome</span></div>
-    </div>
-    <div class="stage fold"><div class="glow"></div>
-      <div class="pop" data-pop></div>
-    </div>
-  </section>
-  <section class="wrap blk">
-    <div class="head"><h2>Before and after.</h2><p class="lead">Live YouTube, signed out, the same moment. Left as YouTube made it; right with D-Tox's Calm Default.</p></div>
-    <div class="pairs" data-pairs></div>
-  </section>
-  <section class="wrap blk">
-    <div class="head"><h2>The 10 Settings.</h2><p class="lead">Grouped as in the D-Tox button. The dark tags are on from the start.</p></div>
-    <div class="cards" data-settings="B"></div>
-  </section>
-  <section class="wrap blk">
-    <div class="head"><h2>The numbers.</h2><p class="lead">The Release Gate's own output for this version, against YouTube with no extension.</p></div>
-<pre class="term"><span class="d">$ npm run gate -- --baseline 2026-11-18T21:04 </span><span class="phm"># PLACEHOLDER until #25</span>
-<span class="d">Release Gate · v2.0.0 · every Setting on · 6 pages × 5 runs</span>
-
-  long-task time      +2.1%   <span class="d">(limit ±10%)</span>   <span class="ok">pass</span>   <span class="phm">placeholder</span>
-  style recalc        +0.8%   <span class="d">(limit ±10%)</span>   <span class="ok">pass</span>   <span class="phm">placeholder</span>
-  DOM growth          none    <span class="d">(no runaway)</span>   <span class="ok">pass</span>   <span class="phm">placeholder</span>
-  timeouts            0                       <span class="ok">pass</span>   <span class="phm">placeholder</span>
-  playback, Shorts    work                    <span class="ok">pass</span>   <span class="phm">placeholder</span>
-  size                7.16 KB <span class="d">(budget 40 KB)</span>  <span class="ok">pass</span>
-
-<span class="ok">Gate passed.</span> <span class="d">2026-11-—</span></pre>
-  </section>
-  <section class="wrap blk">
-    <div class="head"><h2>D-Tox, Unhook, RYS.</h2><p class="lead">All three hide YouTube's pull. Each wins somewhere. <span class="ph">re-check in #27</span></p></div>
-    <div class="three" data-three></div>
-  </section>
-  <div class="band"><div class="wrap in"><p>D-Tox sends nothing anywhere. Your Settings stay in your Chrome.</p><a href="#">Privacy →</a></div></div>
-  <footer class="site"><div class="wrap in" data-footer></div></footer>
-</div>
-
-<!-- ======================= C · Single-column dossier ======================= -->
-<div class="variant" id="C" data-name="Dossier">
-  <div class="layout">
-    <aside>
-      <a class="mark" href="#"><img src="../../extension/public/icon-48.png" alt="">D-Tox</a>
-      <ol>
-        <li><a href="#C-ba">Before and after</a></li>
-        <li><a href="#C-set">The 10 Settings</a></li>
-        <li><a href="#C-num">The numbers</a></li>
-        <li><a href="#C-vs">Compared</a></li>
-        <li><a href="#C-pr">Privacy</a></li>
-      </ol>
-      <a class="btn btn-solid" href="#">Add to Chrome</a>
-    </aside>
-    <article>
-      <div class="hero">
-        <p class="label">D-Tox for YouTube · v2.0.0</p>
-        <h1 style="margin-top:18px">YouTube for what you came for.<span class="second">Nothing else.</span></h1>
-        <p class="lead">A Chrome extension for people who need YouTube to learn or work and keep getting pulled off course. It hides the feed, the suggestions and Shorts, and stays out of the way.</p>
-        <div class="cta"><a class="btn btn-solid" href="#">Add to Chrome</a><span>Free · MIT · sends nothing anywhere</span></div>
-      </div>
-      <section id="C-ba">
-        <span class="label">01 · Before and after</span>
-        <h2>One page at a time.</h2>
-        <p>Pick a page, then flip between YouTube and YouTube with D-Tox.</p>
-        <div class="seg" data-seg></div>
-        <div class="shot"><div class="row"><span data-cap></span><span class="flip"><button aria-pressed="false" data-flip="before">YouTube</button><button aria-pressed="true" data-flip="after">With D-Tox</button></span></div><div class="win"><div class="bar"><i></i><i></i><i></i></div><img data-img alt=""></div></div>
-      </section>
-      <section id="C-set">
-        <span class="label">02 · The 10 Settings</span>
-        <h2>What each one hides.</h2>
-        <p>Four are on from the start; they are marked “Calm Default”. The rest wait until you want them.</p>
-        <dl data-settings="C"></dl>
-      </section>
-      <section id="C-num">
-        <span class="label">03 · The numbers</span>
-        <h2>Measured against YouTube alone.</h2>
-        <p>Each release runs the same pages with no extension, then with every Setting on.</p>
-        <table>
-          <thead><tr><th>Measure</th><th>YouTube</th><th>With D-Tox</th><th>Change</th></tr></thead>
-          <tbody>
-            <tr><td>Long-task time, Home</td><td class="num">1,840 ms</td><td class="num">1,190 ms</td><td class="num">−35% <span class="ph">placeholder</span></td></tr>
-            <tr><td>Long-task time, Watch</td><td class="num">2,210 ms</td><td class="num">2,256 ms</td><td class="num">+2% <span class="ph">placeholder</span></td></tr>
-            <tr><td>Style recalc, Search</td><td class="num">96 ms</td><td class="num">97 ms</td><td class="num">+1% <span class="ph">placeholder</span></td></tr>
-            <tr><td>Pages that timed out</td><td class="num">0</td><td class="num">0</td><td class="num">— <span class="ph">placeholder</span></td></tr>
-            <tr><td>Extension size</td><td class="num">—</td><td class="num">7.16 KB</td><td class="num">of 40 KB</td></tr>
-          </tbody>
-        </table>
-        <p class="note">Release Gate, v2.0.0, run on <time>2026-11-—</time>. <span class="ph">placeholder until #25</span></p>
-      </section>
-      <section id="C-vs">
-        <span class="label">04 · Compared</span>
-        <h2>D-Tox, Unhook and RYS.</h2>
-        <p>Where they match, the table says so. <span class="ph">re-check in #27</span></p>
-        <table data-compare="C"></table>
-        <p class="note">Sources: the Chrome Web Store listings and GitHub repositories, read 2026-11-18.</p>
-      </section>
-      <section id="C-pr">
-        <span class="label">05 · Privacy</span>
-        <p class="one">D-Tox sends nothing anywhere. Your Settings stay in your Chrome. <a href="#" style="font-size:var(--t-small);font-weight:400;color:var(--text-2)">The privacy page</a></p>
-      </section>
-      <footer class="site"><div class="in" data-footer></div></footer>
-    </article>
-  </div>
-</div>
-
-<!-- ======================= D · The mix ======================= -->
-<div class="variant" id="D" data-name="The mix">
-  <header><div class="in">
-    <a class="mark" href="#"><img src="../../extension/public/icon-48.png" alt="">D-Tox</a>
-    <nav><a href="#D-ba">See it</a><a href="#D-set">Settings</a><a href="#D-num">Numbers</a><a href="#D-vs">Compared</a></nav>
-    <a class="btn btn-solid" href="#">Add to Chrome</a>
-  </div></header>
-  <section class="wrap hero">
-    <div class="glow"></div>
-    <a class="pill" href="#"><b>v2.0</b>Rebuilt from scratch, measured every release →</a>
-    <h1>YouTube for what you came for.<span class="second">Nothing else.</span></h1>
-    <p class="lead">D-Tox hides the parts of YouTube that pull you elsewhere: the feed, the suggestions, Shorts. It starts calm, stays measurably light, and sends nothing anywhere.</p>
-    <div class="cta"><a class="btn btn-solid" href="#">${chrome}Add to Chrome</a><a class="btn btn-ghost" href="#D-ba">See the difference</a></div>
-    <small><span>Free</span><span>Open source, MIT</span><span>Nothing leaves your browser</span></small>
-  </section>
-  <div class="stage fold" id="D-ba"><div class="glow"></div>
-    <div class="k"><p class="label">Before and after · drag the line</p><h2>The same page,<br>without the pull.</h2></div>
-    <div class="tabs" role="tablist"></div>
-    <div class="scene rise">
-      <div class="browser"><div class="bar"><i></i><i></i><i></i><span data-url>youtube.com</span></div>
-        <div class="cmp" aria-label="Drag to compare"><img class="before" alt=""><img class="after" alt=""><span class="tag l">YouTube</span><span class="tag r">With D-Tox</span><span class="line"></span><span class="knob">⇆</span></div>
-      </div>
-      <div class="pop" data-dpop></div>
-    </div>
-    <p class="cap" data-dcap></p>
-  </div>
-  <section class="wrap blk" id="D-set">
-    <div class="head rise"><span class="num">01</span><h2>Ten Settings. One switch.</h2><p>Each Setting hides one thing, and says exactly what. The dark ones are on from the start, so YouTube is calm the moment you install.</p></div>
-    <div class="cards" data-settings="D"></div>
-    <p class="legend"><i></i>Calm Default: on when you install</p>
-  </section>
-  <section class="wrap blk" id="D-num">
-    <div class="head rise"><span class="num">02</span><h2>Light enough to forget.</h2><p>Every release runs YouTube with every Setting on, against YouTube alone. If it slows YouTube down, it doesn't ship.</p></div>
-    <div class="stats rise">
-      <div class="stat"><span class="n">7 KB</span><p>the whole extension, icons aside</p></div>
-      <div class="stat"><span class="n">+2%</span><p>long-task time against YouTube alone <span class="ph">placeholder</span></p></div>
-      <div class="stat"><span class="n">−31%</span><p>page weight on Home, with the feed gone <span class="ph">placeholder</span></p></div>
-      <div class="stat"><span class="n">0</span><p>timers or observers watching the page</p></div>
-    </div>
-    <details class="gate"><summary>Release Gate output, v2.0.0, <time>2026-11-—</time> <span class="ph">placeholder until #25</span></summary>
-<pre><span class="d">Release Gate · v2.0.0 · every Setting on · 6 pages × 5 runs</span>  <span class="phm"># PLACEHOLDER</span>
-
-  long-task time      +2.1%   <span class="d">(limit ±10%)</span>   <span class="ok">pass</span>
-  style recalc        +0.8%   <span class="d">(limit ±10%)</span>   <span class="ok">pass</span>
-  DOM growth          none    <span class="d">(no runaway)</span>   <span class="ok">pass</span>
-  timeouts            0                       <span class="ok">pass</span>
-  playback, Shorts    work                    <span class="ok">pass</span>
-  size                7.16 KB <span class="d">(budget 40 KB)</span>  <span class="ok">pass</span></pre></details>
-  </section>
-  <section class="wrap blk" id="D-vs">
-    <div class="head rise"><span class="num">03</span><h2>Unhook and RYS are good too.</h2><p>Here's where each one wins, so you can pick the one that fits. <span class="ph">re-check in #27</span></p></div>
-    <div class="vs rise"><table data-compare="D"></table></div>
-    <p class="src">From each Chrome Web Store listing and GitHub repository, read 2026-11-18.</p>
-  </section>
-  <section class="wrap blk">
-    <div class="closing fold rise"><div class="glow"></div>
-      <p>D-Tox sends nothing anywhere. <span>Your Settings stay in your Chrome.</span></p>
-      <div class="cta"><a class="btn btn-solid" href="#">${chrome}Add to Chrome</a><a class="btn btn-ghost" href="#">Read the privacy page</a></div>
-    </div>
-  </section>
-  <footer class="dft"><div class="wrap">
-    <div class="top">
-      <div class="brand"><a class="mark" href="#"><img src="../../extension/public/icon-48.png" alt="">D-Tox for YouTube</a><p>YouTube for what you came for. Nothing else.</p></div>
-      <div><h4>Product</h4><ul><li><a href="#">Add to Chrome</a></li><li><a href="#">Changelog</a></li><li><a href="#">GitHub</a></li></ul></div>
-      <div><h4>Support</h4><ul><li><a href="#">Sponsor</a></li><li><a href="#">Report a problem</a></li></ul></div>
-      <div><h4>Legal</h4><ul><li><a href="#">Privacy</a></li><li><a href="#">MIT licence</a></li></ul></div>
-    </div>
-    <div class="bot"><span><a href="#"><span class="s-mask"></span> A Saaquib Labs product</a> · © 2026</span><span>This site counts visits with Umami, which we run ourselves. No cookies.</span></div>
-  </div></footer>
-</div>
-
-<!-- ======================= E · Its own identity (dark by default) ======================= -->
-<div class="variant" id="E" data-name="Own identity, dark">
-  <header><div class="wrap in">
-    <a class="mark" href="#"><img src="../../extension/public/icon-48.png" alt="">D-Tox</a>
-    <nav><a href="#E-ba">See it</a><a href="#E-set">Settings</a><a href="#E-num">Numbers</a><a href="#E-vs">Compared</a></nav>
-    <a class="ebtn solid" href="#">Add to Chrome</a>
-  </div></header>
-  <section class="hero">
-    <div class="noisewall" aria-hidden="true"><div class="tiles"><img src="shots/search-before.jpg" alt=""><img src="shots/watch-before.jpg" alt=""><img src="shots/watch-before.jpg" alt=""><img src="shots/search-before.jpg" alt=""><img src="shots/search-before.jpg" alt=""><img src="shots/watch-before.jpg" alt=""></div></div>
-    <span class="noisetag" aria-hidden="true">The pull</span>
-    <div class="calmshot"><span>What you came for</span><img src="shots/home-after.jpg" alt="YouTube's home page with D-Tox: a question and a search box, no feed"></div>
-    <div class="wrap"><div class="txt">
-      <p class="kick">D-Tox for YouTube</p>
-      <h1>YouTube for what you came for. <span class="ser">Nothing else.</span></h1>
-      <p class="lead">D-Tox quiets the feed, the suggestions and Shorts, so the video you came for is the only thing on the page.</p>
-      <div class="cta"><a class="ebtn solid" href="#">${chrome}Add to Chrome, free</a><a class="ebtn ghost" href="#E-ba">See the difference</a></div>
-      <p class="facts"><span>Open source</span><span>7 KB</span><span>Sends nothing</span></p>
-    </div></div>
-  </section>
-  <section class="sec" id="E-ba"><div class="wrap">
-    <div class="sh up"><div><p class="kick noise">Before → after</p><h2>Same page. <span class="ser">Quieter.</span></h2></div><p>Live YouTube, the same moment, twice. Drag the line: on the left YouTube as it comes, on the right with the Settings D-Tox starts with.</p></div>
-    <div class="ba up"><div class="list" role="tablist" data-elist></div>
-      <div class="ecmp" aria-label="Drag to compare"><img class="before" alt=""><img class="after" alt=""><span class="tag l">The pull</span><span class="tag r">With D-Tox</span><span class="line"></span><span class="knob">⇆</span></div></div>
-  </div></section>
-  <section class="sec" id="E-set"><div class="wrap">
-    <div class="sh up"><div><p class="kick">The switchboard</p><h2>Ten Settings. <span class="ser">Your call.</span></h2></div><p>Each one hides one thing and says exactly what. Four are on the moment you install; the rest wait until you want them. Try the switches.</p></div>
-    <div class="board"><div class="side up"><div class="epop" data-epop></div><p>The D-Tox button, as it opens in Chrome's toolbar.</p></div><div class="rows" data-erows></div></div>
-  </div></section>
-  <section class="sec" id="E-num"><div class="wrap">
-    <div class="sh up"><div><p class="kick">Measured, every release</p><h2>Light enough <span class="ser">to forget.</span></h2></div><p>Every release runs YouTube with every Setting on against YouTube alone. If it makes YouTube slower, it doesn't ship.</p></div>
-    <div class="nums up">
-      <div class="num"><b>7 KB</b><p>the whole extension, icons aside</p></div>
-      <div class="num"><b>+2%</b><p>long-task time vs YouTube alone <span class="ph">placeholder</span></p></div>
-      <div class="num"><b>−31%</b><p>page weight on Home, feed gone <span class="ph">placeholder</span></p></div>
-      <div class="num"><b>0</b><p>timers or observers on the page</p></div>
-    </div>
-    <p class="gl">Release Gate · v2.0.0 · 2026-11-— · <span class="ph">placeholder until #25</span></p>
-  </div></section>
-  <section class="sec" id="E-vs"><div class="wrap">
-    <div class="sh up"><div><p class="kick">Honest comparison</p><h2>Unhook and RYS <span class="ser">are good too.</span></h2></div><p>Where they win, the table says so. <span class="ph">re-check in #27</span></p></div>
-    <div class="vs up"><table data-compare="E"></table></div>
-    <p class="src">From each Chrome Web Store listing and GitHub repository, read 2026-11-18.</p>
-  </div></section>
-  <section class="close"><p>Nothing leaves your browser. <span class="ser">Not one click.</span></p>
-    <div class="cta"><a class="ebtn solid" href="#">${chrome}Add to Chrome</a><a class="ebtn ghost" href="#">Privacy, in full</a></div></section>
-  <footer class="ef"><div class="wrap in"><nav><a href="#">Privacy</a><a href="#">Changelog</a><a href="#">Sponsor</a><a href="#">GitHub</a></nav><span><a href="#"><span class="s-mask"></span> A Saaquib Labs product</a> · MIT · © 2026 · Visits counted by our own Umami, no cookies.</span></div></footer>
-</div>
-
-<!-- ======================= F · Pass 2: night, Instrument Serif + Inter, mint mark ======================= -->
-<div class="variant q" id="F" data-name="Pass 2 · Night (Instrument Serif)" data-q='{"mark":"logo/mark-a.svg","small":"logo/mark-small.svg"}'></div>
-<!-- ======================= G · Pass 2: dawn, Fraunces soft + Hanken Grotesk, dawn mark ======================= -->
-<div class="variant q" id="G" data-name="Pass 2 · Dawn (Fraunces soft)" data-q='{"mark":"logo/mark-dawn.svg","small":"logo/mark-small-dawn.svg"}'></div>
-
-<!-- ======================= H · Pass 2b: G's look, room, header, drawn before/after, giant footer ======================= -->
-<div class="variant q" id="H" data-name="Pass 2d · Night, real shots, story"></div>
-
-<div class="proto"><button data-step="-1" aria-label="Previous variant">◀</button><span class="lbl"></span><button data-step="1" aria-label="Next variant">▶</button><button data-theme-next></button></div>
-
+<body>
+<div id="page"></div>
 <script>
 // Copy of ../../settings.json (2026-11-19) plus the Home choice (#21), which isn't in it yet.
 const SETTINGS = [
-  {id:'home',name:'Home',group:'Home',calm:true,hides:'Choose what Home shows: the Intention Page (“What are you here for?” and a search box), your Subscriptions, or YouTube’s own feed.',calmName:'Intention Page'},
-  {id:'recommendations',name:'Recommendations',group:'Watch',calm:true,hides:"Hides the suggested videos beside and below the video you're watching. Playlists, live chat, chapters and transcripts stay."},
-  {id:'end-screens',name:'End screens',group:'Watch',calm:false,hides:'Hides the grid of videos and the info cards that appear at the end of a video.'},
-  {id:'autoplay-off',name:'Autoplay off',group:'Watch',calm:true,hides:"Turns YouTube's autoplay off, so the next video doesn't start by itself. The autoplay button still works, and playlists still play in order."},
-  {id:'comments',name:'Comments',group:'Watch',calm:false,hides:"Hides the comments below the video you're watching."},
-  {id:'shorts',name:'Shorts',group:'Shorts',calm:true,hides:"Hides Shorts shelves, the Shorts link in the menu, Shorts in search and a channel's Shorts; a link to a Short still opens."},
-  {id:'shorts-redirect',name:'Open Shorts in the normal player',group:'Shorts',calm:false,hides:'Turns every Short into a normal video: it opens in the normal player, not the Shorts swipe feed.'},
-  {id:'search-clean-up',name:'Search clean-up',group:'Search',calm:false,hides:'Hides the shelves in search results, such as "People also watched" and Shorts, and keeps every result.'},
-  {id:'explore',name:'Explore, Trending and Playables',group:'Everywhere',calm:false,hides:"Hides Explore, Trending and Playables from YouTube's menu, with the whole Explore section (Music, Gaming, News, Sports and the rest)."},
-  {id:'bell',name:'Notifications bell',group:'Everywhere',calm:false,hides:'Hides the notifications bell and its red count.'},
+  {id:'home',name:'Home',group:'Home',calm:true},
+  {id:'recommendations',name:'Recommendations',group:'Watch',calm:true},
+  {id:'end-screens',name:'End screens',group:'Watch',calm:false},
+  {id:'autoplay-off',name:'Autoplay off',group:'Watch',calm:true},
+  {id:'comments',name:'Comments',group:'Watch',calm:false},
+  {id:'shorts',name:'Shorts',group:'Shorts',calm:true},
+  {id:'shorts-redirect',name:'Open Shorts in the normal player',group:'Shorts',calm:false},
+  {id:'search-clean-up',name:'Search clean-up',group:'Search',calm:false},
+  {id:'explore',name:'Explore, Trending and Playables',group:'Everywhere',calm:false},
+  {id:'bell',name:'Notifications bell',group:'Everywhere',calm:false},
 ];
 const GROUPS = ['Home','Watch','Shorts','Search','Everywhere'];
-const PAIRS = [
-  {key:'home',label:'Home',cap:'Home becomes the Intention Page: a question and a search box, not a feed.'},
-  {key:'watch',label:'Watch',cap:'The suggestions beside the video are gone. The video, its description and its playlist stay.'},
-  {key:'search',label:'Search',cap:'Search keeps every result and drops the Shorts and the shelves in between.'},
-];
-// Rows: [label, D-Tox, Unhook, RYS]. Only facts from docs/research/2026-11-rebuild-grounding.md; unknown = "not stated".
-const COMPARE = [
-  ['Licence','MIT, open source','Closed source','MPL-2.0, open source'],
-  ['Users','New (v2.0)','1,000,000 · 4.9★','590 GitHub stars'],
-  ['Hides feed, suggestions, Shorts, comments','Yes','Yes','Yes'],
-  ['Home → Subscriptions','Yes','Yes','Yes'],
-  ['Shorts open in the normal player','Yes','Not stated','Yes'],
-  ['m.youtube.com and embeds','No','Yes','Not stated'],
-  ['Schedules','No','Not stated','Yes'],
-  ['Starts calm on install','Yes','Not stated','Not stated'],
-  ['Speed measured against YouTube, published','Every release','Not published','Not published'],
-];
-const WHO = [
-  {k:'D-Tox',sub:'MIT',line:'Starts calm, measures itself.',pts:['Intention Page on Home','Calm Default on install','Speed published every release','Sends nothing anywhere'],wins:'Wins on: open source, published speed, a calm start.'},
-  {k:'Unhook',sub:'1M users',line:'The one most people use.',pts:['Hides the same things','Works on m.youtube.com and embeds','Home → Subscriptions','4.9★ from 4,600 ratings'],wins:'Wins on: trust, reach, mobile web and embeds.'},
-  {k:'RYS',sub:'MPL-2.0',line:'The open-source veteran.',pts:['Static CSS, like D-Tox','Schedules','Search-only mode','Shorts → normal player'],wins:'Wins on: schedules, search-only mode.'},
-];
-const chromeIcon = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 6.5a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7ZM4.1 7.2 7.9 13.8A4.5 4.5 0 0 0 12 16.5c.3 0 .6 0 .9-.1l-2.8 4.9A8.5 8.5 0 0 1 4.1 7.2Zm15.8 1.3a8.5 8.5 0 0 1-6.6 12.8l3.8-6.6a4.5 4.5 0 0 0 .4-4.2c-.1-.3-.3-.5-.4-.7h2.8ZM12 3.5a8.5 8.5 0 0 1 7.2 4H12a4.5 4.5 0 0 0-4.4 3.4L5 6.4A8.5 8.5 0 0 1 12 3.5Z"/></svg>';
-const esc = s => s.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const inG = g => SETTINGS.filter(s => s.group === g);
+const esc = s => s.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const chromeIcon = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 6.5a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7ZM4.1 7.2 7.9 13.8A4.5 4.5 0 0 0 12 16.5c.3 0 .6 0 .9-.1l-2.8 4.9A8.5 8.5 0 0 1 4.1 7.2Zm15.8 1.3a8.5 8.5 0 0 1-6.6 12.8l3.8-6.6a4.5 4.5 0 0 0 .4-4.2c-.1-.3-.3-.5-.4-.7h2.8ZM12 3.5a8.5 8.5 0 0 1 7.2 4H12a4.5 4.5 0 0 0-4.4 3.4L5 6.4A8.5 8.5 0 0 1 12 3.5Z"/></svg>';
+const ghIcon = '<svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.33c-2.23.48-2.7-1.07-2.7-1.07-.36-.92-.89-1.17-.89-1.17-.73-.5.05-.49.05-.49.81.06 1.23.83 1.23.83.72 1.23 1.88.87 2.34.67.07-.52.28-.87.51-1.07-1.78-.2-3.65-.89-3.65-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.28.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0Z"/></svg>';
+const cta = sm => `<a class="btn${sm ? ' sm' : ''}" href="#">${sm ? '' : chromeIcon}Add to Chrome${sm ? '' : ', free'}</a>`;
+const M = 'logo/d-ivory.svg', m = 'logo/d-small.svg';
+const URLS = { watch: 'youtube.com/watch?v=rfscVS0vtbw', search: 'youtube.com/results?search_query=how+to+make+pasta', home: 'youtube.com' };
 
-// Hero button icon (A).
-document.querySelectorAll('.btn').forEach(b => { b.innerHTML = b.innerHTML.replace('${chrome}', chromeIcon); });
-
-// Settings, three ways.
-document.querySelector('[data-settings=A]').innerHTML = GROUPS.map(g => `<div><h3>${g}</h3><dl>${inG(g).map(s => `<div><dt>${esc(s.name)}${s.calm ? '<span class="cd">Calm Default</span>' : ''}</dt><dd>${esc(s.hides)}</dd></div>`).join('')}</dl></div>`).join('');
-document.querySelector('[data-settings=B]').innerHTML = SETTINGS.map(s => `<div class="card fold"><span class="g">${s.group}</span><h3>${esc(s.name)}</h3><p>${esc(s.hides)}</p>${s.calm ? '<span class="cd">On from the start</span>' : ''}</div>`).join('');
-document.querySelector('[data-settings=C]').innerHTML = SETTINGS.map(s => `<div class="it"><span class="g">${s.group}</span><dt>${esc(s.name)}${s.calm ? '<small>Calm Default</small>' : ''}</dt><dd>${esc(s.hides)}</dd></div>`).join('');
-
-// Comparison: A and C tables.
-const table = () => `<thead><tr><th></th><th>D-Tox</th><th>Unhook</th><th>RYS</th></tr></thead><tbody>${COMPARE.map(r => `<tr><th>${r[0]}</th>${r.slice(1).map((c, i) => `<td class="${i === 0 ? 'us ' : ''}${/^(No|Not)/.test(c) ? 'no' : 'yes'}">${c}</td>`).join('')}</tr>`).join('')}</tbody>`;
-document.querySelector('[data-compare=A]').innerHTML = table();
-document.querySelector('[data-compare=C]').innerHTML = table();
-document.querySelector('[data-three]').innerHTML = WHO.map((w, i) => `<div class="who${i === 0 ? ' us' : ''}"><h3>${w.k}<small>${w.sub}</small></h3><p class="k">${w.line}</p><ul>${w.pts.map(p => `<li>${p}</li>`).join('')}</ul><p class="wins">${w.wins}</p></div>`).join('');
-
-// B's popup on the stage (popup variant A's layout, dark).
-document.querySelector('[data-pop]').innerHTML = `<div class="top"><span class="mark"><img src="../../extension/public/icon-48.png" alt="">D-Tox</span><span class="sw on"></span></div><p class="st">On · 4 of 10 Settings</p>${GROUPS.map(g => `<h6>${g}</h6>${inG(g).map(s => `<div class="r"><span>${s.id === 'home' ? 'Home: Intention Page' : esc(s.name)}</span><span class="sw${s.calm ? ' on' : ''}"></span></div>`).join('')}`).join('')}<div class="ft"><span>Privacy</span><span>Changelog</span><span>Sponsor</span></div>`;
-
-// Before/after: A (drag slider with tabs), B (pairs), C (segmented + flip).
-const shot = (k, w) => `shots/${k}-${w}.jpg`;
-const aTabs = document.querySelector('#A .tabs'), cmp = document.querySelector('#A .cmp');
-function aShow(k) {
-  const p = PAIRS.find(p => p.key === k);
-  cmp.querySelector('.before').src = shot(k, 'before'); cmp.querySelector('.after').src = shot(k, 'after');
-  document.querySelector('#A .caption').textContent = p.cap;
-  aTabs.querySelectorAll('button').forEach(b => b.setAttribute('aria-selected', b.dataset.k === k));
+// What each capture's highlighted parts are called (positions come from shots/regions.json).
+const MARKS = {
+  watch: [['recommendations', 'Recommendations', 'Recommendations · hidden']],
+  search: [['shorts', 'Shorts shelf'], ['shortsLink', 'Shorts link'], ['explore', 'Explore']],
+  home: [['shortsLink', 'Shorts link'], ['explore', 'Explore']],
+};
+const frameHTML = (k, cls = '') => `<figure class="frame raw ${cls}" data-k="${k}" style="margin:0">
+  <div class="tb"><span><i></i><i></i><i></i></span><span class="url">${URLS[k]}</span><span class="ext"><img src="${m}" alt=""></span></div>
+  <div class="shot"><div class="cam"><img class="b" src="shots/${k}-before.jpg" alt="YouTube ${k} page, as it comes"><img class="a" src="shots/${k}-after.jpg" alt="YouTube ${k} page with D-Tox"></div></div></figure>`;
+function fillFrame(fr, k, regions, only) {
+  fr.dataset.k = k;
+  fr.querySelector('.url').textContent = URLS[k];
+  fr.querySelector('.b').src = `shots/${k}-before.jpg`; fr.querySelector('.a').src = `shots/${k}-after.jpg`;
+  const cam = fr.querySelector('.cam'); cam.querySelectorAll('.rg').forEach(r => r.remove());
+  for (const [key, name, ghost] of MARKS[k]) {
+    const r = regions[k]?.[key]; if (!r || (only && !only.includes(key))) continue;
+    cam.insertAdjacentHTML('beforeend', `<div class="rg${ghost ? ' ghost' : ''}" style="left:${r[0]}%;top:${r[1]}%;width:${r[2]}%;height:${r[3]}%"><span class="x">${name}</span>${ghost ? `<span class="g">${ghost}</span>` : ''}</div>`);
+  }
 }
-aTabs.innerHTML = PAIRS.map(p => `<button role="tab" data-k="${p.key}">${p.label}</button>`).join('');
-aTabs.addEventListener('click', e => e.target.dataset.k && aShow(e.target.dataset.k));
-aShow('home');
-const drag = e => { const r = cmp.getBoundingClientRect(); cmp.style.setProperty('--x', Math.min(100, Math.max(0, (e.clientX - r.left) / r.width * 100)) + '%'); };
-cmp.addEventListener('pointerdown', e => { cmp.setPointerCapture(e.pointerId); drag(e); });
-cmp.addEventListener('pointermove', e => e.buttons && drag(e));
 
-document.querySelector('[data-pairs]').innerHTML = PAIRS.map(p => `<div><div class="pair"><figure><div class="win"><img src="${shot(p.key,'before')}" alt="" loading="lazy"></div><figcaption><span>YouTube · ${p.label}</span></figcaption></figure><figure><div class="win"><img src="${shot(p.key,'after')}" alt="" loading="lazy"></div><figcaption><b>With D-Tox</b></figcaption></figure></div><p style="margin-top:6px;font-size:var(--t-small);color:var(--text-2)">${p.cap}</p></div>`).join('');
+const SHOW = [
+  { k: 'watch', label: 'Watch', say: 'The video, its description, its playlist. The column that pulls you away is gone.' },
+  { k: 'search', label: 'Search', say: 'Every result stays. The Shorts shelf, the Shorts link and Explore go.' },
+  { k: 'home', label: 'Home', say: 'Home asks what you’re here for, and waits.' },
+];
+// Story steps: the capture, where the camera looks (scale, origin), which marks to show.
+const STEPS = [
+  { g: 'Home', h: 'Home asks first.', p: 'No feed waiting. Just “What are you here for?” and YouTube’s own search.', k: 'home', z: [1, '50% 0%'], only: [] },
+  { g: 'Watch', h: 'The video, and only the video.', p: 'Suggestions, end screens and comments step aside. Nothing plays next by itself.', k: 'watch', z: [1, '50% 0%'], only: ['recommendations'] },
+  { g: 'Shorts', h: 'No swipe hole.', p: 'Shorts leave the page. One a friend sends opens as a normal video.', k: 'search', z: [1.3, '62% 8%'], only: ['shorts'] },
+  { g: 'Search', h: 'Every result. No detours.', p: 'The shelves between results go; every result stays.', k: 'search', z: [1, '50% 0%'], only: ['shorts'] },
+  { g: 'Everywhere', h: 'Quieter edges.', p: 'No Explore, no Trending, no red count on the bell.', k: 'home', z: [2.4, '0% 55%'], only: ['explore'] },
+];
 
-let cK = 'home', cW = 'after';
-const seg = document.querySelector('[data-seg]');
-seg.innerHTML = PAIRS.map(p => `<button data-k="${p.key}">${p.label}</button>`).join('');
-function cShow() {
-  document.querySelector('[data-img]').src = shot(cK, cW);
-  document.querySelector('[data-cap]').textContent = PAIRS.find(p => p.key === cK).cap;
-  seg.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b.dataset.k === cK));
-  document.querySelectorAll('[data-flip]').forEach(b => b.setAttribute('aria-pressed', b.dataset.flip === cW));
-}
-seg.addEventListener('click', e => { if (e.target.dataset.k) { cK = e.target.dataset.k; cShow(); } });
-document.querySelectorAll('[data-flip]').forEach(b => b.addEventListener('click', () => { cW = b.dataset.flip; cShow(); }));
-cShow();
+document.getElementById('page').innerHTML = `
+<header class="hbar"><div class="wrap in">
+  <a class="brand" href="#"><img src="${m}" alt="">D-Tox</a>
+  <nav><a href="#see">See it</a><a href="#settings">Settings</a><a href="#numbers">Numbers</a><a href="#privacy">Privacy</a></nav>
+  <div class="right"><a class="gh" href="#">${ghIcon}GitHub</a>${cta(true)}</div>
+</div></header>
 
-// ----- D: the mix -----
-document.querySelector('[data-settings=D]').innerHTML = SETTINGS.map(s => `<div class="card fold${s.calm ? ' calm' : ''}"><span class="g">${s.group}</span><h3>${s.id === 'home' ? 'Home: Intention Page' : esc(s.name)}</h3><p>${esc(s.hides)}</p></div>`).join('');
-document.querySelector('[data-compare=D]').innerHTML = table().replace('<th>D-Tox</th>', '<th class="us">D-Tox</th>').replace('</tbody>', `<tr class="wins"><th>Wins on</th>${WHO.map((w, i) => `<td class="${i === 0 ? 'us' : ''}">${w.wins.replace('Wins on: ', '')}</td>`).join('')}</tr></tbody>`);
-const dTabs = document.querySelector('#D .tabs'), dCmp = document.querySelector('#D .cmp');
-const URLS = { home: 'youtube.com', watch: 'youtube.com/watch?v=rfscVS0vtbw', search: 'youtube.com/results?search_query=python+tutorial' };
-dTabs.innerHTML = PAIRS.map(p => `<button role="tab" data-k="${p.key}">${p.label}</button>`).join('');
-function dShow(k) {
-  dCmp.querySelector('.before').src = shot(k, 'before'); dCmp.querySelector('.after').src = shot(k, 'after');
-  document.querySelector('[data-dcap]').textContent = PAIRS.find(p => p.key === k).cap;
-  document.querySelector('[data-url]').textContent = URLS[k];
-  dTabs.querySelectorAll('button').forEach(b => b.setAttribute('aria-selected', b.dataset.k === k));
-}
-dTabs.addEventListener('click', e => e.target.dataset.k && dShow(e.target.dataset.k));
-dShow('home');
-const dDrag = e => { const r = dCmp.getBoundingClientRect(); dCmp.style.setProperty('--x', Math.min(100, Math.max(0, (e.clientX - r.left) / r.width * 100)) + '%'); };
-dCmp.addEventListener('pointerdown', e => { dCmp.setPointerCapture(e.pointerId); dDrag(e); });
-dCmp.addEventListener('pointermove', e => e.buttons && dDrag(e));
-// The picked popup (B), live: tabs switch groups, switches flip.
-const dOn = Object.fromEntries(SETTINGS.map(s => [s.id, s.calm]));
-let dTab = 'Watch';
-const dPop = document.querySelector('[data-dpop]');
-function dPopDraw() {
-  const n = Object.values(dOn).filter(Boolean).length;
-  dPop.innerHTML = `<div class="card"><div class="top"><span class="mark"><img src="../../extension/public/icon-48.png" alt="">D-Tox</span><button class="psw" role="switch" aria-checked="true" aria-label="D-Tox"></button></div><b>YouTube for what you came for.</b><small>${n} of 10 Settings on</small></div>
-  <div class="pt" role="tablist">${GROUPS.map(g => `<button role="tab" data-g="${g}" aria-selected="${g === dTab}">${g}</button>`).join('')}</div>
-  <div class="items">${inG(dTab).map(s => `<div class="it"><div class="h">${s.id === 'home' ? 'Home: Intention Page' : esc(s.name)}${s.id === 'home' ? '' : `<button class="psw" role="switch" data-s="${s.id}" aria-checked="${dOn[s.id]}" aria-label="${esc(s.name)}"></button>`}</div><p>${esc(s.hides)}</p></div>`).join('')}</div>`;
-}
-dPop.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; if (b.dataset.g) dTab = b.dataset.g; else if (b.dataset.s) dOn[b.dataset.s] = !dOn[b.dataset.s]; dPopDraw(); });
-dPopDraw();
-document.querySelectorAll('#D .btn').forEach(b => { b.innerHTML = b.innerHTML.replace('${chrome}', chromeIcon); });
+<div class="wrap"><section class="hero"><div><h1>YouTube for what you came for. <em>Nothing else.</em></h1>
+  <p class="lead">No feed, no Shorts, no next video. Just the one you came for.</p>
+  <div class="cta">${cta()}<p class="small">Free · Open source · Sends nothing</p></div></div>
+  <div class="sun"><img src="${M}" alt=""></div></section></div>
 
-// ----- E: its own identity -----
-document.querySelector('[data-compare=E]').innerHTML = table().replace('<th>D-Tox</th>', '<th class="us">D-Tox</th>');
-const eList = document.querySelector('[data-elist]'), eCmp = document.querySelector('#E .ecmp');
-eList.innerHTML = PAIRS.map(p => `<button role="tab" data-k="${p.key}"><b>${p.label}</b><small>${p.cap}</small></button>`).join('');
-function eShow(k) { eCmp.querySelector('.before').src = shot(k, 'before'); eCmp.querySelector('.after').src = shot(k, 'after'); eList.querySelectorAll('button').forEach(b => b.setAttribute('aria-selected', b.dataset.k === k)); }
-eList.addEventListener('click', e => { const b = e.target.closest('button'); if (b) eShow(b.dataset.k); });
-eShow('watch');
-const eDrag = e => { const r = eCmp.getBoundingClientRect(); eCmp.style.setProperty('--x', Math.min(100, Math.max(0, (e.clientX - r.left) / r.width * 100)) + '%'); };
-eCmp.addEventListener('pointerdown', e => { eCmp.setPointerCapture(e.pointerId); eDrag(e); });
-eCmp.addEventListener('pointermove', e => e.buttons && eDrag(e));
-const eOn = Object.fromEntries(SETTINGS.map(s => [s.id, s.calm]));
-let eTab = 'Watch';
-const nm = s => s.id === 'home' ? 'Home: Intention Page' : esc(s.name);
-function eDraw() {
-  document.querySelector('[data-erows]').innerHTML = GROUPS.map(g => `<p class="grp">${g}</p>${inG(g).map(s => `<div class="row"><h3>${nm(s)}${s.calm ? '<em>On at install</em>' : ''}</h3><p>${esc(s.hides)}</p><button class="esw" role="switch" data-s="${s.id}" data-g="${g}" aria-checked="${eOn[s.id]}" aria-label="${esc(s.name)}"></button></div>`).join('')}`).join('');
-  const n = Object.values(eOn).filter(Boolean).length;
-  document.querySelector('[data-epop]').innerHTML = `<div class="card"><div class="top"><span class="mark"><img src="../../extension/public/icon-48.png" alt="">D-Tox</span><span class="esw" aria-checked="true"></span></div><b>YouTube for what you came for.</b><small>${n} of 10 Settings on</small></div><div class="pt">${GROUPS.map(g => `<button data-t="${g}" aria-selected="${g === eTab}">${g}</button>`).join('')}</div>${inG(eTab).map(s => `<div class="it"><div class="h">${nm(s)}${s.id === 'home' ? '' : `<button class="esw" data-s="${s.id}" data-g="${eTab}" aria-checked="${eOn[s.id]}" aria-label="${esc(s.name)}"></button>`}</div><p>${esc(s.hides)}</p></div>`).join('')}`;
-}
-document.getElementById('E-set').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; if (b.dataset.t) eTab = b.dataset.t; else if (b.dataset.s && b.dataset.s !== 'home') { eOn[b.dataset.s] = !eOn[b.dataset.s]; eTab = b.dataset.g; } eDraw(); });
-eDraw();
-document.querySelectorAll('#E .ebtn').forEach(b => { b.innerHTML = b.innerHTML.replace('${chrome}', chromeIcon); });
-
-// ----- F, G: pass 2. Same few words, two typographic voices. No comparison. -----
-const QCAP = { home: 'Home asks what you’re here for.', watch: 'The video, without the pull.', search: 'Every result. No detours.' };
-document.querySelectorAll('.q[data-q]').forEach(root => {
-  const o = JSON.parse(root.dataset.q), id = root.id;
-  const cta = (sm) => `<a class="qbtn${sm ? ' sm' : ''}" href="#">${sm ? '' : chromeIcon}Add to Chrome${sm ? '' : ', free'}</a>`;
-  const meta = `<p class="small">Free · Open source · Sends nothing</p>`;
-  const heroF = `<section class="hero"><div class="wrap"><img class="big" src="${o.mark}" alt=""><h1>YouTube for what you came for. <em>Nothing else.</em></h1>
-      <p class="lead">No feed, no Shorts, no next video. Just the one you came for.</p><div class="cta">${cta()}${meta}</div>
-      <div class="rise"><div class="win"><img src="shots/home-after.jpg" alt="YouTube's home with D-Tox: one question, no feed"></div></div></div></section>`;
-  const heroG = `<div class="wrap"><section class="hero" style="padding-block:40px 0"><div><h1>YouTube for what you came for. <em>Nothing else.</em></h1>
-      <p class="lead">No feed, no Shorts, no next video. Just the one you came for.</p><div class="cta">${cta()}${meta}</div></div>
-      <div class="sun"><img src="${o.mark}" alt=""></div></section></div>`;
-  root.innerHTML = `
-  <header class="qhead"><div class="wrap in"><a class="brand" href="#"><img src="${o.small}" alt="">D-Tox</a>${cta(true)}</div></header>
-  ${id === 'F' ? heroF : heroG}
-  <section><div class="wrap">
-    <div class="sh up ${id === 'F' ? 'center' : ''}"><h2>Same YouTube. <em>Quieter.</em></h2></div>
-    <div class="up ${id === 'F' ? 'center' : ''}" style="max-width:1040px;${id === 'F' ? 'margin-inline:auto' : ''}"><div class="tabs" role="tablist">${PAIRS.map(p => `<button role="tab" data-k="${p.key}">${p.label}</button>`).join('')}</div>
-      <div class="qcmp" aria-label="Drag to compare"><img class="before" alt=""><img class="after" alt=""><span class="tag l">YouTube</span><span class="tag r">With D-Tox</span><span class="line"></span><span class="knob">⇆</span></div>
-      <p class="cap"></p></div>
-  </div></section>
-  <section><div class="wrap">
-    <div class="sh up"><h2>Ten switches. <em>Four already on.</em></h2></div>
-    <div class="board"><div class="side up"><div class="qpop"></div><p class="small">The D-Tox button in Chrome’s toolbar.</p></div><div class="rows"></div></div>
-  </div></section>
-  <section><div class="wrap">
-    <div class="sh up"><h2>Light enough <em>to forget.</em></h2></div>
-    <div class="nums up">
-      <div class="num"><b>7 KB</b><p>The whole extension.</p></div>
-      <div class="num"><b>0</b><p>Timers or watchers left running on the page.</p></div>
-      <div class="num"><b>+2%</b><p>Main-thread time, against YouTube alone. <span class="ph">placeholder</span></p></div>
-    </div>
-    <p class="small when">Measured on every release · v2.0.0 · <span class="ph">until #25</span></p>
-  </div></section>
-  <section class="close"><div class="wrap"><h2>Nothing leaves <em>your browser.</em></h2><div class="cta">${cta()}<p class="small"><a href="#">Read the privacy page</a></p></div></div></section>
-  <footer><div class="wrap in"><nav><a href="#">Privacy</a><a href="#">Changelog</a><a href="#">Sponsor</a><a href="#">GitHub</a></nav>
-    <span><a class="s" href="#"><span class="s-mask"></span>A Saaquib Labs product</a> · MIT · Visits counted by our own Umami, no cookies.</span></div></footer>`;
-  // before/after
-  const tabs = root.querySelector('.tabs'), c = root.querySelector('.qcmp');
-  const show = k => { c.querySelector('.before').src = shot(k, 'before'); c.querySelector('.after').src = shot(k, 'after'); root.querySelector('.cap').textContent = QCAP[k]; tabs.querySelectorAll('button').forEach(b => b.setAttribute('aria-selected', b.dataset.k === k)); };
-  tabs.addEventListener('click', e => e.target.dataset.k && show(e.target.dataset.k)); show('watch');
-  const dr = e => { const r = c.getBoundingClientRect(); c.style.setProperty('--x', Math.min(100, Math.max(0, (e.clientX - r.left) / r.width * 100)) + '%'); };
-  c.addEventListener('pointerdown', e => { c.setPointerCapture(e.pointerId); dr(e); }); c.addEventListener('pointermove', e => e.buttons && dr(e));
-  // switchboard + popup
-  const on = Object.fromEntries(SETTINGS.map(s => [s.id, s.calm])); let tab = 'Watch';
-  const draw = () => {
-    root.querySelector('.rows').innerHTML = GROUPS.map(g => `<p class="grp">${g}</p>${inG(g).map(s => `<div class="row"><h3>${nm(s)}${s.calm ? '<i>On at install</i>' : ''}</h3><p>${esc(s.hides)}</p>${s.id === 'home' ? '' : `<button class="qsw" role="switch" data-s="${s.id}" data-g="${g}" aria-checked="${on[s.id]}" aria-label="${esc(s.name)}"></button>`}</div>`).join('')}`).join('');
-    const n = Object.values(on).filter(Boolean).length;
-    root.querySelector('.qpop').innerHTML = `<div class="card"><div class="top"><span class="brand"><img src="${o.small}" alt="">D-Tox</span><span class="qsw" aria-checked="true"></span></div><b>YouTube for what you came for.</b><small>${n} of 10 Settings on</small></div><div class="pt">${GROUPS.map(g => `<button data-t="${g}" aria-selected="${g === tab}">${g}</button>`).join('')}</div>${inG(tab).map(s => `<div class="it"><div class="h">${nm(s)}${s.id === 'home' ? '' : `<button class="qsw" data-s="${s.id}" data-g="${tab}" aria-checked="${on[s.id]}" aria-label="${esc(s.name)}"></button>`}</div><p>${esc(s.hides)}</p></div>`).join('')}`;
-  };
-  root.addEventListener('click', e => { const b = e.target.closest('.board button'); if (!b) return; if (b.dataset.t) tab = b.dataset.t; else if (b.dataset.s) { on[b.dataset.s] = !on[b.dataset.s]; tab = b.dataset.g; } draw(); });
-  draw();
-});
-
-// ----- H: real screenshots, a Dossier-style story, one fused footer -----
-(() => {
-  const root = document.getElementById('H');
-  const ghIcon = '<svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.33c-2.23.48-2.7-1.07-2.7-1.07-.36-.92-.89-1.17-.89-1.17-.73-.5.05-.49.05-.49.81.06 1.23.83 1.23.83.72 1.23 1.88.87 2.34.67.07-.52.28-.87.51-1.07-1.78-.2-3.65-.89-3.65-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.28.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0Z"/></svg>';
-  const cta = sm => `<a class="qbtn${sm ? ' sm' : ''}" href="#">${sm ? '' : chromeIcon}Add to Chrome${sm ? '' : ', free'}</a>`;
-  const M = 'logo/d-ivory.svg', m = 'logo/d-small.svg';
-  const SHOW = [
-    { k: 'watch', label: 'Watch', url: 'youtube.com/watch?v=rfscVS0vtbw', say: 'The video, without the column pulling you away.' },
-    { k: 'search', label: 'Search', url: 'youtube.com/results?search_query=how+to+make+pasta', say: 'Every result. None of the Shorts and shelves in between.' },
-    { k: 'home', label: 'Home', url: 'youtube.com', say: 'Home asks what you’re here for, and waits.' },
-  ];
-  const STEPS = [
-    { g: 'Home', h: 'Home asks first.', p: 'No feed waiting for you. One question, and YouTube’s own search.', names: ['Intention Page', 'or Subscriptions'] },
-    { g: 'Watch', h: 'The video, and only the video.', p: 'Suggestions, end screens and comments step aside. The next video waits for you.' },
-    { g: 'Shorts', h: 'No swipe hole.', p: 'Shorts are gone. One someone sends you opens as a normal video.' },
-    { g: 'Search', h: 'Every result. No detours.', p: 'The shelves between results go; the results stay.' },
-    { g: 'Everywhere', h: 'Quieter edges.', p: 'No red count on the bell. No Explore, no Trending.' },
-  ];
-  root.innerHTML = `
-  <header class="hbar"><div class="wrap in">
-    <a class="brand" href="#"><img src="${m}" alt="">D-Tox</a>
-    <nav><a href="#H-see">See it</a><a href="#H-set">Settings</a><a href="#H-num">Numbers</a><a href="#H-priv">Privacy</a></nav>
-    <div class="right"><a class="gh" href="#">${ghIcon}GitHub</a>${cta(true)}</div>
-  </div></header>
-  <div class="wrap"><section class="hero" style="padding-block:24px 64px"><div><h1>YouTube for what you came for. <em>Nothing else.</em></h1>
-    <p class="lead">No feed, no Shorts, no next video. Just the one you came for.</p>
-    <div class="cta">${cta()}<p class="small">Free · Open source · Sends nothing</p></div></div>
-    <div class="sun"><img src="${M}" alt=""></div></section></div>
-  <div class="show" id="H-see">
-    <h2 class="up">Same YouTube. <em>Quieter.</em></h2>
-    <div class="pills"><div class="in" role="tablist">${SHOW.map((s, i) => `<button role="tab" data-i="${i}"><span>0${i + 1}</span>${s.label}</button>`).join('')}</div></div>
+<div class="show" id="see">
+  <h2 class="up">Same YouTube. <em>Quieter.</em></h2>
+  <p class="lead sub up">Real pages, captured today. Flip the switch.</p>
+  <div class="deck">
+    <div class="top"><div class="pills" role="tablist">${SHOW.map((s, i) => `<button role="tab" data-i="${i}"><span>0${i + 1}</span>${s.label}<i></i></button>`).join('')}</div>
+      <button class="tog" aria-pressed="false"><span class="sw" aria-checked="false"></span><span>With D-Tox</span></button></div>
+    ${frameHTML('watch', 'deckframe')}
     <p class="say"></p>
-    <div class="stage">${SHOW.map((s, i) => `<figure class="frame" data-i="${i}" style="margin:0"><div class="tb"><span><i></i><i></i><i></i></span><span class="url">${s.url}</span><span></span></div><div class="shot"><img class="b" src="shots/${s.k}-before.jpg" alt="YouTube ${s.label}, as it comes"><img class="a" src="shots/${s.k}-after.jpg" alt="YouTube ${s.label} with D-Tox"></div></figure>`).join('')}</div>
-    <div class="ctrl"><button class="arr" data-d="-1" aria-label="Previous">←</button><button class="tog" aria-pressed="true"><span class="qsw" aria-checked="true"></span><span class="t">With D-Tox</span></button><button class="arr" data-d="1" aria-label="Next">→</button></div>
   </div>
-  <section id="H-set"><div class="wrap">
-    <div class="story">
-      <div class="steps"><span class="bar"></span>${STEPS.map((s, i) => `<div class="step" data-g="${s.g}"><span class="n">0${i + 1} · ${s.g}</span><h3>${s.h}</h3><p>${s.p}</p><ul>${(s.names ?? inG(s.g).map(x => x.name)).map(n => `<li>${esc(n)}</li>`).join('')}</ul></div>`).join('')}</div>
-      <div class="pin"><span class="glow"></span><div class="hpop"></div></div>
-    </div>
-  </div></section>
-  <section id="H-num"><div class="wrap">
-    <div class="sh up"><h2>Light enough <em>to forget.</em></h2></div>
-    <div class="nums up">
-      <div class="num"><b>7 KB</b><p>The whole extension.</p></div>
-      <div class="num"><b>0</b><p>Timers or watchers left running on the page.</p></div>
-      <div class="num"><b>+2%</b><p>Main-thread time, against YouTube alone. <span class="ph">placeholder</span></p></div>
-    </div>
-    <p class="small when">Measured on every release · v2.0.0 · <span class="ph">until #25</span></p>
-  </div></section>
-  <footer class="fuse" id="H-priv"><div class="wrap">
-    <div class="end"><h2>Nothing leaves <em>your browser.</em></h2><div class="cta">${cta()}<p class="small"><a href="#">Read the privacy page</a></p></div></div>
-    <div class="cols">
-      <div><a class="brand" href="#"><img src="${m}" alt="">D-Tox</a><p>YouTube for what you came for. Free and open source, for Chrome.</p></div>
-      <div><h4>Product</h4><ul><li><a href="#H-see">See it</a></li><li><a href="#H-set">Settings</a></li><li><a href="#">Changelog</a></li></ul></div>
+</div>
+
+<section class="pad" id="settings"><div class="wrap">
+  <div class="story-h up"><h2>Ten switches. <em>Four already on.</em></h2><p class="lead" style="max-width:24rem">Each one hides a single thing. Scroll, and watch it go.</p></div>
+  <div class="story">
+    <div class="steps"><span class="bar"></span>${STEPS.map((s, i) => `<div class="step" data-i="${i}"><span class="n">0${i + 1} · ${s.g}</span><h3>${s.h}</h3><p>${s.p}</p><div class="mini frame"><div class="shot"><div class="cam"><img class="a" src="shots/${s.k}-after.jpg" alt=""></div></div></div></div>`).join('')}</div>
+    <div class="pin"><span class="glow"></span><div class="rig">${frameHTML('home', 'storyframe lbl-sm')}<div class="pop"></div></div></div>
+  </div>
+</div></section>
+
+<section class="pad" id="numbers" style="padding-top:0"><div class="wrap">
+  <h2 class="up">Light enough <em>to forget.</em></h2>
+  <div class="nums up">
+    <div class="num"><b>7 KB</b><p>The whole extension.</p></div>
+    <div class="num"><b>0</b><p>Timers or watchers left running on the page.</p></div>
+    <div class="num"><b>+2%</b><p>Main-thread time, against YouTube alone. <span class="ph">placeholder</span></p></div>
+  </div>
+  <p class="small when">Measured on every release · v2.0.0 · <span class="ph">until #25</span></p>
+</div></section>
+
+<div class="calm" id="privacy"><div class="stick">
+  <div class="noise" aria-hidden="true"></div>
+  <div class="end">
+    <img src="${M}" alt="">
+    <h2>Nothing <em>else.</em></h2>
+    <p class="lead">Nothing leaves your browser, either. No account, no tracking, nothing sent anywhere.</p>
+    <div class="cta">${cta()}<a class="small" href="#">Read the privacy page</a></div>
+  </div>
+</div></div>
+
+<footer><div class="wrap">
+  <div class="row1">
+    <div class="about"><a class="brand" href="#"><img src="${m}" alt="">D-Tox</a><p>YouTube for what you came for. Free and open source, for Chrome.</p></div>
+    <div class="links">
+      <div><h4>Product</h4><ul><li><a href="#see">See it</a></li><li><a href="#settings">Settings</a></li><li><a href="#">Changelog</a></li></ul></div>
       <div><h4>Open source</h4><ul><li><a href="#">GitHub</a></li><li><a href="#">Report a problem</a></li><li><a href="#">Sponsor</a></li></ul></div>
       <div><h4>Trust</h4><ul><li><a href="#">Privacy</a></li><li><a href="#">MIT licence</a></li><li><a href="#">Saaquib Labs</a></li></ul></div>
     </div>
-    <div class="legal"><span><a href="#"><span class="s-mask"></span> A Saaquib Labs product</a> · © 2026</span><span>Visits counted by our own Umami. No cookies.</span></div>
-  </div><div class="giant" aria-hidden="true"><img src="${M}" alt=""><span>D-Tox</span></div></footer>`;
-  const bar = root.querySelector('.hbar');
-  addEventListener('scroll', () => bar.classList.toggle('stuck', scrollY > 8), { passive: true });
-  // showcase: three real pages, the neighbours peeking; one toggle flips with/without
-  let cur = 0, raw = true;
-  const frames = [...root.querySelectorAll('.frame')], tog = root.querySelector('.tog');
-  const showDraw = () => {
-    frames.forEach((f, i) => { const d = (i - cur + 3) % 3; f.className = 'frame ' + (d === 0 ? 'c' : d === 1 ? 'side r' : 'side l') + (raw && d === 0 ? ' raw' : ''); });
-    root.querySelectorAll('.pills button').forEach((b, i) => b.setAttribute('aria-selected', i === cur));
-    root.querySelector('.say').textContent = raw ? 'YouTube, as it comes.' : SHOW[cur].say;
-    tog.querySelector('.qsw').setAttribute('aria-checked', !raw); tog.setAttribute('aria-pressed', !raw);
-  };
-  root.querySelector('.pills').addEventListener('click', e => { const b = e.target.closest('button'); if (b) { cur = +b.dataset.i; showDraw(); } });
-  root.querySelectorAll('.arr').forEach(b => b.addEventListener('click', () => { cur = (cur + +b.dataset.d + 3) % 3; showDraw(); }));
-  tog.addEventListener('click', () => { raw = !raw; showDraw(); });
-  showDraw();
-  let once = false;
-  new IntersectionObserver(es => es.forEach(x => { if (x.isIntersecting && !once) { once = true; setTimeout(() => { raw = false; showDraw(); }, 1200); } }), { threshold: .5 }).observe(root.querySelector('.stage'));
-  // story: the step in the middle of the screen drives the pinned popup
-  const on = Object.fromEntries(SETTINGS.map(s => [s.id, s.calm])); let tab = 'Home';
-  const pop = root.querySelector('.hpop');
+  </div>
+  <div class="legal"><a href="#"><span class="s-mask"></span> A Saaquib Labs product · © 2026</a><span>Visits counted by our own Umami. No cookies.</span></div>
+</div><span class="giant" aria-hidden="true">D-Tox</span></footer>`;
+
+const bar = document.querySelector('.hbar');
+addEventListener('scroll', () => bar.classList.toggle('stuck', scrollY > 8), { passive: true });
+
+fetch('shots/regions.json').then(r => r.json()).catch(() => ({})).then(REG => {
+  // ---- showcase: one page at a time; plays by itself (as it comes → with D-Tox → next) until touched ----
+  const deck = document.querySelector('.deck'), fr = deck.querySelector('.frame'), tog = deck.querySelector('.tog'), say = deck.querySelector('.say');
+  const pills = [...deck.querySelectorAll('.pills button')];
+  let cur = 0, raw = true, auto = true, timer = 0, inView = false;
+  const BEFORE = 2200, AFTER = 3800;
   const draw = () => {
-    const n = Object.values(on).filter(Boolean).length;
-    pop.innerHTML = `<header><span class="brand"><img src="${m}" alt="">D-Tox</span><span class="qsw" aria-checked="true"></span></header><h5>YouTube for what you came for.</h5><p class="st">${n} of 10 on</p><nav>${GROUPS.map(g => `<button data-t="${g}" aria-selected="${g === tab}">${g}${inG(g).some(s => on[s.id]) ? '<i></i>' : ''}</button>`).join('')}</nav><div class="list">${inG(tab).map(s => s.id === 'home' ? `<div class="row"><span>Intention Page<small>Home asks what you’re here for.</small></span></div>` : `<div class="row"><span>${esc(s.name)}</span><button class="qsw" data-s="${s.id}" aria-checked="${on[s.id]}" aria-label="${esc(s.name)}"></button></div>`).join('')}</div><div class="ft"><span>Privacy</span><span>Changelog</span><span>Sponsor</span><span>v2.0.0</span></div>`;
+    fr.classList.toggle('raw', raw); fr.querySelector('.ext').classList.toggle('lit', !raw);
+    tog.querySelector('.sw').setAttribute('aria-checked', !raw); tog.setAttribute('aria-pressed', !raw);
+    say.textContent = raw ? 'YouTube, as it comes. The marked parts are what D-Tox hides.' : SHOW[cur].say;
+    pills.forEach((b, i) => { b.setAttribute('aria-selected', i === cur); b.classList.toggle('run', auto && i === cur); });
   };
-  pop.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; if (b.dataset.t) tab = b.dataset.t; else if (b.dataset.s) on[b.dataset.s] = !on[b.dataset.s]; draw(); });
-  draw();
-  const steps = [...root.querySelectorAll('.step')], stepsEl = root.querySelector('.steps');
+  const go = i => { cur = (i + SHOW.length) % SHOW.length; raw = true; fillFrame(fr, SHOW[cur].k, REG); pills.forEach(b => { b.classList.remove('run'); void b.offsetWidth; }); draw(); };
+  const tick = () => { clearTimeout(timer); if (!auto || !inView) return;
+    timer = setTimeout(() => { raw = false; draw(); timer = setTimeout(() => { go(cur + 1); tick(); }, AFTER); }, BEFORE); };
+  deck.style.setProperty('--dur', (BEFORE + AFTER) / 1000 + 's');
+  const stop = () => { auto = false; clearTimeout(timer); };
+  deck.querySelector('.pills').addEventListener('click', e => { const b = e.target.closest('button'); if (b) { stop(); go(+b.dataset.i); } });
+  tog.addEventListener('click', () => { stop(); raw = !raw; draw(); });
+  new IntersectionObserver(([x]) => { inView = x.isIntersecting; if (inView) tick(); else clearTimeout(timer); }, { threshold: .55 }).observe(fr);
+  go(0);
+
+  // ---- story: the step in the middle of the screen moves the camera and flips its switches ----
+  const on = Object.fromEntries(SETTINGS.map(s => [s.id, s.calm]));
+  const sf = document.querySelector('.storyframe'), cam = sf.querySelector('.cam'), pop = document.querySelector('.pop');
+  let tab = 'Home', hit = new Set(), active = -1, timers = [];
+  const popDraw = () => {
+    const n = Object.values(on).filter(Boolean).length;
+    pop.innerHTML = `<header><span class="brand"><img src="${m}" alt="">D-Tox</span><span class="sw" aria-checked="true"></span></header><p class="st"><b>${n}</b> of 10 on</p><nav>${GROUPS.map(g => `<button data-t="${g}" aria-selected="${g === tab}">${g}${inG(g).some(s => on[s.id]) ? '<i></i>' : ''}</button>`).join('')}</nav><div class="list">${inG(tab).map(s => s.id === 'home'
+      ? `<div class="row${hit.has('home') ? ' hit' : ''}"><span>Intention Page<small>Home asks what you’re here for.</small></span><span class="ok">✓</span></div>`
+      : `<div class="row${hit.has(s.id) ? ' hit' : ''}"><span>${esc(s.name)}</span><button class="sw" data-s="${s.id}" aria-checked="${on[s.id]}" aria-label="${esc(s.name)}"></button></div>`).join('')}</div><div class="ft"><span>Privacy</span><span>Changelog</span><span>Sponsor</span><span>v2.0.0</span></div>`;
+  };
+  const camRaw = () => sf.classList.toggle('raw', !(tab === 'Home' || inG(tab).some(s => on[s.id] && s.id !== 'autoplay-off' && s.id !== 'shorts-redirect')));
+  pop.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; timers.forEach(clearTimeout);
+    if (b.dataset.t) tab = b.dataset.t; else if (b.dataset.s) on[b.dataset.s] = !on[b.dataset.s]; popDraw(); camRaw(); });
+  const enter = i => {
+    if (i === active) return; active = i; timers.forEach(clearTimeout); timers = [];
+    const s = STEPS[i]; tab = s.g; hit = new Set();
+    if (sf.dataset.k !== s.k) fillFrame(sf, s.k, REG, s.only); else { fillFrame(sf, s.k, REG, s.only); }
+    cam.style.transformOrigin = s.z[1]; cam.style.transform = `scale(${s.z[0]})`;
+    sf.classList.add('raw'); sf.querySelector('.ext').classList.remove('lit'); popDraw();
+    const flips = inG(s.g).filter(x => x.id !== 'home');
+    const t0 = 1100;
+    if (!flips.length) timers.push(setTimeout(() => { hit.add('home'); popDraw(); sf.classList.remove('raw'); sf.querySelector('.ext').classList.add('lit'); }, t0));
+    flips.forEach((x, j) => timers.push(setTimeout(() => { on[x.id] = true; hit.add(x.id); popDraw(); camRaw(); sf.querySelector('.ext').classList.add('lit'); }, t0 + j * 420)));
+  };
+  const steps = [...document.querySelectorAll('.step')], stepsEl = document.querySelector('.steps');
   const onScroll = () => {
-    const mid = innerHeight / 2; let best = steps[0];
-    for (const s of steps) if (s.getBoundingClientRect().top < mid) best = s;
-    steps.forEach(s => s.classList.toggle('on', s === best));
-    if (best.dataset.g !== tab) { tab = best.dataset.g; draw(); }
+    const mid = innerHeight * .55; let best = 0;
+    steps.forEach((s, i) => { if (s.getBoundingClientRect().top < mid) best = i; });
+    steps.forEach((s, i) => s.classList.toggle('on', i === best));
+    if (matchMedia('(min-width:1001px)').matches) enter(best);
     const r = stepsEl.getBoundingClientRect();
     stepsEl.style.setProperty('--p', Math.min(100, Math.max(0, (mid - r.top) / r.height * 100)) + '%');
   };
   addEventListener('scroll', onScroll, { passive: true }); onScroll();
-})();
-
-// Footers (Privacy · Changelog · Sponsor, the studio line, what the site counts).
-document.querySelectorAll('[data-footer]').forEach(f => f.innerHTML = `<nav><a href="#">Privacy</a><a href="#">Changelog</a><a href="#">Sponsor</a><a href="#">GitHub</a></nav><p><a href="#"><span class="s-mask"></span> A Saaquib Labs product</a> · MIT · © 2026</p><p>This site counts visits with Umami, which we run ourselves. No cookies.</p>`);
-
-// Variant + theme switcher.
-const V = ['A','B','C','D','E','F','G','H'], THEMES = ['system','light','dark'];
-const q = new URLSearchParams(location.search);
-const PALS = ['spruce','plum','amber']; let pal = PALS.includes(q.get('palette')) ? q.get('palette') : 'spruce';
-let v = V.includes(q.get('variant')) ? q.get('variant') : 'A', t = THEMES.includes(q.get('theme')) ? q.get('theme') : 'system';
-function set() {
-  document.body.dataset.variant = v;
-  if (t === 'system') delete document.documentElement.dataset.theme; else document.documentElement.dataset.theme = t;
-  document.querySelector('.proto .lbl').textContent = `${v} · ${document.getElementById(v).dataset.name}`;
-  document.body.dataset.palette = pal;
-  document.querySelector('[data-theme-next]').textContent = v === 'E' ? `palette: ${pal}` : `theme: ${t}`;
-  q.set('palette', pal);
-  q.set('variant', v); q.set('theme', t); history.replaceState(null, '', '?' + q);
-}
-const step = d => { v = V[(V.indexOf(v) + d + V.length) % V.length]; set(); scrollTo(0, 0); };
-document.querySelector('.proto').addEventListener('click', e => {
-  const b = e.target.closest('button'); if (!b) return;
-  if (b.dataset.step) step(+b.dataset.step); else if (v === 'E') { pal = PALS[(PALS.indexOf(pal) + 1) % 3]; set(); } else { t = THEMES[(THEMES.indexOf(t) + 1) % 3]; set(); }
 });
-addEventListener('keydown', e => { if (!e.target.closest('input,textarea,[contenteditable]') && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) step(e.key === 'ArrowLeft' ? -1 : 1); });
-set();
+
+// ---- the close: YouTube's noise around the line, drifting away with scroll ----
+const NOISE = [
+  ['thumb', -560, -250, 'Because you watched…', '#E5484D', '#7C3AED', '12:04'], ['pill', -330, -330, 'Up next'], ['badge', 120, -320, '9+'],
+  ['short', 520, -240, '', '#F59E0B', '#DB2777'], ['pill w', 330, -360, 'Shorts'], ['thumb', 600, 40, '#1 on Trending', '#0EA5E9', '#22C55E', '8:41'],
+  ['pill', 470, 260, 'Autoplay is on'], ['thumb', 230, 360, 'Mix – for you', '#A855F7', '#EC4899', '1:02:11'], ['pill', -150, 380, 'Comments 4.2K'],
+  ['short', -470, 250, '', '#22D3EE', '#6366F1'], ['pill', -650, 90, 'Recommended'], ['pill w', -620, -40, 'Trending'], ['badge', -260, -170, 'LIVE'],
+  ['pill', 300, -150, 'New for you'], ['pill', -330, 180, 'Playables'], ['thumb', -60, -400, 'You won’t believe…', '#F97316', '#EF4444', '3:12'],
+];
+document.querySelector('.noise').innerHTML = NOISE.map(([t, x, y, label, a, b, d], i) => {
+  const depth = [.6, 1, .8, .9, 1.1, .7][i % 6];
+  const st = `--x:${x}px;--y:${y}px;--r:${((i * 37) % 13) - 6}deg;--s:${depth};--o:${.35 + depth * .4};--bl:${depth < .75 ? 2 : 0}px;${a ? `--a:${a};--b:${b}` : ''}`;
+  if (t === 'thumb') return `<div class="nz thumb" style="${st}"><i data-t="${d}"></i><s></s><s></s></div>`;
+  if (t === 'short') return `<div class="nz short" style="${st}"></div>`;
+  return `<div class="nz ${t}" style="${st}">${label}</div>`;
+}).join('');
+const calm = document.querySelector('.calm'), stick = calm.querySelector('.stick');
+const calmScroll = () => { const r = calm.getBoundingClientRect(); const p = Math.min(1, Math.max(0, -r.top / (r.height - innerHeight) * 1.25)); stick.style.setProperty('--p', p.toFixed(3)); };
+stick.querySelectorAll('.nz').forEach(n => { n.style.setProperty('--x0', n.style.getPropertyValue('--x')); n.style.setProperty('--y0', n.style.getPropertyValue('--y')); });
+const scaleNoise = () => { const k = Math.min(1, innerWidth / 1500); stick.querySelectorAll('.nz').forEach(n => { n.style.setProperty('--x', parseFloat(n.style.getPropertyValue('--x0')) * k + 'px'); n.style.setProperty('--y', parseFloat(n.style.getPropertyValue('--y0')) * Math.max(k, .8) + 'px'); }); };
+addEventListener('resize', scaleNoise); scaleNoise();
+addEventListener('scroll', calmScroll, { passive: true }); calmScroll();
+
+// ---- the footer's name, lit where the pointer is ----
+const giant = document.querySelector('.giant');
+giant.parentElement.addEventListener('pointermove', e => { const r = giant.getBoundingClientRect(); giant.style.setProperty('--mx', e.clientX - r.left + 'px'); giant.style.setProperty('--my', e.clientY - r.top + 'px'); });
 </script>
 </body>
 </html>

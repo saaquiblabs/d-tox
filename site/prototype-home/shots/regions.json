@@ -1,0 +1,50 @@
+{
+ "home": {
+  "recommendations": null,
+  "shorts": null,
+  "explore": [
+   0,
+   45.11,
+   16.67,
+   24.11
+  ],
+  "shortsLink": [
+   0.83,
+   12,
+   14.17,
+   4.44
+  ]
+ },
+ "search": {
+  "recommendations": null,
+  "shorts": [
+   18.33,
+   12.44,
+   80,
+   52.93
+  ],
+  "explore": [
+   0,
+   45.11,
+   16.67,
+   24.11
+  ],
+  "shortsLink": [
+   0.83,
+   12,
+   14.17,
+   4.44
+  ]
+ },
+ "watch": {
+  "recommendations": [
+   71.39,
+   6.22,
+   28.61,
+   93.78
+  ],
+  "shorts": null,
+  "explore": null,
+  "shortsLink": null
+ }
+}
