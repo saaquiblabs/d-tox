@@ -1,18 +1,29 @@
 {
  "home": {
-  "recommendations": null,
-  "shorts": null,
-  "explore": [
-   0,
-   45.11,
+  "feed": [
    16.67,
-   24.11
+   6.22,
+   83.33,
+   93.78
   ],
   "shortsLink": [
    0.83,
    12,
-   14.17,
+   15,
    4.44
+  ],
+  "explore": [
+   0.83,
+   29.78,
+   15,
+   28.29
+  ],
+  "recommendations": null,
+  "shorts": [
+   17.22,
+   74.78,
+   81.11,
+   25.22
   ]
  },
  "search": {

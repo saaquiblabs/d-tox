@@ -97,6 +97,11 @@ product page; the profile lives in `extension/proto-profile/` (git-ignored).
   - Wipe drag fixed: Chrome was starting a native image drag (ghost copy, no pointer events).
     Images are `draggable=false`, pointer capture with `pointercancel` (ported from mihrab-ummah's
     `CoverCropper`).
+  - Home before/after (Najmush: "what's the benefit of a home which is already empty? … so many
+    thumbnails that I start scrolling"): the signed-out capture was empty, so the showcase's Home
+    slide and the story's Home step now use shots of the page's own YouTube home (two rows of
+    videos + Shorts → Intention Page B), rendered by `extension/scripts/prototype-home-shots.mjs`
+    (`?yt=before|after`), regions included. Real signed-in captures would be better later.
   - Next: Najmush reviews the rest of pass 3 (showcase, story/popup, numbers, end/footer). Then record the three #22 picks (Popup B→D, Intention Page D, page H)
     in #22 and here.
 
