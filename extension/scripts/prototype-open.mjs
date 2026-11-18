@@ -18,8 +18,12 @@ const ctx = await chromium.launchPersistentContext(process.argv[2] ?? 'proto-pro
   args: [`--disable-extensions-except=${dist}`, `--load-extension=${dist}`, '--start-maximized'],
 });
 const [first] = ctx.pages();
+const sw = await ctx.newPage();
+await sw.goto(`chrome-extension://${id}/popup.html?tab=1`);
+await sw.evaluate(() => chrome.storage.local.set({ protoIntention: 'D', protoPopup: 'B' }));
+await sw.close();
 await (first ?? (await ctx.newPage())).goto('https://www.youtube.com/');
 await (await ctx.newPage()).goto(`chrome-extension://${id}/popup.html?tab=1`);
-await (await ctx.newPage()).goto('http://127.0.0.1:4322/site/prototype-home/?variant=A');
+await (await ctx.newPage()).goto('http://127.0.0.1:4322/site/prototype-home/?variant=D');
 console.log('open; close the window to end');
 await new Promise((r) => ctx.on('close', r));
