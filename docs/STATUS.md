@@ -31,6 +31,8 @@ finished: 32 questions, all answered by Najmush on 2026-11-18. **Read `CONTEXT.m
   phone. **Still to polish (#27):** PLACEHOLDER numbers (#25), the feed uses real creators'
   thumbnails (replace before promoting the page), the hero mark is hidden on phones (it was the
   slow LCP), Header/Footer components are not shared with `/privacy` and `/welcome` yet.
+  The page builds itself after first paint, section by section, and the Home scene and the noise
+  only when scrolled near (the VPS gate measured 430 ms blocking time when it was one task).
   The prototype's history and Najmush's verdicts live on `proto/22-prototypes` (docs/STATUS.md
   there); picks so far: popup D, Intention Page **B** (from the Home scene), page H.
 - **#20 (PR #36, merged 2026-11-19):** Settings shorts, shorts-redirect, search-clean-up, explore, bell.
