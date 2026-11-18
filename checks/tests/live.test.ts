@@ -71,17 +71,28 @@ test('a consent page fails loudly as blocked, and no Setting is blamed', async (
   assert.doesNotMatch(lines.join('\n'), /✓/);
 });
 
-test('a bot check on the watch page fails loudly as blocked', async (t) => {
-  const context = await open(t);
-  const botCheck = watchHtml.replace(
+const playerBotCheck = (html: string) =>
+  html.replace(
     '</body>',
     `<script>var ytInitialPlayerResponse = { playabilityStatus: { status: "LOGIN_REQUIRED", reason: "Sign in to confirm you’re not a bot" } };</script></body>`,
   );
-  await serve(context, { '/watch': botCheck });
+
+test('the player’s bot check fails loudly as blocked when a Distraction then is missing, never blaming the Setting', async (t) => {
+  const context = await open(t);
+  await serve(context, { '/watch': playerBotCheck(watchHtml.replaceAll('ytd-comment-thread-renderer', 'x-gone')) });
   const { results } = await checkLanguage(context, english!, [comments], cases, fast);
   assert.equal(results.length, 1);
   assert.equal(results[0]!.kind, 'blocked');
   assert.match(results[0]!.problem, /not a bot/);
+});
+
+test('the player’s bot check alone is noted, not a block: the page rendered and no video is needed', async (t) => {
+  // What the VPS gets: YouTube refuses the video to a datacenter address but renders the page.
+  const context = await open(t);
+  await serve(context, { '/watch': playerBotCheck(watchHtml) });
+  const { results, lines } = await checkLanguage(context, english!, [comments], cases, fast);
+  assert.deepEqual(results, []);
+  assert.match(lines.join('\n'), /✓.*Comments[\s\S]*note: the player's bot check/);
 });
 
 test('a page in the wrong language is blocked, never a pass for that language', async (t) => {

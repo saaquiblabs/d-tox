@@ -92,8 +92,6 @@ async function blockedReason(page: Page, language: Language): Promise<string | n
   if (url.pathname.startsWith('/sorry')) return `bot check at ${page.url()}`;
   if (url.hostname !== 'www.youtube.com') return `sent away from YouTube to ${page.url()}`;
   if (!app) return `no YouTube app on ${page.url()} (a bot check or an error page)`;
-  const playability = await page.evaluate(() => (window as any).ytInitialPlayerResponse?.playabilityStatus);
-  if (playability?.status === 'LOGIN_REQUIRED') return `bot check on the watch page: “${playability.reason ?? 'sign in'}”`;
   const lang = await page.evaluate(() => document.documentElement.lang);
   if (!lang.toLowerCase().startsWith(language.hl)) return `YouTube answered in “${lang}”, not ${language.name}`;
   return null;
@@ -131,7 +129,17 @@ async function setAttribute(page: Page, name: string) {
   await page.evaluate((n) => document.documentElement.setAttribute(n, ''), name);
 }
 
-type Outcome = { blocked: string } | { problem: string } | { ok: true };
+type Outcome = { blocked: string } | { problem: string } | { ok: true; note?: string };
+
+/**
+ * The player's own bot check ("Sign in to confirm you're not a bot"). YouTube shows it to
+ * datacenter addresses such as the VPS, but only the video is refused: the page still renders,
+ * and the check plays no video. So it blocks the check only if a Distraction is then missing.
+ */
+async function playerBotCheck(page: Page) {
+  const p = await page.evaluate(() => (window as any).ytInitialPlayerResponse?.playabilityStatus);
+  return p?.status === 'LOGIN_REQUIRED' ? `the player's bot check (“${p.reason ?? 'sign in'}”)` : null;
+}
 
 /** The Distractions the check can find without playing a video. */
 const checkable = (c: Hides) => c.distractions.filter((s) => !c.needs?.[s]);
@@ -158,6 +166,8 @@ async function checkOnce(context: BrowserContext, language: Language, setting: S
     const list = (sels: string[]) => sels.map((s) => `\`${s}\``).join(', ');
     const distractions = checkable(c);
     const missing = await reveal(page, distractions, o.revealTries, o.settleMs);
+    const botCheck = await playerBotCheck(page);
+    if (missing.length && botCheck) return { blocked: `${botCheck} on ${url}, and ${list(missing)} did not render` };
     if (missing.length) return { problem: `not found: nothing matches ${list(missing)} on ${url}` };
 
     if ((await unmatched(page, distractions)).length < distractions.length)
@@ -167,7 +177,7 @@ async function checkOnce(context: BrowserContext, language: Language, setting: S
     for (const end = Date.now() + o.hideTimeoutMs; left.length && Date.now() < end; left = await unmatched(page, distractions))
       await page.waitForTimeout(100);
     if (left.length) return { problem: `still visible: no hide rule matches ${list(left)} on ${url} with the Setting on` };
-    return { ok: true };
+    return botCheck ? { ok: true, note: `${botCheck} refused the video; the page rendered and nothing here needs it` } : { ok: true };
   } finally {
     await page.close();
   }
@@ -226,6 +236,7 @@ export async function checkLanguage(
     } else {
       const unchecked = c.distractions.length - checkable(c).length;
       lines.push(`  ✓  ${label}${unchecked ? ` (${unchecked} of ${c.distractions.length} Distractions need ${needed(c)}: not checked)` : ''}`);
+      if (outcome.note) lines.push(`       note: ${outcome.note}`);
     }
   }
   return { results, lines };
