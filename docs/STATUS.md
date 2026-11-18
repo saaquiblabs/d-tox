@@ -1,6 +1,6 @@
 # Status
 
-Last updated: 2026-11-18 (IST). Each session overwrites this at handoff.
+Last updated: 2026-11-18, 22:20 IST. Each session overwrites this at handoff.
 
 ## Where we are
 
@@ -71,31 +71,38 @@ finished: 32 questions, all answered by Najmush on 2026-11-18. **Read `CONTEXT.m
 research ✅ → grill ✅ → spec ✅ (#16) → tickets ✅ (#18–#28) → build: #18 ✅ (PR #30), rest next →
 prototypes of the popup, Intention Page and product page (seen running before anything is picked).
 
-## Next step
+## Next step: four tickets in progress on branches (none merged, no PRs yet)
 
-Tickets #18–#28 are sub-issues of #16, with GitHub "blocked by" links. #18 is closed.
+On 2026-11-18 four sessions ran in parallel and the Claude limit ran out. Each branch ends with a
+`wip(#n)` commit: everything was saved as it stood, **not tested as a whole**. Pick up from here.
 
-- **Start now (unblocked):** #19 watch page, #20 Shorts/search/menu/bell, #21 Home + Calm Default
-  + install, #24 nightly check, #25 Release Gate, #26 site skeleton — all in parallel. #22
-  prototypes is `ready-for-human`: Najmush must see them running and pick.
-- #23 popup/Intention Page design waits on #21 + #22; #27 product page on #22 + #25 + #26;
-  #28 release waits on everything.
+| Branch | Ticket | State | To finish |
+|---|---|---|---|
+| `feat/19-watch-page` | #19 recommendations, end screens, autoplay off | Code written, incl. the flash fix (Calm Default applied before storage answers). Last full test run failed only because the Mac was overloaded (browser start ~12 s vs 20 s limit). | Run `npm test` in `extension/` on a quiet machine; fix real failures; check the "never shows while the page loads" test fails if the early Calm Default is removed; `/code-review`; STATUS; PR. Autoplay after YouTube's own navigation needs a live check: Najmush tries `extension/dist` in Chrome, or says yes to a short muted headless playback. |
+| `feat/20-shorts-search-menu-bell` | #20 Shorts hide + redirect, search clean-up, Explore/Trending/Playables, bell | Code written, typecheck passes. Adds `src/hide-rys.css` (MPL-2.0, from RYS). Full suite not run; tests not proven fail-first. | Rebase on `main` **after #19 merges** (they overlap: `content.ts`, `hide.css`, `settings.json`, `tests/`). Then full tests, `/code-review`, STATUS, PR. **Decisions for Najmush:** (1) a channel's Shorts tab can only be found by `tab-title="Shorts"` (text; ADR 0001 forbids it): amend the ADR or leave the tab; (2) the bell and signed-in home Shorts shelves are untested against real markup (only signed-out pages could be saved); (3) Release Gate risk: hiding Shorts on Shorts-heavy searches may make YouTube load page after page. |
+| `feat/24-nightly-check` | #24 nightly check (Openship job) | `checks/` written (`nightly.ts`, `job.mjs`, `lib/`), its 9 tests pass. The live run against YouTube was interrupted. | Run the live check once (`npm run nightly` in `checks/`, no video plays); `/code-review`; STATUS; PR. Then the [HUMAN] Openship job setup and the issues token. |
+| `feat/26-site-skeleton` | #26 site skeleton | Built and reviewed; one feature commit plus the review fixes. Final `npm run verify` (build, links, Lighthouse) was running. Its branch already edits this file. | `npm ci && npm run verify` in `site/`; commit; PR. Rebase on `main` first: STATUS will conflict. |
 
-**Carry-overs from #18's review**
-- Possible flash: `content.ts` sets `<html>` attributes after an async `chrome.storage.sync.get`,
-  so the page can draw first. Invisible for comments (they load late) but it matters for
-  Settings that are on by default: fix in #19/#21 (research §3: a cached first-paint attribute).
-  The saved-page tests use `toBeHidden()`, which retries, so they can't catch a flash yet.
+**Order (two sessions at most at a time, four emptied the limit):**
+1. #19 + #26 together (they don't overlap).
+2. #20 (rebased on #19) + #24.
+3. Then #21 (after #19) and #25 (alone on a quiet machine: it measures speed). #23, #27, #28 as before; #22 prototypes still need Najmush.
+
+Merge one PR at a time; after each, rebase the other open branch on `main`.
+
+**On a new machine:** `git clone git@github.com:saaquiblabs/d-tox.git`, then per ticket
+`git worktree add ../d-tox-19 feat/19-watch-page` (and so on); in each, `npm ci` in `extension/`
+(plus `site/` or `checks/` where the ticket uses them) and `npx playwright install chromium` once.
+Start Claude inside the worktree and say: "Continue #19 from the STATUS table."
+
+**Carry-overs from #18's review** (the flash is handled on the #19 branch)
 - The popup builds switches only; the Home choice needs a `<select>` (#21).
 - No test yet checks a Setting hides nothing on other pages (spec #16, Testing Decisions).
 - The pre-push hook is turned on by `npm ci` in `extension/` (`prepare` sets `core.hooksPath`).
 - Root `promo-*.html` and `assets/` are v1 store material, left for #26/#28 to replace or remove.
 
-Ready prompts: `/implement #19`, `/implement #21`, `/implement #20`, `/implement #24`,
-`/implement #25`, `/implement #26`.
-
 **Workflow:** every PR updates this file in the same PR (last commit before the push). No
-separate STATUS PRs.
+separate STATUS PRs. Feature PRs merge only on Najmush's go-ahead.
 
 ## Standing rules
 
