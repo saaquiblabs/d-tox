@@ -44,8 +44,8 @@ export const cases: Record<string, Spot[]> = {
         'ytd-search grid-shelf-view-model:has(a[href^="/shorts/"])',
         'ytd-mini-guide-entry-renderer a[title="Shorts"]',
       ],
+      // Real results are lockups; in this saved page every ytd-video-renderer is a Short.
       keeps: [
-        'ytd-search ytd-video-renderer:not(:has(a#thumbnail[href^="/shorts/"]))',
         'ytd-search ytd-item-section-renderer > #contents > yt-lockup-view-model',
         'ytd-mini-guide-entry-renderer a[href="/"]',
       ],
@@ -57,7 +57,7 @@ export const cases: Record<string, Spot[]> = {
     },
     {
       page: 'channel-shorts',
-      hides: ['ytd-browse ytd-rich-item-renderer:has(a[href^="/shorts/"])'],
+      hides: ['ytd-browse ytd-rich-grid-renderer:has(a[href^="/shorts/"])', 'ytd-mini-guide-entry-renderer a[title="Shorts"]'],
       keeps: ['ytd-browse #page-header', 'ytd-mini-guide-entry-renderer a[href="/"]'],
     },
     {

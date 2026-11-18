@@ -18,8 +18,9 @@ function apply() {
 }
 
 // Shorts redirect: a Short opens in the normal player. Checked once Settings load (a full load
-// of a Short's URL) and on every navigation, which includes YouTube's own history.pushState.
-// replace(), so Back doesn't return to the Short.
+// of a Short's URL) and whenever the current entry changes, which includes YouTube's own
+// history.pushState. Not on 'navigate': that fires before pushState commits, so replace() would
+// replace the page before the Short. replace(), so Back doesn't return to the Short.
 function redirectShort(url: string) {
   const id = /^\/shorts\/([\w-]+)/.exec(new URL(url).pathname)?.[1];
   if (id && current.enabled && current['shorts-redirect']) location.replace('/watch?v=' + id);
@@ -31,7 +32,7 @@ chrome.storage.sync.get(defaults).then((stored) => {
   redirectShort(location.href);
 });
 
-navigation.addEventListener('navigate', (event) => redirectShort(event.destination.url));
+navigation.addEventListener('currententrychange', () => redirectShort(location.href));
 
 chrome.storage.sync.onChanged.addListener((changes) => {
   current = { ...current };

@@ -88,14 +88,24 @@ for (const setting of settings) {
 
     test('the page starts on the Calm Default', async ({ openSaved }) => {
       const page = await openSaved(main.page);
-      if (setting.calmDefault) await expect(distractionOn(page)).toBeHidden();
-      else await expect(distractionOn(page)).toBeVisible();
+      // Wait for Settings to arrive (the Calm Default turns some on), so this can't pass early.
+      await page.waitForFunction(() => [...document.documentElement.attributes].some((a) => a.name.startsWith('data-dtox-')));
+      const html = page.locator('html');
+      if (setting.calmDefault) {
+        await expect(html).toHaveAttribute('data-dtox-' + setting.id);
+        await expect(distractionOn(page)).toBeHidden();
+      } else {
+        await expect(html).not.toHaveAttribute('data-dtox-' + setting.id);
+      }
     });
 
     test('switching it on and off in the popup applies to the open tab without a reload', async ({ openSaved, openPopup }) => {
+      // Every other Setting off, so none of them hides this one's Distraction too.
+      const popup = await openPopup();
+      await store(popup, allOff);
+      await popup.reload();
       const page = await openSaved(main.page);
       await page.evaluate(() => ((window as any).notReloaded = true));
-      const popup = await openPopup();
       const switchEl = settingSwitch(popup, setting.name);
       const distraction = distractionOn(page);
 
