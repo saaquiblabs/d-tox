@@ -1,6 +1,6 @@
 # Status
 
-Last updated: 2026-11-19, 00:25 IST. Each session overwrites this at handoff.
+Last updated: 2026-11-19, 00:30 IST. Each session overwrites this at handoff.
 
 ## Where we are
 
@@ -75,22 +75,21 @@ finished: 32 questions, all answered by Najmush on 2026-11-18. **Read `CONTEXT.m
 
 ## Pipeline
 
-research ✅ → grill ✅ → spec ✅ (#16) → tickets ✅ (#18–#28) → build: #18 ✅ (PR #30), #26 ✅ (PR #33, going live), rest next →
+research ✅ → grill ✅ → spec ✅ (#16) → tickets ✅ (#18–#28) → build: #18 ✅ (PR #30), #26 ✅ (PR #33, going live), #19 ✅ (PR #34), rest next →
 prototypes of the popup, Intention Page and product page (seen running before anything is picked).
 
-## Next step: three tickets on branches
+## Next step: #20 and #24 on branches (#19 and #26 merged)
 
-On 2026-11-18 four sessions ran in parallel and the Claude limit ran out. Each branch ends with a
-`wip(#n)` commit: everything was saved as it stood, **not tested as a whole**. Pick up from here.
+On 2026-11-18 four sessions ran in parallel and the Claude limit ran out. #20 and #24 still end
+with a `wip(#n)` commit: saved as they stood, **not tested as a whole**. Pick up from here.
 
 | Branch | Ticket | State | To finish |
 |---|---|---|---|
-| `feat/19-watch-page` | #19 recommendations, end screens, autoplay off | Code written, incl. the flash fix (Calm Default applied before storage answers). Last full test run failed only because the Mac was overloaded (browser start ~12 s vs 20 s limit). | Run `npm test` in `extension/` on a quiet machine; fix real failures; check the "never shows while the page loads" test fails if the early Calm Default is removed; `/code-review`; STATUS; PR. Autoplay after YouTube's own navigation needs a live check: Najmush tries `extension/dist` in Chrome, or says yes to a short muted headless playback. |
-| `feat/20-shorts-search-menu-bell` | #20 Shorts hide + redirect, search clean-up, Explore/Trending/Playables, bell | Code written, typecheck passes. Adds `src/hide-rys.css` (MPL-2.0, from RYS). Full suite not run; tests not proven fail-first. | Rebase on `main` **after #19 merges** (they overlap: `content.ts`, `hide.css`, `settings.json`, `tests/`). Then full tests, `/code-review`, STATUS, PR. **Decisions for Najmush:** (1) a channel's Shorts tab can only be found by `tab-title="Shorts"` (text; ADR 0001 forbids it): amend the ADR or leave the tab; (2) the bell and signed-in home Shorts shelves are untested against real markup (only signed-out pages could be saved); (3) Release Gate risk: hiding Shorts on Shorts-heavy searches may make YouTube load page after page. |
+| `feat/20-shorts-search-menu-bell` | #20 Shorts hide + redirect, search clean-up, Explore/Trending/Playables, bell | Code written, typecheck passes. Adds `src/hide-rys.css` (MPL-2.0, from RYS). Full suite not run; tests not proven fail-first. | Rebase on `main` now that #19 is merged (they overlap: `content.ts`, `hide.css`, `settings.json`, `tests/`). Use #19's test helpers: `turn()` in `tests/extension.ts` (waits for storage), `distractions` / `keeps` / `elsewhere` in `cases.ts`. Then full tests, `/code-review`, STATUS, PR. **Decisions for Najmush:** (1) a channel's Shorts tab can only be found by `tab-title="Shorts"` (text; ADR 0001 forbids it): amend the ADR or leave the tab; (2) the bell and signed-in home Shorts shelves are untested against real markup (only signed-out pages could be saved); (3) Release Gate risk: hiding Shorts on Shorts-heavy searches may make YouTube load page after page. |
 | `feat/24-nightly-check` | #24 nightly check (Openship job) | `checks/` written (`nightly.ts`, `job.mjs`, `lib/`), its 9 tests pass. The live run against YouTube was interrupted. | Run the live check once (`npm run nightly` in `checks/`, no video plays); `/code-review`; STATUS; PR. Then the [HUMAN] Openship job setup and the issues token. |
 
 **Order (two sessions at most at a time, four emptied the limit):**
-1. #19 + #26 together (they don't overlap).
+1. ✅ #19 + #26.
 2. #20 (rebased on #19) + #24.
 3. Then #21 (after #19) and #25 (alone on a quiet machine: it measures speed). #23, #27, #28 as before; #22 prototypes still need Najmush.
 
@@ -108,13 +107,24 @@ left out); 2. Openship clone access if the public clone 403s; 3. the Openship pr
 grey cloud; 5. domain + certificate; 6. checks.
 
 **Carry-overs from #26's review**
-- `settings.json` has no Calm Default Settings yet, so `/welcome` says "starts with nothing hidden"
-  until #19–#21 land. A choice (Home) that starts on YouTube's default must use `calmDefault: false`.
+- `/welcome` now lists #19's two Calm Default Settings (Recommendations, Autoplay off). A choice (Home) that starts on YouTube's default must use `calmDefault: false`.
 - The site's fonts are the system stack: Gellix is a trial licence and this repo is public.
 - `/privacy` says the extension reads nothing from YouTube's pages: re-check it in #21 (Intention Page).
 - The site's address is written in `astro.config.mjs`, `src/site.ts` and `tests/verify.mjs`.
 
-**Carry-overs from #18's review** (the flash is handled on the #19 branch)
+**#19 (merged 2026-11-19), what the next tickets should know**
+- ADR 0001 now allows class selectors (the player has no ids); text and labels are still banned.
+- Autoplay off: once per tab, only on `/watch`, only when YouTube's button is visible. A Learner
+  who switches autoplay on keeps it for that tab. YouTube hides the button in playlists, and a
+  playlist always plays on. "Turns …" lines are allowed for behaviour Settings.
+- The popup builds its switches only after storage answers (a click before then was undone).
+- `capture.mjs` turns nested `<button>`/`<a>` into `<div>`; without this, saved pages lost the
+  player's controls.
+- Live check (Brave): the slow start and "Experiencing interruptions?" were uBlock Origin, not D-Tox.
+- Follow-ups: the transcript is checked only by its panel header (recapture with the panel open);
+  `.ytp-fullscreen-grid` also hides the mid-video fullscreen scroll grid.
+
+**Carry-overs from #18's review** (the flash is fixed in #19)
 - The popup builds switches only; the Home choice needs a `<select>` (#21).
 - No test yet checks a Setting hides nothing on other pages (spec #16, Testing Decisions).
 - The pre-push hook is turned on by `npm ci` in `extension/` (`prepare` sets `core.hooksPath`).
