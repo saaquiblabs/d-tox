@@ -135,3 +135,31 @@ button { font: inherit; color: inherit; }
 .proto button { all: unset; cursor: pointer; padding: 5px 8px; border-radius: 999px; }
 .proto button:hover { background: #111; color: #E8FF59; }
 .proto .label { min-width: 150px; text-align: center; }
+
+/* D · B with air: 400 px wide, one line per Setting, the sentence on request */
+body:has(.D) { width: 400px; }
+.D { padding: 20px 20px 8px; }
+.D header { display: flex; justify-content: space-between; align-items: center; }
+.D .mark { font-size: 15px; }
+.D .hello { margin: 26px 0 22px; }
+.D .hello h1 { margin: 0; font-size: 21px; font-weight: 500; letter-spacing: -.02em; line-height: 1.2; }
+.D .hello p { margin: 6px 0 0; font-size: 13px; color: var(--text-2); }
+.D .tabs { display: flex; gap: 18px; border-bottom: 1px solid var(--border); }
+.D .tabs button { all: unset; cursor: pointer; position: relative; padding: 0 0 12px; font-size: 13px; font-weight: 500; color: var(--text-2); }
+.D .tabs button i { position: absolute; top: -1px; right: -7px; width: 5px; height: 5px; border-radius: 50%; background: #2FCB9E; }
+.D .tabs button[aria-selected=true] { color: var(--text); }
+.D .tabs button[aria-selected=true]::after { content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; border-radius: 2px; background: var(--text); }
+.D .tabs button:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
+.D .list { min-height: 232px; padding: 8px 0 12px; }
+.D .row { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 0 8px; padding: 14px 0; }
+.D .row + .row { border-top: 1px solid color-mix(in srgb, var(--border) 60%, transparent); }
+.D .row .name { font-size: 15px; font-weight: 500; }
+.D .row .q { all: unset; cursor: pointer; justify-self: start; width: 18px; height: 18px; border-radius: 50%; font-size: 11px; line-height: 18px; text-align: center; color: var(--text-2); opacity: .55; }
+.D .row .q:hover, .D .row .q[aria-expanded=true] { opacity: 1; background: var(--bg-shade); }
+.D .row .q:focus-visible { outline: 2px solid var(--focus); opacity: 1; }
+.D .row .hides { grid-column: 1 / -1; margin: 8px 0 0; font-size: 12.5px; line-height: 1.5; color: var(--text-2); max-width: 32ch; }
+.D .row .sw:checked { background: #2FCB9E; }
+.D .homechoice { padding: 16px 0; }
+.D .homechoice p { margin: 12px 0 0; font-size: 12.5px; color: var(--text-2); }
+.D .foot { margin-top: 4px; padding: 14px 0 10px; border-top: 1px solid var(--border); }
+.D.off .tabs, .D.off .list { opacity: .45; pointer-events: none; }

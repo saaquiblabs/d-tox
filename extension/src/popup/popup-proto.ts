@@ -16,7 +16,7 @@ const homeChoices = [
 ];
 const settings: S[] = [home, ...(list as S[])];
 const groups = ['Home', 'Watch', 'Shorts', 'Search', 'Everywhere'];
-const VARIANTS = { A: 'Settings list', B: 'Graphite card + tabs', C: 'Checklist' } as const;
+const VARIANTS = { A: 'Settings list', B: 'Graphite card + tabs', C: 'Checklist', D: 'B with air' } as const;
 type V = keyof typeof VARIANTS;
 const THEMES = ['system', 'light', 'dark'] as const;
 const links = [
@@ -107,6 +107,22 @@ function C() {
   </div>`;
 }
 const openC = new Set<string>(['Home', 'Watch']);
+
+// D: B with room to breathe. Wider, one line per Setting, the "what it hides" sentence only on request.
+function D() {
+  return `<div class="D${values.enabled ? '' : ' off'}">
+    <header><span class="mark"><img src="proto-mark-48.png" alt="">D-Tox</span>${sw('enabled', 'D-Tox', true)}</header>
+    <div class="hello"><h1>${values.enabled ? 'YouTube for what you came for.' : 'D-Tox is off.'}</h1>
+      <p>${values.enabled ? `${onCount()} of ${settings.length} on` : 'YouTube is showing everything.'}</p></div>
+    <nav class="tabs" role="tablist">${groups.map((g) => `<button role="tab" data-tab="${g}" aria-selected="${g === tab}">${g}${groupOn(g) ? '<i></i>' : ''}</button>`).join('')}</nav>
+    <div class="list" role="tabpanel">${inGroup(tab)
+      .map((s) => s.type === 'choice'
+        ? `<div class="homechoice">${seg()}<p>${homeLine()}</p></div>`
+        : `<div class="row"><span class="name">${esc(s.name)}</span><button class="q" data-more="${s.id}" aria-label="What it hides" aria-expanded="${openMore.has(s.id)}">?</button>${sw(s.id, s.name)}<p class="hides" ${openMore.has(s.id) ? '' : 'hidden'}>${esc(s.hides)}</p></div>`)
+      .join('')}</div>
+    ${foot()}
+  </div>`;
+}
 const openMore = new Set<string>();
 
 const root = document.getElementById('app')!;
@@ -114,7 +130,7 @@ function render() {
   const keepFocus = (document.activeElement as HTMLElement | null)?.dataset?.id;
   document.documentElement.dataset.theme = theme === 'system' ? '' : theme;
   if (theme === 'system') delete document.documentElement.dataset.theme;
-  root.replaceChildren(h({ A, B, C }[variant]()));
+  root.replaceChildren(h({ A, B, C, D }[variant]()));
   root.append(h(`<div class="proto"><button data-step="-1" aria-label="Previous variant">◀</button><span class="label">${variant} · ${VARIANTS[variant]}</span><button data-step="1" aria-label="Next variant">▶</button><button data-theme-next>theme: ${theme}</button></div>`));
   if (keepFocus) (root.querySelector(`[data-id="${keepFocus}"]`) as HTMLElement | null)?.focus();
 }

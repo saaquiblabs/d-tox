@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="D-Tox">
+  <defs>
+    <linearGradient id="fa" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".35" stop-color="#F7F4EE"/><stop offset=".8" stop-color="#E2DCCF"/><stop offset="1" stop-color="#CFC6B4"/></linearGradient>
+    <linearGradient id="fb" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#D9D1C1"/><stop offset=".55" stop-color="#BDB29E"/><stop offset="1" stop-color="#9C917D"/></linearGradient>
+    <linearGradient id="sd" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7E7462"/><stop offset="1" stop-color="#4D463A"/></linearGradient>
+    <radialGradient id="hl"><stop offset="0" stop-color="#fff" stop-opacity=".6"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+    <radialGradient id="dt" cx=".38" cy=".35" r=".7"><stop offset="0" stop-color="#D5FFEE"/><stop offset="1" stop-color="#5FE0B3"/></radialGradient>
+    <radialGradient id="glow"><stop offset="0" stop-color="#5FE0B3" stop-opacity=".55"/><stop offset="1" stop-color="#5FE0B3" stop-opacity="0"/></radialGradient>
+    <clipPath id="ca"><path d="M24 16 H62 A48 48 0 0 1 101.3 36.5 L81.7 50.2 A24 24 0 0 0 62 40 H48 V112 H24 Z"/></clipPath>
+    <filter id="soft" x="-40%" y="-200%" width="180%" height="500%"><feGaussianBlur stdDeviation="4"/></filter>
+  </defs>
+  <ellipse cx="66" cy="119" rx="40" ry="4" fill="#000" opacity=".4" filter="url(#soft)"/>
+  <g>
+  <g stroke-linejoin="round" stroke-width="6">
+    <g transform="translate(0 5)" fill="url(#sd)" stroke="url(#sd)"><path d="M105.5 43.7 A48 48 0 0 1 62 112 H53 V88 H62 A24 24 0 0 0 83.8 53.9 Z"/><path d="M24 16 H62 A48 48 0 0 1 101.3 36.5 L81.7 50.2 A24 24 0 0 0 62 40 H48 V112 H24 Z"/></g>
+    <path d="M105.5 43.7 A48 48 0 0 1 62 112 H53 V88 H62 A24 24 0 0 0 83.8 53.9 Z" fill="url(#fb)" stroke="url(#fb)"/>
+    <path d="M24 16 H62 A48 48 0 0 1 101.3 36.5 L81.7 50.2 A24 24 0 0 0 62 40 H48 V112 H24 Z" fill="url(#fa)" stroke="url(#fa)"/>
+  </g>
+  <ellipse cx="34" cy="30" rx="30" ry="40" fill="url(#hl)" clip-path="url(#ca)"/>
+  </g>
+  <circle cx="66" cy="64" r="20" fill="url(#glow)"/>
+  <circle cx="66" cy="64" r="8.5" fill="url(#dt)"/>
+  <circle cx="63.5" cy="61" r="2.6" fill="#fff" opacity=".8"/>
+</svg>

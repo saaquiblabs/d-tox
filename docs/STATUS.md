@@ -73,7 +73,18 @@ Chrome no longer takes --load-extension). Yellow bar at the bottom switches vari
     screen and bell blur away when "With D-Tox" is on (flips once by itself in view); Settings as roomy
     tiles with names only (descriptions live in the popup beside them); giant footer: four link columns,
     then a huge faded "D-Tox" wordmark with the mark.
-  - Next: Najmush reacts to H; then record all three #22 picks in #22 and here.
+  - Verdict on H (2026-11-19): keep **F's colour and type** (Instrument Serif + Inter, spruce/mint);
+    the *popup* was the cramped part ("so much information bombarded"); too many dividing lines near
+    the footer; the play-button mark "looks like a player".
+  - So H is now **"Night, roomy, new mark"**: F's tokens and fonts on H's layout; dividers above and in
+    the footer removed; header shadow instead of a line. **Popup D** ("B with air",
+    `extension/src/popup/popup-proto.*`): 400 px wide, one line per Setting, the "what it hides"
+    sentence behind a "?" button, text tabs with a dot when a group has something on; the page shows
+    the same popup.
+  - **New mark:** a folded "D" (two slabs with gaps, like the S) with one lit dot in its counter, "the
+    one thing you came for". `logo/d-ivory.svg` (hero, closest to the studio's S), `logo/d-mint.svg`,
+    `logo/d-small.svg` (flat, 16–32 px). The play-button marks (`mark-*.svg`) are superseded.
+  - Next: Najmush reacts to H + popup D + the D mark; then record all three #22 picks in #22 and here.
 
 ## Decisions (grill, 2026-11-18)
 

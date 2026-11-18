@@ -20,7 +20,7 @@ const ctx = await chromium.launchPersistentContext(process.argv[2] ?? 'proto-pro
 const [first] = ctx.pages();
 const sw = await ctx.newPage();
 await sw.goto(`chrome-extension://${id}/popup.html?tab=1`);
-await sw.evaluate(() => chrome.storage.local.set({ protoIntention: 'D', protoPopup: 'B' }));
+await sw.evaluate(() => chrome.storage.local.set({ protoIntention: 'D', protoPopup: 'D' }));
 await sw.close();
 await (first ?? (await ctx.newPage())).goto('https://www.youtube.com/');
 await (await ctx.newPage()).goto(`chrome-extension://${id}/popup.html?tab=1`);

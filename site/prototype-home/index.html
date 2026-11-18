@@ -593,17 +593,15 @@ body[data-variant=F]{--q-bg:#090F0D}body[data-variant=G]{--q-bg:#0D0A12}
 @media (max-width:900px){#G .hero{grid-template-columns:1fr;min-height:0}#G .sun{max-width:360px;margin-inline:auto}.q .board{grid-template-columns:1fr;gap:40px}.q .board .side{position:static;max-width:340px}.q .nums{grid-template-columns:1fr;gap:36px}.q .num{border-left:0;padding:0}#F .rise .win{transform:none}}
 
 /* ================= H · Pass 2b: G's look, room to breathe, header, drawn before/after, giant footer ================= */
-body[data-variant=H]{--q-bg:#0D0A12;background:var(--q-bg)}
+body[data-variant=H]{--q-bg:#090F0D;background:var(--q-bg)}
 body[data-variant=H] #H{display:block}
-#H{--q-bg:#0D0A12;--q-bg2:#140F1B;--q-line:rgb(255 255 255 / .07);--q-text:#F5F0F6;--q-2:#B5A9BE;--q-3:#7A6F84;--q-acc:#FFB59A;--q-acc-rgb:255 181 154;--q-ink:#1C0B12;--q-warm-rgb:232 121 185;--q-em:#F2B8CC;
-  --q-disp:"Fraunces",ui-serif,Georgia,serif;--q-sans:"Hanken Grotesk",ui-sans-serif,system-ui,sans-serif;--q-dw:360;--q-dt:-.025em;--q-hs:-.015em}
-#H h1,#H h2,#H .disp{font-variation-settings:"opsz" 144,"SOFT" 100,"WONK" 0}
-#H em{font-variation-settings:"opsz" 144,"SOFT" 100,"WONK" 1}
+#H{--q-bg:#090F0D;--q-bg2:#0D1512;--q-line:rgb(255 255 255 / .07);--q-text:#EEF3F0;--q-2:#A2B1AB;--q-3:#6C7B75;--q-acc:#7CF0C4;--q-acc-rgb:124 240 196;--q-ink:#04140E;--q-warm-rgb:255 196 140;--q-em:#A8E6CE;
+  --q-disp:"Instrument Serif",ui-serif,Georgia,serif;--q-sans:"Inter",ui-sans-serif,system-ui,sans-serif;--q-dw:400;--q-dt:-.02em;--q-hs:-.01em}
 #H section{padding-block:clamp(120px,15vw,220px)}
 #H .sh{margin-bottom:clamp(56px,7vw,96px)}
 /* header */
 #H .hbar{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--q-bg) 70%,transparent);backdrop-filter:blur(20px) saturate(1.4);-webkit-backdrop-filter:blur(20px) saturate(1.4);border-bottom:1px solid transparent;transition:border-color .3s}
-#H .hbar.stuck{border-bottom-color:var(--q-line)}
+#H .hbar.stuck{box-shadow:0 10px 30px -20px rgb(0 0 0 / .8)}
 #H .hbar .in{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;height:72px}
 #H .hbar nav{display:flex;gap:32px;font-size:15px;color:var(--q-2)}
 #H .hbar nav a{text-decoration:none;transition:color .2s}#H .hbar nav a:hover{color:var(--q-text)}
@@ -616,9 +614,9 @@ body[data-variant=H] #H{display:block}
 #H .hero .lead{max-width:28rem;margin-top:32px}
 #H .hero .cta{margin-top:48px;display:flex;gap:22px;align-items:center;flex-wrap:wrap}
 #H .sun{position:relative;aspect-ratio:1;display:grid;place-items:center}
-#H .sun::before{content:"";position:absolute;inset:4%;border-radius:50%;background:radial-gradient(closest-side,rgb(255 181 154 / .32),rgb(232 121 185 / .16) 45%,rgb(124 77 214 / .1) 70%,transparent);filter:blur(10px)}
+#H .sun::before{content:"";position:absolute;inset:4%;border-radius:50%;background:radial-gradient(closest-side,rgb(124 240 196 / .22),rgb(124 240 196 / .08) 50%,rgb(255 196 140 / .05) 72%,transparent);filter:blur(10px)}
 #H .sun::after{content:"";position:absolute;inset:18%;border-radius:50%;border:1px solid rgb(255 255 255 / .06);box-shadow:0 0 0 60px rgb(255 255 255 / .015),0 0 0 120px rgb(255 255 255 / .01)}
-#H .sun img{position:relative;z-index:1;width:56%;filter:drop-shadow(0 40px 60px rgb(124 77 214 / .45))}
+#H .sun img{position:relative;z-index:1;width:56%;filter:drop-shadow(0 40px 60px rgb(0 0 0 / .55)) drop-shadow(0 0 50px rgb(124 240 196 / .18))}
 @media (prefers-reduced-motion:no-preference){#H .sun img{animation:h-float 7s ease-in-out infinite}@keyframes h-float{50%{transform:translateY(-10px) rotate(-1deg)}}}
 /* the drawn page */
 #H .flip{display:flex;justify-content:center;margin-bottom:40px}
@@ -626,7 +624,7 @@ body[data-variant=H] #H{display:block}
 #H .flip button{all:unset;cursor:pointer;position:relative;z-index:1;padding:12px 26px;border-radius:999px;font:500 15px/1 var(--q-sans);color:var(--q-2);transition:color .3s}
 #H .flip button[aria-pressed=true]{color:var(--q-ink)}
 #H .flip .pill{position:absolute;top:5px;bottom:5px;left:5px;border-radius:999px;background:var(--q-text);transition:transform .45s cubic-bezier(.22,.8,.24,1),width .45s,background .45s}
-#H .flip .seg.on .pill{background:linear-gradient(90deg,#FFD3BF,#F0A3C8)}
+#H .flip .seg.on .pill{background:var(--q-acc)}
 #H .yt{--t:.7s;max-width:1080px;margin-inline:auto;border-radius:20px;overflow:hidden;background:#15121B;box-shadow:0 0 0 1px var(--q-line),0 80px 160px -50px rgb(0 0 0 / .9),0 0 200px -60px rgb(var(--q-warm-rgb) / .35)}
 #H .yt .chrome{display:flex;gap:7px;padding:14px 16px;border-bottom:1px solid var(--q-line)}
 #H .yt .chrome i{width:10px;height:10px;border-radius:50%;background:rgb(255 255 255 / .1)}
@@ -672,11 +670,11 @@ body[data-variant=H] #H{display:block}
 #H .yt .bell::after{transition:opacity var(--t)}
 #H .ytcap{text-align:center;margin-top:36px;color:var(--q-2);font-size:16px;min-height:1.6em}
 /* switches: popup + roomy tiles, names only */
-#H .board{display:grid;grid-template-columns:360px minmax(0,1fr);gap:clamp(56px,7vw,112px);align-items:start}
+#H .board{display:grid;grid-template-columns:380px minmax(0,1fr);gap:clamp(56px,7vw,112px);align-items:start}
 #H .tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
 #H .tile{all:unset;box-sizing:border-box;cursor:pointer;display:grid;grid-template-columns:1fr auto;align-items:center;gap:6px 16px;padding:26px 26px;border-radius:18px;background:rgb(255 255 255 / .025);border:1px solid var(--q-line);transition:background .25s,border-color .25s}
 #H .tile:hover{background:rgb(255 255 255 / .045)}
-#H .tile[aria-checked=true]{background:linear-gradient(135deg,rgb(255 181 154 / .09),rgb(232 121 185 / .06));border-color:rgb(var(--q-acc-rgb) / .28)}
+#H .tile[aria-checked=true]{background:linear-gradient(135deg,rgb(124 240 196 / .08),rgb(124 240 196 / .03));border-color:rgb(var(--q-acc-rgb) / .28)}
 #H .tile .g{grid-column:1 / -1;font:500 12px/1 var(--q-sans);letter-spacing:.04em;color:var(--q-3)}
 #H .tile b{font:500 19px/1.3 var(--q-sans);letter-spacing:-.01em}
 #H .tile .qsw{pointer-events:none}
@@ -684,7 +682,7 @@ body[data-variant=H] #H{display:block}
 #H .tile.home small{font-size:13px;color:var(--q-acc)}
 #H .tiles-note{margin-top:28px}
 /* giant footer */
-#H .gf{position:relative;overflow:hidden;border-top:1px solid var(--q-line);padding-top:clamp(80px,9vw,120px)}
+#H .gf{position:relative;overflow:hidden;border-top:0;padding-top:clamp(80px,9vw,120px)}
 #H .gf .cols{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:48px}
 #H .gf .about .brand{color:var(--q-text)}
 #H .gf .about p{margin-top:20px;color:var(--q-2);max-width:26ch;font-size:16px}
@@ -692,14 +690,33 @@ body[data-variant=H] #H{display:block}
 #H .gf h4{margin:0 0 20px;font:500 13px/1 var(--q-sans);letter-spacing:.04em;color:var(--q-3)}
 #H .gf ul{list-style:none;margin:0;padding:0;display:grid;gap:14px;font-size:15px;color:var(--q-2)}
 #H .gf ul a{text-decoration:none}#H .gf ul a:hover{color:var(--q-text)}
-#H .gf .legal{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-top:clamp(64px,8vw,112px);padding-block:24px;border-top:1px solid var(--q-line);font-size:13px;color:var(--q-3)}
+#H .gf .legal{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-top:clamp(64px,8vw,112px);padding-block:24px;font-size:13px;color:var(--q-3)}
 #H .gf .legal a{text-decoration:none}
 #H .gf .giant{display:flex;justify-content:center;align-items:flex-end;gap:2vw;margin-top:24px;height:clamp(140px,22vw,330px);overflow:hidden;pointer-events:none;user-select:none}
 #H .gf .giant img{width:15vw;max-width:230px;flex:none;transform:translateY(16%);opacity:.9}
-#H .gf .giant span{font:360 clamp(120px,21vw,330px)/.8 var(--q-disp);font-variation-settings:"opsz" 144,"SOFT" 100;letter-spacing:-.05em;background:linear-gradient(180deg,rgb(255 211 191 / .55),rgb(232 121 185 / .25) 55%,rgb(124 77 214 / 0) 92%);-webkit-background-clip:text;background-clip:text;color:transparent;transform:translateY(12%)}
-#H .gf::after{content:"";position:absolute;inset:auto 0 0;height:60%;z-index:-1;background:radial-gradient(50% 60% at 50% 100%,rgb(232 121 185 / .14),transparent 70%)}
+#H .gf .giant span{font:360 clamp(120px,21vw,330px)/.8 var(--q-disp);font-variation-settings:"opsz" 144,"SOFT" 100;letter-spacing:-.05em;background:linear-gradient(180deg,rgb(238 243 240 / .5),rgb(124 240 196 / .2) 55%,rgb(124 240 196 / 0) 92%);-webkit-background-clip:text;background-clip:text;color:transparent;transform:translateY(12%)}
+#H .gf::after{content:"";position:absolute;inset:auto 0 0;height:60%;z-index:-1;background:radial-gradient(50% 60% at 50% 100%,rgb(124 240 196 / .1),transparent 70%)}
+#H .close::before{display:none}
+#H .close{padding-bottom:clamp(80px,10vw,140px)}
 @media (max-width:900px){#H .hbar nav,#H .hbar .gh{display:none}#H .hbar .in{grid-template-columns:1fr auto}#H .hero{grid-template-columns:1fr;min-height:0}#H .sun{max-width:340px;margin-inline:auto}#H .board{grid-template-columns:1fr}#H .tiles{grid-template-columns:1fr}#H .yt .body{grid-template-columns:1fr}#H .yt .recs{display:none}#H .yt.on .body{padding-inline:24px}#H .gf .cols{grid-template-columns:1fr 1fr}}
 
+/* H's popup: the same calm popup as the extension's D */
+#H .hpop{width:100%;max-width:380px;padding:22px 22px 10px;border-radius:22px;background:#12171B;border:1px solid rgb(255 255 255 / .07);box-shadow:0 50px 100px -30px rgb(0 0 0 / .85),0 0 100px -40px rgb(124 240 196 / .3);font:400 14px/1.45 var(--q-sans);color:#EEF3F0}
+#H .hpop header{display:flex;justify-content:space-between;align-items:center}
+#H .hpop .brand{font-size:15px}#H .hpop .brand img{width:22px;height:22px}
+#H .hpop h5{margin:26px 0 0;font:500 20px/1.2 var(--q-sans);letter-spacing:-.02em}
+#H .hpop .st{margin:6px 0 22px;font-size:13px;color:#8E9C96}
+#H .hpop nav{display:flex;gap:16px;border-bottom:1px solid rgb(255 255 255 / .08)}
+#H .hpop nav button{all:unset;cursor:pointer;position:relative;padding-bottom:12px;font-size:13px;font-weight:500;color:#8E9C96}
+#H .hpop nav button i{position:absolute;top:-1px;right:-7px;width:5px;height:5px;border-radius:50%;background:var(--q-acc)}
+#H .hpop nav button[aria-selected=true]{color:#EEF3F0}
+#H .hpop nav button[aria-selected=true]::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;border-radius:2px;background:#EEF3F0}
+#H .hpop .list{min-height:232px;padding:6px 0 10px}
+#H .hpop .row{display:flex;justify-content:space-between;align-items:center;padding:14px 0;font-size:15px;font-weight:500}
+#H .hpop .row+.row{border-top:1px solid rgb(255 255 255 / .05)}
+#H .hpop .row small{display:block;font-size:12.5px;font-weight:400;color:#8E9C96;margin-top:2px}
+#H .hpop .ft{display:flex;gap:14px;padding:14px 0 6px;border-top:1px solid rgb(255 255 255 / .08);font-size:12px;color:#8E9C96}
+#H .hpop .ft span:last-child{margin-left:auto}
 /* ---------- prototype switcher (not part of the design) ---------- */
 .proto{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:99;display:flex;align-items:center;gap:6px;background:#E8FF59;color:#111;font:600 13px/1 system-ui,sans-serif;padding:6px;border-radius:999px;box-shadow:0 6px 24px rgb(0 0 0 / .35);border:2px solid #111}
 .proto button{all:unset;cursor:pointer;padding:8px 12px;border-radius:999px}
@@ -992,7 +1009,7 @@ body[data-variant=H] #H{display:block}
 <div class="variant q" id="G" data-name="Pass 2 · Dawn (Fraunces soft)" data-q='{"mark":"logo/mark-dawn.svg","small":"logo/mark-small-dawn.svg"}'></div>
 
 <!-- ======================= H · Pass 2b: G's look, room, header, drawn before/after, giant footer ======================= -->
-<div class="variant q" id="H" data-name="Pass 2b · Dawn, roomy"></div>
+<div class="variant q" id="H" data-name="Pass 2c · Night, roomy, new mark"></div>
 
 <div class="proto"><button data-step="-1" aria-label="Previous variant">◀</button><span class="lbl"></span><button data-step="1" aria-label="Next variant">▶</button><button data-theme-next></button></div>
 
@@ -1201,14 +1218,14 @@ document.querySelectorAll('.q[data-q]').forEach(root => {
   const hot = (i, cls = '') => `<i class="hot ${cls}" style="--a:${HOT[i % 6][0]};--b:${HOT[i % 6][1]}"></i>`;
   root.innerHTML = `
   <header class="hbar"><div class="wrap in">
-    <a class="brand" href="#"><img src="logo/mark-small-dawn.svg" alt="">D-Tox</a>
+    <a class="brand" href="#"><img src="logo/d-small.svg" alt="">D-Tox</a>
     <nav><a href="#H-see">See it</a><a href="#H-set">Settings</a><a href="#H-num">Numbers</a><a href="#H-priv">Privacy</a></nav>
     <div class="right"><a class="gh" href="#">${ghIcon}GitHub</a>${cta(true)}</div>
   </div></header>
   <div class="wrap"><section class="hero" style="padding-block:24px 64px"><div><h1>YouTube for what you came for. <em>Nothing else.</em></h1>
     <p class="lead">No feed, no Shorts, no next video. Just the one you came for.</p>
     <div class="cta">${cta()}<p class="small">Free · Open source · Sends nothing</p></div></div>
-    <div class="sun"><img src="logo/mark-dawn.svg" alt=""></div></section></div>
+    <div class="sun"><img src="logo/d-ivory.svg" alt=""></div></section></div>
   <section id="H-see"><div class="wrap">
     <div class="sh center up" style="text-align:center"><h2>Same YouTube. <em>Quieter.</em></h2></div>
     <div class="flip"><div class="seg"><span class="pill"></span><button data-on="0" aria-pressed="true">YouTube</button><button data-on="1" aria-pressed="false">With D-Tox</button></div></div>
@@ -1229,8 +1246,8 @@ document.querySelectorAll('.q[data-q]').forEach(root => {
   </div></section>
   <section id="H-set"><div class="wrap">
     <div class="sh up"><h2>Ten switches. <em>Four already on.</em></h2></div>
-    <div class="board"><div class="side up"><div class="qpop"></div><p class="small">The D-Tox button in Chrome’s toolbar.</p></div>
-      <div><div class="tiles up"></div><p class="small tiles-note">Each switch says what it hides, in the popup.</p></div></div>
+    <div class="board"><div class="side up"><div class="hpop"></div><p class="small">The D-Tox button in Chrome’s toolbar.</p></div>
+      <div><div class="tiles up"></div><p class="small tiles-note">Tap a switch here or in the popup.</p></div></div>
   </div></section>
   <section id="H-num"><div class="wrap">
     <div class="sh up"><h2>Light enough <em>to forget.</em></h2></div>
@@ -1244,14 +1261,14 @@ document.querySelectorAll('.q[data-q]').forEach(root => {
   <section class="close" id="H-priv"><div class="wrap"><h2>Nothing leaves <em>your browser.</em></h2><div class="cta">${cta()}<p class="small"><a href="#">Read the privacy page</a></p></div></div></section>
   <footer class="gf"><div class="wrap">
     <div class="cols">
-      <div class="about"><a class="brand" href="#"><img src="logo/mark-small-dawn.svg" alt="">D-Tox</a><p>YouTube for what you came for. Free, open source, for Chrome.</p>${cta(true)}</div>
+      <div class="about"><a class="brand" href="#"><img src="logo/d-small.svg" alt="">D-Tox</a><p>YouTube for what you came for. Free, open source, for Chrome.</p>${cta(true)}</div>
       <div><h4>Product</h4><ul><li><a href="#H-see">See it</a></li><li><a href="#H-set">Settings</a></li><li><a href="#H-num">Numbers</a></li><li><a href="#">Changelog</a></li></ul></div>
       <div><h4>Open source</h4><ul><li><a href="#">GitHub</a></li><li><a href="#">Report a problem</a></li><li><a href="#">MIT licence</a></li><li><a href="#">Sponsor</a></li></ul></div>
       <div><h4>Saaquib Labs</h4><ul><li><a href="#">The studio</a></li><li><a href="#">Privacy</a></li><li><a href="#">Contact</a></li></ul></div>
     </div>
     <div class="legal"><span><a class="s" href="#"><span class="s-mask"></span> A Saaquib Labs product</a> · © 2026</span><span>Visits counted by our own Umami. No cookies.</span></div>
   </div>
-  <div class="giant" aria-hidden="true"><img src="logo/mark-dawn.svg" alt=""><span>D-Tox</span></div></footer>`;
+  <div class="giant" aria-hidden="true"><img src="logo/d-ivory.svg" alt=""><span>D-Tox</span></div></footer>`;
   // header border once scrolled
   const bar = root.querySelector('.hbar');
   addEventListener('scroll', () => bar.classList.toggle('stuck', scrollY > 8), { passive: true });
@@ -1275,7 +1292,7 @@ document.querySelectorAll('.q[data-q]').forEach(root => {
       ? `<div class="tile home"><span class="g">Home</span><b>Intention Page</b><small>On at install</small></div>`
       : `<button class="tile" role="switch" data-s="${s.id}" data-g="${s.group}" aria-checked="${on[s.id]}"><span class="g">${s.group}</span><b>${esc(s.name)}</b><span class="qsw" aria-hidden="true" aria-checked="${on[s.id]}"></span></button>`).join('');
     const n = Object.values(on).filter(Boolean).length;
-    root.querySelector('.qpop').innerHTML = `<div class="card"><div class="top"><span class="brand"><img src="logo/mark-small-dawn.svg" alt="">D-Tox</span><span class="qsw" aria-checked="true"></span></div><b>YouTube for what you came for.</b><small>${n} of 10 Settings on</small></div><div class="pt">${GROUPS.map(g => `<button data-t="${g}" aria-selected="${g === tab}">${g}</button>`).join('')}</div>${inG(tab).map(s => `<div class="it"><div class="h">${nm(s)}${s.id === 'home' ? '' : `<button class="qsw" data-s="${s.id}" data-g="${tab}" aria-checked="${on[s.id]}" aria-label="${esc(s.name)}"></button>`}</div><p>${esc(s.hides)}</p></div>`).join('')}`;
+    root.querySelector('.hpop').innerHTML = `<header><span class="brand"><img src="logo/d-small.svg" alt="">D-Tox</span><span class="qsw" aria-checked="true"></span></header><h5>YouTube for what you came for.</h5><p class="st">${n} of 10 on</p><nav>${GROUPS.map(g => `<button data-t="${g}" aria-selected="${g === tab}">${g}${inG(g).some(s => on[s.id]) ? '<i></i>' : ''}</button>`).join('')}</nav><div class="list">${inG(tab).map(s => s.id === 'home' ? `<div class="row"><span>Intention Page<small>Home asks what you’re here for.</small></span></div>` : `<div class="row"><span>${esc(s.name)}</span><button class="qsw" data-s="${s.id}" data-g="${tab}" aria-checked="${on[s.id]}" aria-label="${esc(s.name)}"></button></div>`).join('')}</div><div class="ft"><span>Privacy</span><span>Changelog</span><span>Sponsor</span><span>v2.0.0</span></div>`;
   };
   root.querySelector('#H-set').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; if (b.dataset.t) tab = b.dataset.t; else if (b.dataset.s) { on[b.dataset.s] = !on[b.dataset.s]; tab = b.dataset.g; } draw(); });
   draw();
