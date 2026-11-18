@@ -1,0 +1,11 @@
+/*
+ * The only stylesheet that hides Distractions (ADR 0001). Chrome applies it before the page
+ * draws. Every rule is gated on a D-Tox attribute on <html>, which content.ts sets from the
+ * Settings, and scoped to the page the Setting belongs to. Selectors use element names, ids
+ * and attributes only — never visible text.
+ */
+
+/* Watch page · comments */
+html[data-dtox-comments] ytd-watch-flexy ytd-comments#comments {
+  display: none !important;
+}
