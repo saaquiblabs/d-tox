@@ -1,6 +1,6 @@
 import { existsSync } from 'node:fs';
 import settings from '../../settings.json' with { type: 'json' };
-import { cases, type Hides } from './cases';
+import { cases } from './cases';
 import { expect, test } from './extension';
 import type { Page } from '@playwright/test';
 
@@ -38,14 +38,17 @@ for (const setting of settings) {
       if ('spec' in c!) expect(existsSync(new URL(`./${c.spec}`, import.meta.url)), `missing tests/${c.spec}`).toBe(true);
     });
     if (!c || 'spec' in c || setting.type !== 'switch') return;
-    const shown = (page: Page) => c.distractions.map((d) => page.locator(d).first());
+    /** Checks every Distraction in the case is hidden (true) or visible (false). */
+    const distractionsHidden = async (page: Page, hidden: boolean) => {
+      for (const d of c.distractions) {
+        const el = expect(page.locator(d).first(), d);
+        await (hidden ? el.toBeHidden() : el.toBeVisible());
+      }
+    };
 
     test('the page starts on the Calm Default', async ({ openSaved }) => {
       const page = await openSaved(c.fixture, c.url);
-      for (const d of shown(page)) {
-        if (setting.calmDefault) await expect(d).toBeHidden();
-        else await expect(d).toBeVisible();
-      }
+      await distractionsHidden(page, setting.calmDefault === true);
     });
 
     if (setting.calmDefault) {
@@ -74,15 +77,15 @@ for (const setting of settings) {
       const switchEl = settingSwitch(popup, setting.name);
 
       await switchEl.check();
-      for (const d of shown(page)) await expect(d).toBeHidden();
+      await distractionsHidden(page, true);
       for (const kept of c.keeps) await expect(page.locator(kept).first(), `${kept} stays`).toBeVisible();
 
       await switchEl.uncheck();
-      for (const d of shown(page)) await expect(d).toBeVisible();
+      await distractionsHidden(page, false);
       expect(await page.evaluate(() => (window as any).notReloaded)).toBe(true);
     });
 
-    for (const other of (c as Hides).elsewhere ?? []) {
+    for (const other of c.elsewhere ?? []) {
       test(`leaves the rest of ${other.fixture} alone`, async ({ openSaved, openPopup }) => {
         const popup = await openPopup();
         await settingSwitch(popup, setting.name).check();
@@ -95,19 +98,19 @@ for (const setting of settings) {
       const popup = await openPopup();
       await settingSwitch(popup, setting.name).check();
       const page = await openSaved(c.fixture, c.url);
-      for (const d of shown(page)) await expect(d).toBeHidden();
+      await distractionsHidden(page, true);
     });
 
     test('the master switch turns it off everywhere at once', async ({ openSaved, openPopup }) => {
       const page = await openSaved(c.fixture, c.url);
       const popup = await openPopup();
       await settingSwitch(popup, setting.name).check();
-      for (const d of shown(page)) await expect(d).toBeHidden();
+      await distractionsHidden(page, true);
 
       await masterSwitch(popup).uncheck();
-      for (const d of shown(page)) await expect(d).toBeVisible();
+      await distractionsHidden(page, false);
       await masterSwitch(popup).check();
-      for (const d of shown(page)) await expect(d).toBeHidden();
+      await distractionsHidden(page, true);
     });
   });
 }

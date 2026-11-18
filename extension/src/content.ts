@@ -1,5 +1,6 @@
 // Copies Settings from chrome.storage.sync onto <html> as data-dtox-* attributes, then follows
-// storage changes so the popup applies live. hide.css does the hiding (ADR 0001).
+// storage changes so the popup applies live. hide.css does the hiding (ADR 0001). The one thing
+// CSS can't do, Autoplay off, is below: it listens to YouTube's own events.
 // No timers, no observers.
 type Values = Record<string, boolean | string>;
 
@@ -23,24 +24,23 @@ function apply() {
 // sees it a moment later instead.)
 apply();
 
-// Autoplay off: JavaScript, because CSS can't set YouTube's autoplay. Click YouTube's own button
-// to off once per page load and once per YouTube navigation, then leave it, so the Learner can
-// switch autoplay back on. Until the player is ready a click does nothing, so keep trying on
+// Autoplay off. Click YouTube's own autoplay button to off on the first watch page in this tab,
+// then leave it alone: YouTube keeps the button's state from video to video, so if the Learner
+// switches autoplay back on (say, for a playlist), it stays on in this tab. Switching the Setting
+// in the popup arms it again. Until the player is ready a click does nothing, so keep trying on
 // the player's own events until the button reads off.
 let autoplayPending = true;
 
 function autoplayOff() {
   if (!loaded || !autoplayPending || !current.enabled || current['autoplay-off'] !== true) return;
+  if (location.pathname !== '/watch') return; // not the miniplayer on Home or Search
   const state = document.querySelector('ytd-watch-flexy #movie_player .ytp-autonav-toggle-button');
   if (!state) return;
   if (state.getAttribute('aria-checked') === 'true') (state as HTMLElement).click();
   autoplayPending = state.getAttribute('aria-checked') === 'true';
 }
 
-document.addEventListener('yt-navigate-finish', () => {
-  autoplayPending = true;
-  autoplayOff();
-});
+document.addEventListener('yt-navigate-finish', autoplayOff);
 document.addEventListener('yt-player-updated', autoplayOff);
 // Media events don't bubble; listening in the capture phase sees the video start.
 document.addEventListener('playing', autoplayOff, true);

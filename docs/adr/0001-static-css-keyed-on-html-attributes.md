@@ -11,5 +11,10 @@ v1.4.1 made YouTube 3–14× slower on the main thread: it rewrote a style tag a
 ## Consequences
 
 - Budget: the whole extension under 40 KB excluding icons, enforced in CI next to the Release Gate.
-- No selector may match visible text or labels (v1.4.1's `aria-label*="Explore"` only worked in English). Selectors use only element names, ids and attributes. A Distraction that can only be found by its text is left out. The nightly check also runs once with YouTube in Hindi.
+- No selector may match visible text or labels (v1.4.1's `aria-label*="Explore"` only worked in English). Selectors use only element names, ids, classes and attributes. A Distraction that can only be found by its text is left out. The nightly check also runs once with YouTube in Hindi.
+- Classes allowed (amended in #19, 2026-11-18): YouTube's player has almost no ids, so end
+  screens and the autoplay button can only be found by class (`.ytp-ce-element`,
+  `.ytp-autonav-toggle-button`). Classes never match text, so the rule's purpose holds. Reading
+  state such as `aria-checked` is fine; reading `aria-label` or `title` is not.
+- The script after #19 (Settings copy plus Autoplay off): 979 bytes minified (562 gzipped).
 - Selectors ported from RYS stay MPL-2.0 in their own file, with credit; the rest is MIT. Unhook's code is under an EULA and must not be copied.

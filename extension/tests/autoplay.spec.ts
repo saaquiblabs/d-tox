@@ -3,9 +3,8 @@ import { cases } from './cases';
 import { expect, test } from './extension';
 import type { Page } from '@playwright/test';
 
-// "Autoplay off" sets YouTube's own autoplay button to off when a video opens, once per page
-// load and once per YouTube navigation, and then leaves it alone so the Learner can switch it
-// back on. The saved page has no YouTube scripts, so this stands in for the player: a click on
+// "Autoplay off" sets YouTube's own autoplay button to off on the first watch page in a tab,
+// and then leaves it alone, so a Learner who switches autoplay back on keeps it on in that tab. The saved page has no YouTube scripts, so this stands in for the player: a click on
 // the button flips it, but only once the player is ready, as on live YouTube.
 const setting = settings.find((s) => s.id === 'autoplay-off')!;
 const c = cases['autoplay-off']!;
@@ -55,20 +54,27 @@ test('waits for the player to be ready', async ({ openSaved }) => {
   await expect(autoplay(page)).toHaveAttribute('aria-checked', 'false');
 });
 
-test('the Learner can switch autoplay back on, until the next video', async ({ openSaved }) => {
+test('the Learner can switch autoplay back on, and it stays on in this tab', async ({ openSaved }) => {
   const page = await openSaved(c.fixture, c.url, fakePlayer, true);
   await expect(autoplay(page)).toHaveAttribute('aria-checked', 'false');
 
   await page.locator(button).click();
   await expect(autoplay(page)).toHaveAttribute('aria-checked', 'true');
-  // The same video goes on updating its player and playing: the Learner's choice stands.
+  // The video goes on updating its player and playing, and autoplay (or the Learner) opens the
+  // next video with YouTube's own navigation: the Learner's choice stands.
   await youtube(page, 'yt-player-updated');
-  await youtube(page, 'yt-page-data-updated');
-  expect(await autoplay(page).getAttribute('aria-checked')).toBe('true');
-
-  // YouTube's own navigation to the next video: autoplay is turned off again.
   await youtube(page, 'yt-navigate-finish');
-  await expect(autoplay(page)).toHaveAttribute('aria-checked', 'false');
+  await page.evaluate(() => document.querySelector('#movie_player')!.dispatchEvent(new Event('playing')));
+  expect(await autoplay(page).getAttribute('aria-checked')).toBe('true');
+});
+
+test('leaves the miniplayer alone away from the watch page', async ({ openSaved }) => {
+  // The watch page's markup served at the home page URL stands in for the miniplayer.
+  const page = await openSaved(c.fixture, 'https://www.youtube.com/', fakePlayer, true);
+  await settled(page, true);
+  await youtube(page, 'yt-navigate-finish');
+  await youtube(page, 'yt-player-updated');
+  expect(await autoplay(page).getAttribute('aria-checked')).toBe('true');
 });
 
 test('leaves autoplay alone when the Setting is off', async ({ openSaved, openPopup }) => {
