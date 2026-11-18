@@ -51,18 +51,21 @@ Chrome no longer takes --load-extension). Yellow bar at the bottom switches vari
   have done good - there are tons of awsome products which showcase theirself in a minimal soft approach
   without being too much loud ... so do due deligence research and surprise me"
 
-  **Next session: the product page, pass 2 (start from E).** In order:
-  1. Research (`research` skill, write `docs/research/2026-11-product-page-direction.md`): well-regarded
-     minimal, soft, dark-capable product pages for small tools and extensions (what makes their type,
-     colour and composition rich but quiet), type pairings that would suit D-Tox and are free to ship
-     (this repo is public; Gellix is out), and how products derive a 3D-feeling mark from a parent brand.
-  2. Changes to E: much better typography (the main ask); richer, softer colour composition; fewer
-     words everywhere ("do not blab"); **drop the Unhook/RYS comparison** and say only what D-Tox offers.
-     The grill's six sections lose the comparison: record that in CONTEXT.md/#27. Keep what worked in E.
-  3. A new D-Tox logo: colour, 3D-feeling, in the family of the Saaquib Labs S
-     (`~/AI/projects/saaquiblabs/brand/symbol/`, `brand/source/`). Show it in the page and the popup.
-  4. Build 2–3 variants on `site/prototype-home/index.html` (add F, G…), open them in Chromium
-     (`extension/scripts/prototype-open.mjs`), ask him to pick. Then record all three picks in #22 and here.
+  **Pass 2 built (2026-11-19), waiting for Najmush to pick.** Research:
+  `docs/research/2026-11-product-page-direction.md` (Satoshi/General Sans are out: their licence
+  forbids public repos; the OFL fonts are fine as woff2 + `OFL.txt`).
+  - **F, "Night":** Instrument Serif + Inter, spruce near-black, mint mark, centred hero with the
+    Intention Page rising below it.
+  - **G, "Dawn":** Fraunces (SOFT 100) + Hanken Grotesk, plum near-black, peach→violet mark, split hero
+    with the mark lit like a sunrise.
+  - Both: no Unhook/RYS comparison (Najmush's call; still to record in CONTEXT.md and #27), one short
+    line per heading, sections: hero, before/after, ten switches + popup, three numbers, privacy close.
+    Fonts load from Google Fonts in the prototype only.
+  - **New mark** (`site/prototype-home/logo/`): a "D" that is also a play button, two folded slabs with
+    a gap, like the Saaquib Labs S. `mark-a.svg` (mint), `mark-dawn.svg`, `mark-ivory.svg` for 64 px and
+    up; `mark-small*.svg` flat for 16–32 px. The prototype popup shows it (`extension/public/proto-mark-*.png`);
+    the real `icon-*.png` are unchanged until a pick.
+  - Next: Najmush picks F or G (or parts); then record all three #22 picks in #22 and here.
 
 ## Decisions (grill, 2026-11-18)
 

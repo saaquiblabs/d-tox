@@ -3,7 +3,7 @@
   PROTOTYPE (#22), throwaway. What should d-tox.saaquiblabs.com/ look like? Three structurally
   different variants of the six agreed sections (hero, before/after, the 10 Settings, measured
   numbers, comparison with Unhook and RYS, privacy in one line) plus the footer, on one page,
-  switched by ?variant=A|B|C and ?theme=system|light|dark (the theme switch is for review only;
+  switched by ?variant=A…G and ?theme=system|light|dark (the theme switch is for review only;
   the real site follows the system, ADR 0011). Bar at the bottom, or ← →.
   Run from the repo root: python3 -m http.server 4322  →  http://localhost:4322/site/prototype-home/?variant=A
   Tokens: src/brand/tokens.css (Saaquib Labs). Screenshots: extension/scripts/prototype-capture.mjs
@@ -15,6 +15,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light dark">
 <title>D-Tox for YouTube (prototype)</title>
+<!-- Pass 2 fonts (OFL 1.1). Prototype loads them from Google Fonts; the real site self-hosts woff2 + OFL.txt (docs/research/2026-11-product-page-direction.md). -->
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:opsz,wght@14..32,400..700&family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..700,0..100,0..1;1,9..144,300..700,0..100,0..1&family=Hanken+Grotesk:wght@400..700&display=swap">
 <link rel="icon" href="../../extension/public/icon-48.png">
 <style>
 :root{
@@ -466,6 +469,129 @@ body[data-palette=amber] #E{--e-bg:#0A0C11;--e-bg2:#10131A;--e-surface:#151922;-
 }}
 @media (max-width:960px){#E header nav{display:none}#E .noisewall{width:100%;right:-30%;opacity:.5}#E .calmshot{position:relative;right:auto;bottom:auto;width:100%;margin:-20px 0 60px}#E .noisetag{display:none}#E .hero{min-height:0}#E .hero .txt{padding-block:110px 40px;max-width:none}#E .sh,#E .ba,#E .board{grid-template-columns:1fr}#E .ba .list{position:static;grid-template-columns:repeat(3,1fr)}#E .ba .list small{display:none}#E .board .side{position:static}#E .nums{grid-template-columns:1fr 1fr}#E .num:nth-child(3){border-left:0}#E .num:nth-child(n+3){border-top:1px solid var(--e-line)}#E .vs{overflow-x:auto}#E .vs th,#E .vs td{padding:12px}}
 
+/* ================= F / G · Pass 2: quiet, rich type, no comparison (shared .q) ================= */
+body[data-variant=F],body[data-variant=G]{background:var(--q-bg)}
+body[data-variant=F] #F,body[data-variant=G] #G{display:block}
+body[data-variant=F]{--q-bg:#090F0D}body[data-variant=G]{--q-bg:#0D0A12}
+#F{--q-bg:#090F0D;--q-bg2:#0D1512;--q-line:rgb(255 255 255 / .07);--q-text:#EEF3F0;--q-2:#A2B1AB;--q-3:#6C7B75;--q-acc:#7CF0C4;--q-acc-rgb:124 240 196;--q-ink:#04140E;--q-em:#A8E6CE;--q-warm-rgb:255 196 140;
+  --q-disp:"Instrument Serif",ui-serif,Georgia,serif;--q-sans:"Inter",ui-sans-serif,system-ui,sans-serif;--q-dw:400;--q-dt:-.02em;--q-hs:-.01em}
+#G{--q-bg:#0D0A12;--q-bg2:#140F1B;--q-line:rgb(255 255 255 / .07);--q-text:#F5F0F6;--q-2:#B5A9BE;--q-3:#7A6F84;--q-acc:#FFB59A;--q-acc-rgb:255 181 154;--q-ink:#1C0B12;--q-em:#F2B8CC;--q-warm-rgb:232 121 185;
+  --q-disp:"Fraunces",ui-serif,Georgia,serif;--q-sans:"Hanken Grotesk",ui-sans-serif,system-ui,sans-serif;--q-dw:360;--q-dt:-.025em;--q-hs:-.015em}
+.q{color:var(--q-text);font:400 17px/1.6 var(--q-sans);font-feature-settings:"cv01","ss03";position:relative;isolation:isolate}
+.q::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:.05;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.q a{color:inherit}
+.q :focus-visible{outline-color:var(--q-acc)}
+.q h1,.q h2,.q .disp{font-family:var(--q-disp);font-weight:var(--q-dw);color:var(--q-text)}
+#G h1,#G h2,#G .disp{font-variation-settings:"opsz" 144,"SOFT" 100,"WONK" 0}
+.q h1{font-size:clamp(52px,8vw,88px);line-height:1;letter-spacing:var(--q-dt)}
+.q h2{font-size:clamp(34px,4.4vw,52px);line-height:1.08;letter-spacing:var(--q-hs)}
+.q em{font-style:italic;color:var(--q-em)}
+#G em{font-variation-settings:"opsz" 144,"SOFT" 100,"WONK" 1}
+.q h1,.q h2,.q .lead{text-wrap:balance}
+.q .lead{font-size:clamp(17px,1.5vw,20px);color:var(--q-2);line-height:1.55}
+.q .small{font-size:13px;font-weight:500;letter-spacing:.01em;color:var(--q-3)}
+.q .qbtn{display:inline-flex;align-items:center;gap:.6em;padding:.95em 1.5em;border-radius:999px;font:500 15px/1 var(--q-sans);text-decoration:none;white-space:nowrap;background:var(--q-text);color:var(--q-bg);box-shadow:0 0 0 1px rgb(255 255 255 / .2),0 12px 40px -10px rgb(var(--q-acc-rgb) / .55);transition:transform .2s,box-shadow .2s}
+.q .qbtn:hover{transform:translateY(-1px);box-shadow:0 0 0 1px rgb(255 255 255 / .3),0 16px 50px -8px rgb(var(--q-acc-rgb) / .75)}
+.q .qbtn svg{width:17px;height:17px}
+.q .qbtn.sm{padding:.7em 1.15em;font-size:14px}
+.q .qhead .in{display:flex;align-items:center;justify-content:space-between;padding-block:22px}
+.q .brand{display:inline-flex;align-items:center;gap:10px;font:600 17px/1 var(--q-sans);letter-spacing:-.01em;text-decoration:none}
+.q .brand img{width:28px;height:28px}
+.q section{padding-block:clamp(72px,9vw,128px)}
+.q .sh{max-width:40rem;margin-bottom:48px}
+.q .sh .lead{margin-top:16px}
+.q .center{text-align:center;margin-inline:auto}
+/* hero F: centred, the mark above, the calm page rising below */
+#F .qhead{position:absolute;inset:0 0 auto;z-index:2}
+#F .hero{text-align:center;padding-block:clamp(120px,13vw,170px) 0;position:relative;overflow:hidden}
+#F .hero::before{content:"";position:absolute;inset:-10% -10% auto;height:120%;z-index:-1;background:radial-gradient(38% 30% at 50% 22%,rgb(var(--q-acc-rgb) / .13),transparent 70%),radial-gradient(30% 25% at 70% 60%,rgb(var(--q-warm-rgb) / .06),transparent 70%)}
+#F .hero .big{width:clamp(96px,11vw,132px);margin:0 auto 36px;filter:drop-shadow(0 24px 40px rgb(var(--q-acc-rgb) / .25))}
+#F .hero h1{max-width:12ch;margin-inline:auto}
+#F .hero .lead{max-width:30rem;margin:28px auto 0}
+#F .hero .cta{margin-top:36px;display:grid;justify-items:center;gap:16px}
+#F .rise{margin:clamp(56px,8vw,96px) auto 0;max-width:1040px;perspective:1600px}
+#F .rise .win{transform:rotateX(14deg);transform-origin:50% 0;border-radius:16px 16px 0 0;overflow:hidden;box-shadow:0 0 0 1px var(--q-line),0 -20px 120px -30px rgb(var(--q-acc-rgb) / .35);-webkit-mask:linear-gradient(#000 55%,transparent);mask:linear-gradient(#000 40%,transparent)}
+#F .rise img{aspect-ratio:1280/440;object-fit:cover;object-position:top;filter:brightness(.92)}
+/* hero G: split, the mark lit like a sunrise */
+#G .hero{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center;min-height:min(86vh,820px);padding-block:40px 0}
+#G .hero .lead{max-width:28rem;margin-top:28px}
+#G .hero .cta{margin-top:40px;display:flex;gap:20px;align-items:center;flex-wrap:wrap}
+#G .sun{position:relative;aspect-ratio:1;display:grid;place-items:center}
+#G .sun::before{content:"";position:absolute;inset:4%;border-radius:50%;background:radial-gradient(closest-side,rgb(255 181 154 / .32),rgb(232 121 185 / .16) 45%,rgb(124 77 214 / .1) 70%,transparent);filter:blur(10px)}
+#G .sun::after{content:"";position:absolute;inset:18%;border-radius:50%;border:1px solid rgb(255 255 255 / .06);box-shadow:0 0 0 60px rgb(255 255 255 / .015),0 0 0 120px rgb(255 255 255 / .01)}
+#G .sun img{position:relative;z-index:1;width:56%;filter:drop-shadow(0 40px 60px rgb(124 77 214 / .45))}
+/* before/after */
+.q .tabs{display:inline-flex;gap:4px;padding:4px;border-radius:999px;background:rgb(255 255 255 / .04);border:1px solid var(--q-line);margin-bottom:24px}
+.q .tabs button{all:unset;cursor:pointer;padding:9px 18px;border-radius:999px;font:500 14px/1 var(--q-sans);color:var(--q-2)}
+.q .tabs button[aria-selected=true]{background:var(--q-text);color:var(--q-bg)}
+.q .qcmp{position:relative;aspect-ratio:1280/800;border-radius:18px;overflow:hidden;--x:50%;user-select:none;touch-action:none;cursor:ew-resize;box-shadow:0 0 0 1px var(--q-line),0 60px 140px -40px rgb(0 0 0 / .9),0 0 160px -40px rgb(var(--q-acc-rgb) / .25)}
+.q .qcmp img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top}
+.q .qcmp .after{clip-path:inset(0 0 0 var(--x))}
+.q .qcmp .before{filter:saturate(.7) brightness(.85)}
+.q .qcmp .line{position:absolute;top:0;bottom:0;left:var(--x);width:1px;background:#fff;transform:translateX(-.5px)}
+.q .qcmp .knob{position:absolute;top:50%;left:var(--x);transform:translate(-50%,-50%);width:44px;height:44px;border-radius:50%;background:rgb(255 255 255 / .9);color:#111;display:grid;place-items:center;font-size:14px;box-shadow:0 8px 30px rgb(0 0 0 / .4);backdrop-filter:blur(8px)}
+.q .qcmp .tag{position:absolute;bottom:16px;font:500 12px/1 var(--q-sans);padding:7px 11px;border-radius:999px;background:rgb(0 0 0 / .55);color:#fff;backdrop-filter:blur(8px)}
+.q .qcmp .tag.l{left:16px}.q .qcmp .tag.r{right:16px}
+.q .cap{margin-top:18px;color:var(--q-2);font-size:15px;min-height:1.6em}
+/* settings */
+.q .board{display:grid;grid-template-columns:320px minmax(0,1fr);gap:72px;align-items:start}
+.q .board .side{position:sticky;top:32px}
+.q .rows .grp{font:500 13px/1 var(--q-sans);letter-spacing:.01em;color:var(--q-3);padding:32px 0 12px}
+.q .rows .grp:first-child{padding-top:0}
+.q .row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 28px;align-items:center;padding:16px 0;border-top:1px solid var(--q-line)}
+.q .row h3{font:500 17px/1.35 var(--q-sans);letter-spacing:-.01em}
+.q .row h3 i{font-style:normal;font-size:12px;font-weight:500;color:var(--q-acc);margin-left:10px}
+.q .row p{font-size:14px;color:var(--q-3);line-height:1.5;max-width:56ch}
+.q .row .qsw{grid-row:1 / span 2;grid-column:2}
+.q .qsw{all:unset;cursor:pointer;flex:none;width:38px;height:22px;border-radius:12px;background:rgb(255 255 255 / .1);position:relative;transition:background .2s}
+.q .qsw::after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:var(--q-2);transition:transform .22s cubic-bezier(.22,.8,.24,1),background .2s}
+.q .qsw[aria-checked=true]{background:var(--q-acc)}
+.q .qsw[aria-checked=true]::after{transform:translateX(16px);background:var(--q-ink)}
+#G .qsw[aria-checked=true]{background:linear-gradient(90deg,#FFB59A,#E879B9)}
+/* popup */
+.q .qpop{padding:12px;border-radius:22px;background:#12161D;border:1px solid rgb(255 255 255 / .08);box-shadow:0 40px 90px -20px rgb(0 0 0 / .85),0 0 90px -30px rgb(var(--q-acc-rgb) / .35);font:400 13px/1.45 var(--q-sans);color:#F2F2F0}
+.q .qpop .card{position:relative;overflow:hidden;padding:16px;border-radius:15px;background:#0B0E13}
+.q .qpop .card::before{content:"";position:absolute;inset:auto -20% -90% -20%;height:140%;background:radial-gradient(50% 50% at 50% 50%,rgb(var(--q-acc-rgb) / .3),transparent 70%),radial-gradient(30% 40% at 20% 40%,rgb(var(--q-warm-rgb) / .2),transparent 70%)}
+.q .qpop .card>*{position:relative}
+.q .qpop .top{display:flex;justify-content:space-between;align-items:center}
+.q .qpop .brand{font-size:14px;gap:8px}.q .qpop .brand img{width:22px;height:22px}
+.q .qpop .card b{display:block;margin-top:14px;font:var(--q-dw) 21px/1.15 var(--q-disp);letter-spacing:-.01em}
+#G .qpop .card b{font-variation-settings:"opsz" 72,"SOFT" 100}
+.q .qpop .card small{color:#A9AEB6;font-size:11.5px}
+.q .qpop .pt{display:grid;grid-template-columns:repeat(5,auto);gap:2px;margin:10px 0 8px;padding:3px;border-radius:11px;background:#0E1218;border:1px solid rgb(255 255 255 / .07)}
+.q .qpop .pt button{all:unset;cursor:pointer;text-align:center;padding:6px 3px;border-radius:8px;font-size:10.5px;font-weight:500;color:#A9AEB6}
+.q .qpop .pt button[aria-selected=true]{background:#F2F2F0;color:#12161D}
+.q .qpop .it{padding:11px;border-radius:11px;background:#181D25;margin-top:6px}
+.q .qpop .it .h{display:flex;justify-content:space-between;align-items:center;font-weight:500}
+.q .qpop .it p{color:#9BA1AA;font-size:10.5px;margin-top:3px}
+.q .qpop .qsw{width:30px;height:17px}.q .qpop .qsw::after{width:13px;height:13px;top:2px;left:2px}.q .qpop .qsw[aria-checked=true]::after{transform:translateX(13px)}
+.q .side .small{margin-top:16px;text-align:center}
+/* numbers */
+.q .nums{display:grid;grid-template-columns:repeat(3,1fr);gap:0}
+.q .num{padding:8px 32px 0;border-left:1px solid var(--q-line)}
+.q .num:first-child{border-left:0;padding-left:0}
+.q .num b{display:block;font:var(--q-dw) clamp(56px,7vw,96px)/1 var(--q-disp);letter-spacing:-.03em;background:linear-gradient(180deg,var(--q-text),rgb(var(--q-acc-rgb)));-webkit-background-clip:text;background-clip:text;color:transparent}
+#G .num b{font-variation-settings:"opsz" 144,"SOFT" 100;background-image:linear-gradient(120deg,#FFD3BF,#E879B9 60%,#A78BFA)}
+.q .num p{margin-top:14px;color:var(--q-2);font-size:15px;max-width:22ch}
+.q .ph{display:inline-block;font:600 10px/1 var(--q-sans);letter-spacing:.06em;text-transform:uppercase;color:#FBBF24;border:1px dashed currentColor;border-radius:4px;padding:3px 5px;vertical-align:middle}
+.q .when{margin-top:40px}
+/* close + footer */
+.q .close{text-align:center;position:relative;overflow:hidden}
+.q .close::before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(40% 50% at 50% 100%,rgb(var(--q-acc-rgb) / .14),transparent 70%)}
+.q .close h2{font-size:clamp(44px,7vw,84px);line-height:1;max-width:12ch;margin-inline:auto;letter-spacing:var(--q-dt)}
+.q .close .cta{margin-top:44px;display:grid;justify-items:center;gap:16px}
+.q .close .small a{text-decoration:none}
+.q footer{border-top:1px solid var(--q-line);font-size:13px;color:var(--q-3)}
+.q footer .in{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;padding-block:36px 100px}
+.q footer nav{display:flex;gap:24px}
+.q footer a{text-decoration:none}.q footer a:hover{color:var(--q-text)}
+.q footer .s{display:inline-flex;align-items:center;gap:8px}
+@media (prefers-reduced-motion:no-preference){@supports (animation-timeline:view()){
+  .q .up{animation:q-up linear both;animation-timeline:view();animation-range:entry 0% entry 45%}
+  @keyframes q-up{from{opacity:0;transform:translateY(32px)}to{opacity:1;transform:none}}
+}}
+@media (max-width:900px){#G .hero{grid-template-columns:1fr;min-height:0}#G .sun{max-width:360px;margin-inline:auto}.q .board{grid-template-columns:1fr;gap:40px}.q .board .side{position:static;max-width:340px}.q .nums{grid-template-columns:1fr;gap:36px}.q .num{border-left:0;padding:0}#F .rise .win{transform:none}}
+
 /* ---------- prototype switcher (not part of the design) ---------- */
 .proto{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:99;display:flex;align-items:center;gap:6px;background:#E8FF59;color:#111;font:600 13px/1 system-ui,sans-serif;padding:6px;border-radius:999px;box-shadow:0 6px 24px rgb(0 0 0 / .35);border:2px solid #111}
 .proto button{all:unset;cursor:pointer;padding:8px 12px;border-radius:999px}
@@ -752,6 +878,11 @@ body[data-palette=amber] #E{--e-bg:#0A0C11;--e-bg2:#10131A;--e-surface:#151922;-
   <footer class="ef"><div class="wrap in"><nav><a href="#">Privacy</a><a href="#">Changelog</a><a href="#">Sponsor</a><a href="#">GitHub</a></nav><span><a href="#"><span class="s-mask"></span> A Saaquib Labs product</a> · MIT · © 2026 · Visits counted by our own Umami, no cookies.</span></div></footer>
 </div>
 
+<!-- ======================= F · Pass 2: night, Instrument Serif + Inter, mint mark ======================= -->
+<div class="variant q" id="F" data-name="Pass 2 · Night (Instrument Serif)" data-q='{"mark":"logo/mark-a.svg","small":"logo/mark-small.svg"}'></div>
+<!-- ======================= G · Pass 2: dawn, Fraunces soft + Hanken Grotesk, dawn mark ======================= -->
+<div class="variant q" id="G" data-name="Pass 2 · Dawn (Fraunces soft)" data-q='{"mark":"logo/mark-dawn.svg","small":"logo/mark-small-dawn.svg"}'></div>
+
 <div class="proto"><button data-step="-1" aria-label="Previous variant">◀</button><span class="lbl"></span><button data-step="1" aria-label="Next variant">▶</button><button data-theme-next></button></div>
 
 <script>
@@ -896,11 +1027,65 @@ document.getElementById('E-set').addEventListener('click', e => { const b = e.ta
 eDraw();
 document.querySelectorAll('#E .ebtn').forEach(b => { b.innerHTML = b.innerHTML.replace('${chrome}', chromeIcon); });
 
+// ----- F, G: pass 2. Same few words, two typographic voices. No comparison. -----
+const QCAP = { home: 'Home asks what you’re here for.', watch: 'The video, without the pull.', search: 'Every result. No detours.' };
+document.querySelectorAll('.q').forEach(root => {
+  const o = JSON.parse(root.dataset.q), id = root.id;
+  const cta = (sm) => `<a class="qbtn${sm ? ' sm' : ''}" href="#">${sm ? '' : chromeIcon}Add to Chrome${sm ? '' : ', free'}</a>`;
+  const meta = `<p class="small">Free · Open source · Sends nothing</p>`;
+  const heroF = `<section class="hero"><div class="wrap"><img class="big" src="${o.mark}" alt=""><h1>YouTube for what you came for. <em>Nothing else.</em></h1>
+      <p class="lead">No feed, no Shorts, no next video. Just the one you came for.</p><div class="cta">${cta()}${meta}</div>
+      <div class="rise"><div class="win"><img src="shots/home-after.jpg" alt="YouTube's home with D-Tox: one question, no feed"></div></div></div></section>`;
+  const heroG = `<div class="wrap"><section class="hero" style="padding-block:40px 0"><div><h1>YouTube for what you came for. <em>Nothing else.</em></h1>
+      <p class="lead">No feed, no Shorts, no next video. Just the one you came for.</p><div class="cta">${cta()}${meta}</div></div>
+      <div class="sun"><img src="${o.mark}" alt=""></div></section></div>`;
+  root.innerHTML = `
+  <header class="qhead"><div class="wrap in"><a class="brand" href="#"><img src="${o.small}" alt="">D-Tox</a>${cta(true)}</div></header>
+  ${id === 'F' ? heroF : heroG}
+  <section><div class="wrap">
+    <div class="sh up ${id === 'F' ? 'center' : ''}"><h2>Same YouTube. <em>Quieter.</em></h2></div>
+    <div class="up ${id === 'F' ? 'center' : ''}" style="max-width:1040px;${id === 'F' ? 'margin-inline:auto' : ''}"><div class="tabs" role="tablist">${PAIRS.map(p => `<button role="tab" data-k="${p.key}">${p.label}</button>`).join('')}</div>
+      <div class="qcmp" aria-label="Drag to compare"><img class="before" alt=""><img class="after" alt=""><span class="tag l">YouTube</span><span class="tag r">With D-Tox</span><span class="line"></span><span class="knob">⇆</span></div>
+      <p class="cap"></p></div>
+  </div></section>
+  <section><div class="wrap">
+    <div class="sh up"><h2>Ten switches. <em>Four already on.</em></h2></div>
+    <div class="board"><div class="side up"><div class="qpop"></div><p class="small">The D-Tox button in Chrome’s toolbar.</p></div><div class="rows"></div></div>
+  </div></section>
+  <section><div class="wrap">
+    <div class="sh up"><h2>Light enough <em>to forget.</em></h2></div>
+    <div class="nums up">
+      <div class="num"><b>7 KB</b><p>The whole extension.</p></div>
+      <div class="num"><b>0</b><p>Timers or watchers left running on the page.</p></div>
+      <div class="num"><b>+2%</b><p>Main-thread time, against YouTube alone. <span class="ph">placeholder</span></p></div>
+    </div>
+    <p class="small when">Measured on every release · v2.0.0 · <span class="ph">until #25</span></p>
+  </div></section>
+  <section class="close"><div class="wrap"><h2>Nothing leaves <em>your browser.</em></h2><div class="cta">${cta()}<p class="small"><a href="#">Read the privacy page</a></p></div></div></section>
+  <footer><div class="wrap in"><nav><a href="#">Privacy</a><a href="#">Changelog</a><a href="#">Sponsor</a><a href="#">GitHub</a></nav>
+    <span><a class="s" href="#"><span class="s-mask"></span>A Saaquib Labs product</a> · MIT · Visits counted by our own Umami, no cookies.</span></div></footer>`;
+  // before/after
+  const tabs = root.querySelector('.tabs'), c = root.querySelector('.qcmp');
+  const show = k => { c.querySelector('.before').src = shot(k, 'before'); c.querySelector('.after').src = shot(k, 'after'); root.querySelector('.cap').textContent = QCAP[k]; tabs.querySelectorAll('button').forEach(b => b.setAttribute('aria-selected', b.dataset.k === k)); };
+  tabs.addEventListener('click', e => e.target.dataset.k && show(e.target.dataset.k)); show('watch');
+  const dr = e => { const r = c.getBoundingClientRect(); c.style.setProperty('--x', Math.min(100, Math.max(0, (e.clientX - r.left) / r.width * 100)) + '%'); };
+  c.addEventListener('pointerdown', e => { c.setPointerCapture(e.pointerId); dr(e); }); c.addEventListener('pointermove', e => e.buttons && dr(e));
+  // switchboard + popup
+  const on = Object.fromEntries(SETTINGS.map(s => [s.id, s.calm])); let tab = 'Watch';
+  const draw = () => {
+    root.querySelector('.rows').innerHTML = GROUPS.map(g => `<p class="grp">${g}</p>${inG(g).map(s => `<div class="row"><h3>${nm(s)}${s.calm ? '<i>On at install</i>' : ''}</h3><p>${esc(s.hides)}</p>${s.id === 'home' ? '' : `<button class="qsw" role="switch" data-s="${s.id}" data-g="${g}" aria-checked="${on[s.id]}" aria-label="${esc(s.name)}"></button>`}</div>`).join('')}`).join('');
+    const n = Object.values(on).filter(Boolean).length;
+    root.querySelector('.qpop').innerHTML = `<div class="card"><div class="top"><span class="brand"><img src="${o.small}" alt="">D-Tox</span><span class="qsw" aria-checked="true"></span></div><b>YouTube for what you came for.</b><small>${n} of 10 Settings on</small></div><div class="pt">${GROUPS.map(g => `<button data-t="${g}" aria-selected="${g === tab}">${g}</button>`).join('')}</div>${inG(tab).map(s => `<div class="it"><div class="h">${nm(s)}${s.id === 'home' ? '' : `<button class="qsw" data-s="${s.id}" data-g="${tab}" aria-checked="${on[s.id]}" aria-label="${esc(s.name)}"></button>`}</div><p>${esc(s.hides)}</p></div>`).join('')}`;
+  };
+  root.addEventListener('click', e => { const b = e.target.closest('.board button'); if (!b) return; if (b.dataset.t) tab = b.dataset.t; else if (b.dataset.s) { on[b.dataset.s] = !on[b.dataset.s]; tab = b.dataset.g; } draw(); });
+  draw();
+});
+
 // Footers (Privacy · Changelog · Sponsor, the studio line, what the site counts).
 document.querySelectorAll('[data-footer]').forEach(f => f.innerHTML = `<nav><a href="#">Privacy</a><a href="#">Changelog</a><a href="#">Sponsor</a><a href="#">GitHub</a></nav><p><a href="#"><span class="s-mask"></span> A Saaquib Labs product</a> · MIT · © 2026</p><p>This site counts visits with Umami, which we run ourselves. No cookies.</p>`);
 
 // Variant + theme switcher.
-const V = ['A','B','C','D','E'], THEMES = ['system','light','dark'];
+const V = ['A','B','C','D','E','F','G'], THEMES = ['system','light','dark'];
 const q = new URLSearchParams(location.search);
 const PALS = ['spruce','plum','amber']; let pal = PALS.includes(q.get('palette')) ? q.get('palette') : 'spruce';
 let v = V.includes(q.get('variant')) ? q.get('variant') : 'A', t = THEMES.includes(q.get('theme')) ? q.get('theme') : 'system';

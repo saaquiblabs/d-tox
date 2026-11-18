@@ -48,7 +48,7 @@ const groupOn = (g: string) => inGroup(g).filter(isOn).length;
 const homeLine = () => homeChoices.find((c) => c.value === values.home)?.line ?? '';
 
 const foot = (extra = '') => `<footer class="foot">${extra}${links.map((l) => `<a href="${l.href}" target="_blank">${l.label}</a>`).join('')}<span class="ver">v2.0.0</span></footer>`;
-const mark = `<span class="mark"><img src="icon-48.png" alt="">D-Tox</span>`;
+const mark = `<span class="mark"><img src="proto-mark-48.png" alt="">D-Tox</span>`;
 const sw = (id: string, label: string, big = false) =>
   `<input type="checkbox" role="switch" class="sw${big ? ' big' : ''}" data-id="${id}" aria-label="${esc(label)}" ${values[id] === true ? 'checked' : ''}>`;
 const seg = () =>
@@ -74,7 +74,7 @@ function A() {
 function B() {
   return `<div class="B${values.enabled ? '' : ' off'}">
     <div class="card">
-      <div class="top"><span class="mark"><img src="icon-48.png" alt="">D-Tox</span>${sw('enabled', 'D-Tox', true)}</div>
+      <div class="top"><span class="mark"><img src="proto-mark-48.png" alt="">D-Tox</span>${sw('enabled', 'D-Tox', true)}</div>
       <h1>${values.enabled ? 'YouTube for what you came for.' : 'D-Tox is off.'}</h1>
       <p>${values.enabled ? `${onCount()} of ${settings.length} Settings on` : 'YouTube is showing everything.'}</p>
     </div>
