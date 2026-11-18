@@ -27,6 +27,23 @@ finished: 32 questions, all answered by Najmush on 2026-11-18. **Read `CONTEXT.m
   #19's harness: cases may list `distractions` under `elsewhere`, and every hiding Setting is
   checked on every saved page to hide nothing outside its Distractions.
 
+## #22 prototypes (in progress, branch `proto/22-prototypes`)
+
+How to see them: `python3 -m http.server 4322 --bind 127.0.0.1` at the repo root, then in
+`extension/`: `npm ci && npm run build && node scripts/prototype-open.mjs` (Playwright Chromium; branded
+Chrome no longer takes --load-extension). Yellow bar at the bottom switches variants.
+
+- **Popup: B, "Graphite card + tabs"** (Najmush, 2026-11-19). `extension/src/popup/popup-proto.*`.
+- **Intention Page: D, "No second search box"** (Najmush, 2026-11-19): no search box of its own;
+  asks "What are you here for?", points up at YouTube's search and puts the cursor there, keeps
+  Subscriptions and Watch later. Najmush: "we already have a search button on youtube then WHY
+  this?" This changes the grill decision (Intention Page had its own search box): update CONTEXT.md
+  in #21. `extension/src/intention-proto.*`.
+- **Product page: not picked yet.** A–C seen; D ("the mix") was rejected as looking exactly like
+  saaquiblabs.com. Asked for its own identity: better colour and composition, **dark by default**,
+  rich. (Dark by default departs from the studio's ADR 0011, follow-the-system; record in #27.)
+  Next: variant E in `site/prototype-home/index.html`.
+
 ## Decisions (grill, 2026-11-18)
 
 **Product**
