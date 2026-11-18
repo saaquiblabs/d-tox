@@ -1,0 +1,10 @@
+[
+  {
+    "id": "comments",
+    "name": "Comments",
+    "hides": "Hides the comments below the video you're watching.",
+    "group": "Watch",
+    "type": "switch",
+    "calmDefault": false
+  }
+]

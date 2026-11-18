@@ -6,7 +6,7 @@ v1.4.1 made YouTube 3–14× slower on the main thread: it rewrote a style tag a
 
 - **Keep React/Tailwind in the popup**: rejected; the popup is a list of switches, and React alone is 191 KB.
 - **Filter YouTube's data before render (BlockTube)**: rejected as the core; it touches player data, and a schema change breaks it silently. That is exactly the "can't play YouTube" failure we are fixing.
-- **Plain esbuild instead of WXT**: kept as the fallback if WXT adds more than ~2 KB to the output.
+- **WXT**: rejected after measuring (#18, 2026-11-18). With the comments Setting, master switch and popup, WXT 0.21.5 built 6.79 KB (excluding icons) where plain esbuild 0.28.2 builds 2.42 KB from the same code. WXT added ~4.4 KB: its content-script wrapper took the script from 0.43 KB to 3.8 KB, and on every YouTube page it fires a CustomEvent and a `window.postMessage` and keeps a location watcher ready; the popup gained a ~0.6 KB modulepreload polyfill that sets up a MutationObserver. That is over the ~2 KB line agreed in the grill, so the extension is built by `extension/scripts/build.mjs` with esbuild.
 
 ## Consequences
 
