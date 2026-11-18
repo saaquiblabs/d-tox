@@ -43,8 +43,26 @@ Chrome no longer takes --load-extension). Yellow bar at the bottom switches vari
   saaquiblabs.com. Asked for its own identity: better colour and composition, **dark by default**,
   rich. (Dark by default departs from the studio's ADR 0011, follow-the-system; record in #27.)
   Variant E ("own identity, dark") built: spruce/plum/amber palettes (`?palette=`), mint = calm, ember = the pull,
-  serif italic second beats. Verdict (2026-11-19): "closer, not there"; no specifics yet. Next session: ask what
-  to change, then another pass on E. When all three are picked, record them in #22 and here.
+  serif italic second beats. Verdict (2026-11-19): "closer, not there", then this brief (Najmush's words):
+  "we need better color composition and richness design and SPECIALLY Better Typography while keeping
+  things Simple and DO not BLAB everything - specially do not compare with UnHook that makes us small
+  ... just say what we offer as Value - infact the logo will also be affected now we need a better color
+  compsition logo just like we have for saaquiblabs - 3d and what not BUT still so far E is something we
+  have done good - there are tons of awsome products which showcase theirself in a minimal soft approach
+  without being too much loud ... so do due deligence research and surprise me"
+
+  **Next session: the product page, pass 2 (start from E).** In order:
+  1. Research (`research` skill, write `docs/research/2026-11-product-page-direction.md`): well-regarded
+     minimal, soft, dark-capable product pages for small tools and extensions (what makes their type,
+     colour and composition rich but quiet), type pairings that would suit D-Tox and are free to ship
+     (this repo is public; Gellix is out), and how products derive a 3D-feeling mark from a parent brand.
+  2. Changes to E: much better typography (the main ask); richer, softer colour composition; fewer
+     words everywhere ("do not blab"); **drop the Unhook/RYS comparison** and say only what D-Tox offers.
+     The grill's six sections lose the comparison: record that in CONTEXT.md/#27. Keep what worked in E.
+  3. A new D-Tox logo: colour, 3D-feeling, in the family of the Saaquib Labs S
+     (`~/AI/projects/saaquiblabs/brand/symbol/`, `brand/source/`). Show it in the page and the popup.
+  4. Build 2–3 variants on `site/prototype-home/index.html` (add F, G…), open them in Chromium
+     (`extension/scripts/prototype-open.mjs`), ask him to pick. Then record all three picks in #22 and here.
 
 ## Decisions (grill, 2026-11-18)
 
