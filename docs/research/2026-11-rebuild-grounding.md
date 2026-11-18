@@ -4,10 +4,9 @@ Date: 2026-11-18. Input for the `/grill-with-docs` session that sets the rebuild
 Covers: what is wrong with v1.4.1 (code audit), how the best competitors work, what
 Chrome's Manifest V3 allows, and what the Dossier and Openship product pages do well.
 
-**Status of the live audit:** not yet run. Loading a YouTube watch page or Shorts plays
-video, and video playback (even headless) waits on Najmush's go-ahead. Everything under
-"Code audit" is read from source; every "likely" in it is a hypothesis the live run must
-confirm or kill. See "Live audit plan" at the end.
+**Status of the live audit:** run on 2026-11-18 with Najmush's go-ahead. Results are in
+section 1b. The code audit in section 1 was read from source; 1b says which of its
+hypotheses the live run confirmed.
 
 Decisions already made (2026-11-18): rebuild from scratch; Chrome only for v1; YouTube
 only; repo lives at `saaquiblabs/d-tox`; product page on its own subdomain of
@@ -70,6 +69,62 @@ All rules are unscoped by page: there is no `ytd-browse[page-subtype="home"]` or
 - `setupMutationObserver` in `css-injector.ts` is dead code; `YOUTUBE_SELECTORS` (half
   the constants file) is unused and contains jQuery-only `:contains()`, which is invalid CSS.
 - No tests of any kind, so every YouTube DOM change ships silently broken.
+
+---
+
+## 1b. Live audit results (2026-11-18)
+
+Setup: Playwright's Chromium 153, headless, muted, 1440×900, `nice -n 15`, v1.4.1 build
+from `dist/chrome-mv3`. Three runs, each in a fresh browser profile: **off** (no
+extension), **shorts** (only "Hide Shorts" + "Disable autoplay", the most common use) and
+**minimal** (the Minimal preset). Each page loads, waits 6 s, then scrolls. Numbers are
+Chrome's own counters (`Performance.getMetrics`) for the scroll phase, plus long tasks
+(main-thread blocks over 50 ms) since load. Every page has a 75 s limit. Script:
+`docs/research/2026-11-live-audit.mjs`.
+
+| Page | Run | Style recalc | Script | Long tasks | DOM nodes | Outcome |
+|---|---|---|---|---|---|---|
+| Search ("learn guitar") | off | 46 ms | 523 ms | 12 / 2.5 s | 39k | ok |
+| | shorts | 74 ms (1.6×) | 650 ms | 11 / 1.2 s | 51k (1.3×) | ok |
+| | minimal | 149 ms (3.3×) | 1,682 ms (3.2×) | 22 / 3.6 s | 48k | ok |
+| Search ("cooking pasta") | off | 35 ms | 344 ms | 7 / 1.3 s | 40k | ok |
+| | shorts | — | — | — | — | **hung, over 75 s** |
+| | minimal | 134 ms (3.8×) | 2,635 ms (7.7×) | 29 / 3.4 s | **160k (4×)** | ok but runaway DOM |
+| Channel videos tab | off | 26 ms | 252 ms | 6 / 0.5 s | 23k | ok |
+| | shorts | 57 ms (2.2×) | 992 ms (3.9×) | **49 / 6.5 s (14×)** | 23k | ok |
+| Home, watch, playlist, Shorts | off | all fine | | | | video plays; Shorts swipe to the next and play |
+| | shorts / minimal | — | — | — | — | **later pages timed out** (45 s load limit / 75 s page limit) |
+
+What the run shows:
+
+1. **The lag is real and it's d-tox.** With only Shorts hiding on, the channel page spent
+   14× longer blocked on the main thread (6.5 s vs 0.5 s). With Minimal, search spent
+   3–4× longer recalculating styles and up to 7.7× longer running script.
+2. **Runaway infinite scroll.** With Minimal, the second search page grew to 160,000
+   DOM nodes against 40,000 without d-tox. The likely mechanism: hiding results keeps
+   the page short, so YouTube's "load more" trigger stays on screen and it keeps
+   fetching. Every new batch hits the 25 `:has()` rules again. The v1.3.0 changelog
+   claimed to fix one such loop; it is still there.
+3. **The browser wedges.** In both runs with d-tox on, once search had run, the pages
+   after it (home, watch, playlist) stopped loading within 45–75 s. In the run without
+   d-tox, every page loaded in about 7 s. In the first attempt the same thing showed up
+   as a crashed search tab ("Target crashed"). This matches "I can't run YouTube
+   properly."
+4. **Shorts playback itself still works.** Where the Shorts page got far enough, the video
+   played and swiping loaded the next one, in every run. The Shorts complaint is the
+   surrounding slowness and the wedged tab, not the Shorts player being blocked.
+
+Caveats: one run per mode, headless, from one network. YouTube throttling a single IP
+cannot be fully ruled out for the timeouts, but the run without d-tox went first and
+had none, and the slowdowns in the table were measured on pages that did load. The
+"wrongly hidden" checks for the sidebar and playlist could not be scored, because those
+pages timed out with d-tox on; they stand as code findings from section 1. YouTube
+Music refused the test browser and a live stream would not autoplay headless, so both
+were dropped.
+
+**Quality bar this suggests for the rebuild:** with every feature on, the same script
+must show no runaway DOM growth, long-task time and style recalc within ~10% of the
+"off" run, and no page timing out. That makes it the rebuild's performance test.
 
 ---
 
@@ -179,20 +234,3 @@ YouTube page is the core proof. No cookies, no third-party scripts; say so in th
    that opens an issue when a selector stops matching?
 7. **Stack:** keep WXT (good MV3 tooling), drop Tailwind/Headless UI from the popup in
    favour of plain CSS to match the Saaquib Labs sites?
-
----
-
-## Live audit plan (waiting on the video go-ahead)
-
-Headless Chromium (Playwright from `../mihrab-ummah`) with the v1.4.1 build loaded,
-Minimal preset on vs extension off, muted, nothing recorded or saved as video.
-
-Pages: home, search, a watch page, a playlist watch page, a live stream, `/shorts/…`,
-Subscriptions, a channel's Videos tab, music.youtube.com.
-
-Measured per page: long tasks (count, total ms), Chrome's `RecalcStyleDuration` /
-`LayoutDuration` / `ScriptDuration` while scrolling, whether the video's `currentTime`
-advances, whether Shorts swipe to the next one, and which wanted elements are wrongly
-hidden (playlist queue, live chat, channel videos).
-
-Cost: about 10–15 minutes, one Chromium window's worth of CPU while it runs.
