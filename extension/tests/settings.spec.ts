@@ -2,6 +2,10 @@ import { existsSync } from 'node:fs';
 import settings from '../../settings.json' with { type: 'json' };
 import { cases } from './cases';
 import { expect, test } from './extension';
+import type { Page } from '@playwright/test';
+
+const settingSwitch = (popup: Page, name: string) => popup.getByRole('checkbox', { name, exact: true });
+const masterSwitch = (popup: Page) => popup.getByRole('checkbox', { name: 'D-Tox is on' });
 
 const groups = ['Home', 'Watch', 'Shorts', 'Search', 'Everywhere'];
 
@@ -43,21 +47,21 @@ for (const setting of settings) {
       const page = await openSaved(c.fixture, c.url);
       await page.evaluate(() => ((window as any).notReloaded = true));
       const popup = await openPopup();
-      const toggle = popup.getByRole('checkbox', { name: setting.name, exact: true });
+      const switchEl = settingSwitch(popup, setting.name);
       const distraction = page.locator(c.distraction).first();
 
-      await toggle.check();
+      await switchEl.check();
       await expect(distraction).toBeHidden();
       for (const kept of c.keeps) await expect(page.locator(kept).first(), `${kept} stays`).toBeVisible();
 
-      await toggle.uncheck();
+      await switchEl.uncheck();
       await expect(distraction).toBeVisible();
       expect(await page.evaluate(() => (window as any).notReloaded)).toBe(true);
     });
 
     test('is hidden from the first load when on', async ({ openSaved, openPopup }) => {
       const popup = await openPopup();
-      await popup.getByRole('checkbox', { name: setting.name, exact: true }).check();
+      await settingSwitch(popup, setting.name).check();
       const page = await openSaved(c.fixture, c.url);
       await expect(page.locator(c.distraction).first()).toBeHidden();
     });
@@ -65,13 +69,13 @@ for (const setting of settings) {
     test('the master switch turns it off everywhere at once', async ({ openSaved, openPopup }) => {
       const page = await openSaved(c.fixture, c.url);
       const popup = await openPopup();
-      await popup.getByRole('checkbox', { name: setting.name, exact: true }).check();
+      await settingSwitch(popup, setting.name).check();
       const distraction = page.locator(c.distraction).first();
       await expect(distraction).toBeHidden();
 
-      await popup.getByRole('checkbox', { name: 'D-Tox is on' }).uncheck();
+      await masterSwitch(popup).uncheck();
       await expect(distraction).toBeVisible();
-      await popup.getByRole('checkbox', { name: 'D-Tox is on' }).check();
+      await masterSwitch(popup).check();
       await expect(distraction).toBeHidden();
     });
   });

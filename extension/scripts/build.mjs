@@ -1,5 +1,5 @@
 // Builds the extension into dist/ with esbuild, then fails if it is over budget.
-// WXT was measured first and added ~3.9 KB (ADR 0001), so this is the whole build.
+// WXT was measured first and added ~4.4 KB (ADR 0001), so this is the whole build.
 //   node scripts/build.mjs           one build
 //   node scripts/build.mjs --watch   rebuild on change (reload the extension in chrome://extensions)
 import * as esbuild from 'esbuild';
@@ -62,8 +62,8 @@ async function copyStatic() {
 async function checkSize() {
   let total = 0;
   for (const name of await readdir(out, { recursive: true })) {
-    const path = join(out, name);
-    if ((await stat(path)).isFile() && !/\.png$/.test(name)) total += (await stat(path)).size;
+    const file = await stat(join(out, name));
+    if (file.isFile() && !name.endsWith('.png')) total += file.size;
   }
   const line = `extension size: ${(total / 1024).toFixed(2)} KB of ${BUDGET / 1024} KB (icons excluded)`;
   if (total > BUDGET) throw new Error(line + ' — over budget');

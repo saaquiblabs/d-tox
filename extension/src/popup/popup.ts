@@ -1,4 +1,4 @@
-import settings from '../../../settings.json';
+import settings from '../../../settings.json' with { type: 'json' };
 
 // A switch for the master and for every Setting in the list. Each change is written to
 // chrome.storage.sync; the content script in every open YouTube tab picks it up at once.
