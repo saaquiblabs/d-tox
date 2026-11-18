@@ -3,7 +3,7 @@
 // Home choice, #21; 'intention' unless the popup says otherwise), `enabled`, and the variant from
 // chrome.storage.local. Not written to ADR 0001's rules (it looks for YouTube's home element on
 // YouTube's navigation events); #21 decides how the real one is built.
-const VARIANTS = { A: 'YouTube-native', B: 'Saaquib Labs paper', C: 'Just the question' } as const;
+const VARIANTS = { A: 'YouTube-native', B: 'Saaquib Labs paper', C: 'Just the question', D: 'No second search box' } as const;
 type V = keyof typeof VARIANTS;
 
 const icon = {
@@ -37,7 +37,15 @@ const views: Record<V, () => string> = {
     <input id="dtox-q" name="q" placeholder="What are you here for?" autocomplete="off">
   </form>
   <p class="hints"><span><kbd>↵</kbd>Search</span><a href="${SUBS}"><kbd>S</kbd>Subscriptions</a><a href="${LATER}"><kbd>W</kbd>Watch later</a></p>`,
+  // D: no search box of its own. The question points up at YouTube's search, which gets the cursor.
+  D: () => `<div class="in">
+    <span class="up" aria-hidden="true">↑</span>
+    <h1>What are you here for?</h1>
+    <p>Type it in YouTube's search, up there. Or go straight to:</p>
+    <nav><a href="${SUBS}">${svg(icon.subs)}Subscriptions</a><a href="${LATER}">${svg(icon.later)}Watch later</a></nav>
+  </div>`,
 };
+const ytSearch = () => document.querySelector<HTMLInputElement>('ytd-masthead input[name=search_query], ytd-masthead input#search');
 
 const html = document.documentElement;
 let variant: V = 'A';
@@ -62,7 +70,7 @@ function draw() {
   page.className = variant;
   page.innerHTML = views[variant]();
   bar.innerHTML = `<button data-step="-1" aria-label="Previous variant">◀</button><span>Intention Page ${variant} · ${VARIANTS[variant]}</span><button data-step="1" aria-label="Next variant">▶</button>`;
-  if (location.pathname === '/') (page.querySelector('input') as HTMLInputElement | null)?.focus({ preventScroll: true });
+  if (location.pathname === '/') ((variant === 'D' ? ytSearch() : page.querySelector('input')) as HTMLInputElement | null)?.focus({ preventScroll: true });
 }
 
 function step(d: number) {

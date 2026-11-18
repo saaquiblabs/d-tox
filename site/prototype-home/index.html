@@ -220,6 +220,122 @@ footer.site a:hover{color:var(--text)}
 #C footer.site{margin-top:0;border-top:0}
 @media (max-width:900px){#C .layout{grid-template-columns:1fr}#C aside{position:static;height:auto;padding-top:24px;flex-direction:row;align-items:center;justify-content:space-between}#C aside ol{display:none}#C dl .it{grid-template-columns:1fr}#C dd{grid-column:1}}
 
+/* ================= D · The mix (A's calm hero + B's stage and cards + C's numbered rhythm) ================= */
+body[data-variant=D] #D{display:block}
+#D header{position:sticky;top:14px;z-index:10;max-width:1200px;margin:14px auto 0;padding-inline:var(--gutter)}
+#D header .in{display:flex;align-items:center;justify-content:space-between;padding:8px 8px 8px 18px;border-radius:var(--r-pill);background:color-mix(in srgb,var(--surface) 82%,transparent);backdrop-filter:blur(22px) saturate(1.6);-webkit-backdrop-filter:blur(22px) saturate(1.6);border:1px solid var(--border);box-shadow:var(--shadow),inset 0 1px 0 var(--lit)}
+#D header nav{display:flex;gap:4px;font-size:var(--t-small);color:var(--text-2)}
+#D header nav a{text-decoration:none;padding:8px 14px;border-radius:var(--r-pill)}
+#D header nav a:hover{color:var(--text);background:var(--bg-shade)}
+#D header .btn{padding:.75em 1.3em}
+#D .hero{position:relative;text-align:center;padding-block:clamp(80px,12vw,150px) clamp(48px,6vw,80px)}
+#D .pill{display:inline-flex;align-items:center;gap:10px;padding:6px 14px 6px 6px;border-radius:var(--r-pill);border:1px solid var(--border);background:var(--surface);font-size:var(--t-small);color:var(--text-2);text-decoration:none;margin-bottom:28px}
+#D .pill b{font-weight:600;color:var(--btn-fg);background:var(--btn-bg);border-radius:var(--r-pill);padding:3px 10px;font-size:12px}
+#D .hero h1{max-width:15ch;margin-inline:auto;font-size:clamp(2.75rem,6.4vw,5.4rem);letter-spacing:-.035em}
+#D .hero .lead{max-width:36rem;margin:26px auto 0;font-size:clamp(1.0625rem,1.4vw,1.25rem)}
+#D .hero .cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:34px}
+#D .hero small{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;margin-top:18px;color:var(--text-2);font-size:var(--t-small)}
+#D .hero small span::before{content:"✓ ";color:var(--text)}
+#D .hero .glow{inset:auto -10% -20% -10%;height:80%}
+/* the stage */
+#D .stage{--fold:76px;position:relative;margin-inline:clamp(8px,1.4vw,16px);border-radius:var(--r-lg);background:var(--stage);color:var(--stage-text);overflow:hidden;padding:clamp(40px,6vw,88px) var(--gutter) clamp(56px,7vw,104px)}
+#D .stage.fold::after{background:linear-gradient(225deg,var(--bg) 50%,#2A323E 50%);border-bottom-left-radius:14px}
+#D .stage .glow{inset:auto -10% -25% -10%;height:70%;opacity:1.5}
+#D .stage .k{text-align:center;display:grid;gap:12px;max-width:40rem;margin:0 auto 28px;position:relative}
+#D .stage .k .label{color:var(--stage-text-2)}
+#D .stage h2{font-size:var(--t-h2);letter-spacing:-.03em;line-height:1.06}
+#D .stage .tabs{position:relative;display:flex;justify-content:center;gap:4px;margin:0 auto 36px;padding:4px;width:max-content;border-radius:var(--r-pill);background:#ffffff10;border:1px solid #ffffff1a}
+#D .stage .tabs button{all:unset;cursor:pointer;padding:9px 20px;border-radius:var(--r-pill);font-size:var(--t-small);font-weight:500;color:var(--stage-text-2)}
+#D .stage .tabs button[aria-selected=true]{background:var(--stage-text);color:var(--stage)}
+#D .scene{position:relative;max-width:1040px;margin-inline:auto}
+#D .browser{border-radius:14px;overflow:hidden;background:#0E1218;border:1px solid #2A313C;box-shadow:0 2px 4px rgb(0 0 0 / .3),0 24px 48px rgb(0 0 0 / .45),0 60px 120px rgb(0 0 0 / .35)}
+#D .browser .bar{display:flex;align-items:center;gap:7px;padding:11px 14px;background:#1B212B;border-bottom:1px solid #2A313C}
+#D .browser .bar i{width:10px;height:10px;border-radius:50%;background:#3A4350}
+#D .browser .bar span{margin-left:14px;flex:1;max-width:420px;padding:4px 12px;border-radius:999px;background:#11151C;color:#B9BDC4;font:12px var(--mono)}
+#D .cmp{position:relative;aspect-ratio:1280/800;--x:50%;user-select:none;touch-action:none;cursor:ew-resize}
+#D .cmp img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top}
+#D .cmp .after{clip-path:inset(0 0 0 var(--x))}
+#D .cmp .line{position:absolute;top:0;bottom:0;left:var(--x);width:2px;background:#F7F4EE;transform:translateX(-1px);box-shadow:0 0 12px rgb(0 0 0 / .4)}
+#D .cmp .knob{position:absolute;top:50%;left:var(--x);transform:translate(-50%,-50%);width:48px;height:48px;border-radius:50%;background:#F7F4EE;color:#151A22;display:grid;place-items:center;font-size:15px;box-shadow:0 6px 20px rgb(0 0 0 / .45)}
+#D .cmp .tag{position:absolute;bottom:14px;padding:6px 12px;border-radius:999px;font-size:12px;font-weight:600;background:rgb(17 21 28 / .82);color:#F7F4EE}
+#D .cmp .tag.l{left:14px}#D .cmp .tag.r{right:14px}
+#D .cap{position:relative;text-align:center;margin:26px auto 0;max-width:46ch;color:var(--stage-text-2);min-height:3.3em}
+/* the popup (variant B, picked) floating at the window's corner */
+#D .pop{position:absolute;right:-28px;bottom:-44px;width:300px;padding:10px;border-radius:18px;background:#151A22;border:1px solid #2A313C;box-shadow:0 30px 70px rgb(0 0 0 / .6),0 2px 6px rgb(0 0 0 / .4);font-size:12.5px;color:#F7F4EE;transform:rotate(1.5deg)}
+#D .pop .card{position:relative;overflow:hidden;padding:13px;border-radius:12px;background:#0E1218}
+#D .pop .card::before{content:"";position:absolute;inset:auto -20% -80% -20%;height:130%;background:radial-gradient(50% 50% at 50% 50%,rgb(var(--tint-core) / .4),transparent 70%),radial-gradient(30% 40% at 20% 40%,rgb(var(--tint-warm) / .3),transparent 70%)}
+#D .pop .card>*{position:relative}
+#D .pop .top{display:flex;justify-content:space-between;align-items:center}
+#D .pop .mark{font-size:13px;gap:7px}#D .pop .mark img{width:18px;height:18px}
+#D .pop .card b{display:block;margin-top:10px;font-weight:500;font-size:15px;letter-spacing:-.01em}
+#D .pop .card small{color:#C9CCD1;font-size:11px}
+#D .pop .pt{display:grid;grid-template-columns:repeat(5,auto);gap:2px;margin:8px 0 6px;padding:3px;border-radius:10px;background:#11151C;border:1px solid #2A313C}
+#D .pop .pt button{all:unset;cursor:pointer;text-align:center;padding:4px 3px;border-radius:7px;font-size:10.5px;font-weight:500;color:#B9BDC4}
+#D .pop .pt button[aria-selected=true]{background:#F7F4EE;color:#151A22}
+#D .pop .items{display:grid;gap:6px;min-height:150px;align-content:start}
+#D .pop .it{padding:9px 10px;border-radius:10px;background:#1B212B;border:1px solid #2A313C}
+#D .pop .it .h{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:500}
+#D .pop .it p{color:#B9BDC4;font-size:10.5px;line-height:1.4;margin-top:3px}
+#D .psw{all:unset;cursor:pointer;width:30px;height:17px;border-radius:9px;background:#3A4350;position:relative;flex:none;transition:background .15s}
+#D .psw::after{content:"";position:absolute;top:2px;left:2px;width:13px;height:13px;border-radius:50%;background:#fff;transition:transform .18s var(--ease-glide,ease)}
+#D .psw[aria-checked=true]{background:#F7F4EE}#D .psw[aria-checked=true]::after{transform:translateX(13px);background:#151A22}
+/* sections */
+#D section.blk{padding-block:var(--section)}
+#D .head{display:grid;grid-template-columns:auto 1fr;gap:6px 40px;align-items:end;margin-bottom:40px}
+#D .head .num{grid-row:span 2;font:500 clamp(3rem,6vw,5rem)/.9 var(--font);letter-spacing:-.05em;color:var(--border);font-variant-numeric:tabular-nums}
+#D .head h2{font-size:var(--t-h2);letter-spacing:-.03em;line-height:1.06}
+#D .head p{color:var(--text-2);max-width:40rem}
+#D .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+#D .card{--fold:30px;padding:22px;border-radius:var(--r-md);background:var(--surface);border:1px solid var(--border);display:grid;gap:8px;align-content:start;transition:transform .25s var(--ease-glide,ease),box-shadow .25s}
+#D .card:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+#D .card .g{font-size:var(--t-label);letter-spacing:.12em;text-transform:uppercase;color:var(--text-2);font-weight:600}
+#D .card h3{font-size:1.125rem}
+#D .card p{font-size:var(--t-small);color:var(--text-2);line-height:1.55}
+#D .card.calm{background:var(--stage);color:var(--stage-text);border-color:var(--stage)}
+#D .card.calm .g,#D .card.calm p{color:var(--stage-text-2)}
+#D .card.calm.fold::after{background:linear-gradient(225deg,var(--bg) 50%,#2A323E 50%)}
+#D .card .cd{justify-self:start;margin-top:4px;font-size:11px;font-weight:600;padding:3px 9px;border-radius:var(--r-pill);background:var(--stage-text);color:var(--stage)}
+#D .legend{display:flex;gap:10px;align-items:center;margin-top:18px;font-size:var(--t-small);color:var(--text-2)}
+#D .legend i{width:14px;height:14px;border-radius:4px;background:var(--stage)}
+#D .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-radius:var(--r-md);border:1px solid var(--border);background:var(--surface);overflow:hidden}
+#D .stat{padding:30px 26px;display:grid;gap:10px;align-content:start}
+#D .stat+.stat{border-left:1px solid var(--border)}
+#D .stat .n{font-size:clamp(2.4rem,1.6rem + 2.4vw,3.8rem);font-weight:500;letter-spacing:-.045em;line-height:1;font-variant-numeric:tabular-nums}
+#D .stat p{font-size:var(--t-small);color:var(--text-2);max-width:24ch}
+#D details.gate{margin-top:16px}
+#D details.gate summary{cursor:pointer;font-size:var(--t-small);color:var(--text-2);max-width:100%}
+#D .hero{overflow-x:clip}
+:root[data-theme=dark] #D .stage{box-shadow:inset 0 0 0 1px #2A313C}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]) #D .stage{box-shadow:inset 0 0 0 1px #2A313C}}
+#D details.gate pre{margin:14px 0 0;border-radius:var(--r-md);background:var(--term-bg);color:var(--term-fg);font:400 .8125rem/1.8 var(--mono);padding:22px 26px;overflow-x:auto}
+#D .d{color:var(--term-dim)}#D .ok{color:var(--term-ok)}#D .phm{color:#FBBF24}
+#D .vs{border-radius:var(--r-md);border:1px solid var(--border);overflow:hidden;background:var(--surface)}
+#D .vs table{font-size:.9375rem}
+#D .vs th,#D .vs td{padding:15px 20px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top}
+#D .vs thead th{font-size:var(--t-label);letter-spacing:.1em;text-transform:uppercase;color:var(--text-2);font-weight:600;background:var(--bg-shade)}
+#D .vs thead th.us{background:var(--stage);color:var(--stage-text)}
+#D .vs tbody th{font-weight:500}
+#D .vs td.us{background:color-mix(in srgb,var(--bg-shade) 60%,transparent);font-weight:500}
+#D .vs tr.wins td{font-size:var(--t-small);color:var(--text-2);border-bottom:0}
+#D .src{margin-top:14px;font-size:var(--t-small);color:var(--text-2)}
+#D .closing{--fold:56px;position:relative;overflow:hidden;max-width:960px;margin-inline:auto;padding:clamp(48px,7vw,88px) clamp(28px,5vw,64px);border-radius:var(--r-lg);background:var(--surface);border:1px solid var(--border);box-shadow:var(--shadow);text-align:center}
+#D .closing .glow{inset:auto -10% -55% -10%;height:100%}
+#D .closing p{position:relative;font-size:clamp(1.6rem,3.2vw,2.5rem);line-height:1.2;letter-spacing:-.025em;font-weight:500;max-width:22ch;margin-inline:auto}
+#D .closing p span{font-weight:300;font-style:italic;color:var(--text-2)}
+#D .closing .cta{position:relative;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:28px}
+#D footer.dft{margin-top:var(--section);border-top:1px solid var(--border)}
+#D footer.dft .top{display:grid;grid-template-columns:1.4fr repeat(3,1fr);gap:32px;padding-block:48px 32px}
+#D footer.dft h4{margin:0 0 12px;font-size:var(--t-label);letter-spacing:.12em;text-transform:uppercase;color:var(--text-2);font-weight:600}
+#D footer.dft ul{list-style:none;margin:0;padding:0;display:grid;gap:8px;font-size:var(--t-small)}
+#D footer.dft a{text-decoration:none;color:var(--text-2)}#D footer.dft a:hover{color:var(--text)}
+#D footer.dft .brand p{margin-top:12px;font-size:var(--t-small);color:var(--text-2);max-width:30ch}
+#D footer.dft .bot{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-block:20px 96px;border-top:1px solid var(--border);font-size:var(--t-small);color:var(--text-2)}
+@media (prefers-reduced-motion:no-preference){@supports (animation-timeline:view()){
+  #D .rise{animation:d-rise linear both;animation-timeline:view();animation-range:entry 0% entry 55%}
+  @keyframes d-rise{from{opacity:0;transform:translateY(36px) scale(.985)}to{opacity:1;transform:none}}
+}}
+@media (max-width:900px){#D header nav{display:none}#D .pop{position:relative;right:auto;bottom:auto;margin:-40px auto 0;transform:none}#D .stats{grid-template-columns:repeat(2,minmax(0,1fr))}#D .stat:nth-child(3){border-left:0}#D .stat:nth-child(n+3){border-top:1px solid var(--border)}#D .head{grid-template-columns:1fr}#D .head .num{grid-row:auto}#D footer.dft .top{grid-template-columns:1fr 1fr}#D .vs{overflow-x:auto}#D .vs th,#D .vs td{padding:10px 10px}}
+
 /* ---------- prototype switcher (not part of the design) ---------- */
 .proto{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:99;display:flex;align-items:center;gap:6px;background:#E8FF59;color:#111;font:600 13px/1 system-ui,sans-serif;padding:6px;border-radius:999px;box-shadow:0 6px 24px rgb(0 0 0 / .35);border:2px solid #111}
 .proto button{all:unset;cursor:pointer;padding:8px 12px;border-radius:999px}
@@ -387,6 +503,77 @@ footer.site a:hover{color:var(--text)}
   </div>
 </div>
 
+<!-- ======================= D · The mix ======================= -->
+<div class="variant" id="D" data-name="The mix">
+  <header><div class="in">
+    <a class="mark" href="#"><img src="../../extension/public/icon-48.png" alt="">D-Tox</a>
+    <nav><a href="#D-ba">See it</a><a href="#D-set">Settings</a><a href="#D-num">Numbers</a><a href="#D-vs">Compared</a></nav>
+    <a class="btn btn-solid" href="#">Add to Chrome</a>
+  </div></header>
+  <section class="wrap hero">
+    <div class="glow"></div>
+    <a class="pill" href="#"><b>v2.0</b>Rebuilt from scratch, measured every release →</a>
+    <h1>YouTube for what you came for.<span class="second">Nothing else.</span></h1>
+    <p class="lead">D-Tox hides the parts of YouTube that pull you elsewhere: the feed, the suggestions, Shorts. It starts calm, stays measurably light, and sends nothing anywhere.</p>
+    <div class="cta"><a class="btn btn-solid" href="#">${chrome}Add to Chrome</a><a class="btn btn-ghost" href="#D-ba">See the difference</a></div>
+    <small><span>Free</span><span>Open source, MIT</span><span>Nothing leaves your browser</span></small>
+  </section>
+  <div class="stage fold" id="D-ba"><div class="glow"></div>
+    <div class="k"><p class="label">Before and after · drag the line</p><h2>The same page,<br>without the pull.</h2></div>
+    <div class="tabs" role="tablist"></div>
+    <div class="scene rise">
+      <div class="browser"><div class="bar"><i></i><i></i><i></i><span data-url>youtube.com</span></div>
+        <div class="cmp" aria-label="Drag to compare"><img class="before" alt=""><img class="after" alt=""><span class="tag l">YouTube</span><span class="tag r">With D-Tox</span><span class="line"></span><span class="knob">⇆</span></div>
+      </div>
+      <div class="pop" data-dpop></div>
+    </div>
+    <p class="cap" data-dcap></p>
+  </div>
+  <section class="wrap blk" id="D-set">
+    <div class="head rise"><span class="num">01</span><h2>Ten Settings. One switch.</h2><p>Each Setting hides one thing, and says exactly what. The dark ones are on from the start, so YouTube is calm the moment you install.</p></div>
+    <div class="cards" data-settings="D"></div>
+    <p class="legend"><i></i>Calm Default: on when you install</p>
+  </section>
+  <section class="wrap blk" id="D-num">
+    <div class="head rise"><span class="num">02</span><h2>Light enough to forget.</h2><p>Every release runs YouTube with every Setting on, against YouTube alone. If it slows YouTube down, it doesn't ship.</p></div>
+    <div class="stats rise">
+      <div class="stat"><span class="n">7 KB</span><p>the whole extension, icons aside</p></div>
+      <div class="stat"><span class="n">+2%</span><p>long-task time against YouTube alone <span class="ph">placeholder</span></p></div>
+      <div class="stat"><span class="n">−31%</span><p>page weight on Home, with the feed gone <span class="ph">placeholder</span></p></div>
+      <div class="stat"><span class="n">0</span><p>timers or observers watching the page</p></div>
+    </div>
+    <details class="gate"><summary>Release Gate output, v2.0.0, <time>2026-11-—</time> <span class="ph">placeholder until #25</span></summary>
+<pre><span class="d">Release Gate · v2.0.0 · every Setting on · 6 pages × 5 runs</span>  <span class="phm"># PLACEHOLDER</span>
+
+  long-task time      +2.1%   <span class="d">(limit ±10%)</span>   <span class="ok">pass</span>
+  style recalc        +0.8%   <span class="d">(limit ±10%)</span>   <span class="ok">pass</span>
+  DOM growth          none    <span class="d">(no runaway)</span>   <span class="ok">pass</span>
+  timeouts            0                       <span class="ok">pass</span>
+  playback, Shorts    work                    <span class="ok">pass</span>
+  size                7.16 KB <span class="d">(budget 40 KB)</span>  <span class="ok">pass</span></pre></details>
+  </section>
+  <section class="wrap blk" id="D-vs">
+    <div class="head rise"><span class="num">03</span><h2>Unhook and RYS are good too.</h2><p>Here's where each one wins, so you can pick the one that fits. <span class="ph">re-check in #27</span></p></div>
+    <div class="vs rise"><table data-compare="D"></table></div>
+    <p class="src">From each Chrome Web Store listing and GitHub repository, read 2026-11-18.</p>
+  </section>
+  <section class="wrap blk">
+    <div class="closing fold rise"><div class="glow"></div>
+      <p>D-Tox sends nothing anywhere. <span>Your Settings stay in your Chrome.</span></p>
+      <div class="cta"><a class="btn btn-solid" href="#">${chrome}Add to Chrome</a><a class="btn btn-ghost" href="#">Read the privacy page</a></div>
+    </div>
+  </section>
+  <footer class="dft"><div class="wrap">
+    <div class="top">
+      <div class="brand"><a class="mark" href="#"><img src="../../extension/public/icon-48.png" alt="">D-Tox for YouTube</a><p>YouTube for what you came for. Nothing else.</p></div>
+      <div><h4>Product</h4><ul><li><a href="#">Add to Chrome</a></li><li><a href="#">Changelog</a></li><li><a href="#">GitHub</a></li></ul></div>
+      <div><h4>Support</h4><ul><li><a href="#">Sponsor</a></li><li><a href="#">Report a problem</a></li></ul></div>
+      <div><h4>Legal</h4><ul><li><a href="#">Privacy</a></li><li><a href="#">MIT licence</a></li></ul></div>
+    </div>
+    <div class="bot"><span><a href="#"><span class="s-mask"></span> A Saaquib Labs product</a> · © 2026</span><span>This site counts visits with Umami, which we run ourselves. No cookies.</span></div>
+  </div></footer>
+</div>
+
 <div class="proto"><button data-step="-1" aria-label="Previous variant">◀</button><span class="lbl"></span><button data-step="1" aria-label="Next variant">▶</button><button data-theme-next></button></div>
 
 <script>
@@ -478,11 +665,42 @@ seg.addEventListener('click', e => { if (e.target.dataset.k) { cK = e.target.dat
 document.querySelectorAll('[data-flip]').forEach(b => b.addEventListener('click', () => { cW = b.dataset.flip; cShow(); }));
 cShow();
 
+// ----- D: the mix -----
+document.querySelector('[data-settings=D]').innerHTML = SETTINGS.map(s => `<div class="card fold${s.calm ? ' calm' : ''}"><span class="g">${s.group}</span><h3>${s.id === 'home' ? 'Home: Intention Page' : esc(s.name)}</h3><p>${esc(s.hides)}</p></div>`).join('');
+document.querySelector('[data-compare=D]').innerHTML = table().replace('<th>D-Tox</th>', '<th class="us">D-Tox</th>').replace('</tbody>', `<tr class="wins"><th>Wins on</th>${WHO.map((w, i) => `<td class="${i === 0 ? 'us' : ''}">${w.wins.replace('Wins on: ', '')}</td>`).join('')}</tr></tbody>`);
+const dTabs = document.querySelector('#D .tabs'), dCmp = document.querySelector('#D .cmp');
+const URLS = { home: 'youtube.com', watch: 'youtube.com/watch?v=rfscVS0vtbw', search: 'youtube.com/results?search_query=python+tutorial' };
+dTabs.innerHTML = PAIRS.map(p => `<button role="tab" data-k="${p.key}">${p.label}</button>`).join('');
+function dShow(k) {
+  dCmp.querySelector('.before').src = shot(k, 'before'); dCmp.querySelector('.after').src = shot(k, 'after');
+  document.querySelector('[data-dcap]').textContent = PAIRS.find(p => p.key === k).cap;
+  document.querySelector('[data-url]').textContent = URLS[k];
+  dTabs.querySelectorAll('button').forEach(b => b.setAttribute('aria-selected', b.dataset.k === k));
+}
+dTabs.addEventListener('click', e => e.target.dataset.k && dShow(e.target.dataset.k));
+dShow('home');
+const dDrag = e => { const r = dCmp.getBoundingClientRect(); dCmp.style.setProperty('--x', Math.min(100, Math.max(0, (e.clientX - r.left) / r.width * 100)) + '%'); };
+dCmp.addEventListener('pointerdown', e => { dCmp.setPointerCapture(e.pointerId); dDrag(e); });
+dCmp.addEventListener('pointermove', e => e.buttons && dDrag(e));
+// The picked popup (B), live: tabs switch groups, switches flip.
+const dOn = Object.fromEntries(SETTINGS.map(s => [s.id, s.calm]));
+let dTab = 'Watch';
+const dPop = document.querySelector('[data-dpop]');
+function dPopDraw() {
+  const n = Object.values(dOn).filter(Boolean).length;
+  dPop.innerHTML = `<div class="card"><div class="top"><span class="mark"><img src="../../extension/public/icon-48.png" alt="">D-Tox</span><button class="psw" role="switch" aria-checked="true" aria-label="D-Tox"></button></div><b>YouTube for what you came for.</b><small>${n} of 10 Settings on</small></div>
+  <div class="pt" role="tablist">${GROUPS.map(g => `<button role="tab" data-g="${g}" aria-selected="${g === dTab}">${g}</button>`).join('')}</div>
+  <div class="items">${inG(dTab).map(s => `<div class="it"><div class="h">${s.id === 'home' ? 'Home: Intention Page' : esc(s.name)}${s.id === 'home' ? '' : `<button class="psw" role="switch" data-s="${s.id}" aria-checked="${dOn[s.id]}" aria-label="${esc(s.name)}"></button>`}</div><p>${esc(s.hides)}</p></div>`).join('')}</div>`;
+}
+dPop.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; if (b.dataset.g) dTab = b.dataset.g; else if (b.dataset.s) dOn[b.dataset.s] = !dOn[b.dataset.s]; dPopDraw(); });
+dPopDraw();
+document.querySelectorAll('#D .btn').forEach(b => { b.innerHTML = b.innerHTML.replace('${chrome}', chromeIcon); });
+
 // Footers (Privacy · Changelog · Sponsor, the studio line, what the site counts).
 document.querySelectorAll('[data-footer]').forEach(f => f.innerHTML = `<nav><a href="#">Privacy</a><a href="#">Changelog</a><a href="#">Sponsor</a><a href="#">GitHub</a></nav><p><a href="#"><span class="s-mask"></span> A Saaquib Labs product</a> · MIT · © 2026</p><p>This site counts visits with Umami, which we run ourselves. No cookies.</p>`);
 
 // Variant + theme switcher.
-const V = ['A','B','C'], THEMES = ['system','light','dark'];
+const V = ['A','B','C','D'], THEMES = ['system','light','dark'];
 const q = new URLSearchParams(location.search);
 let v = V.includes(q.get('variant')) ? q.get('variant') : 'A', t = THEMES.includes(q.get('theme')) ? q.get('theme') : 'system';
 function set() {

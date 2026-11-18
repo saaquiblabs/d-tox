@@ -68,6 +68,19 @@ html[dark] #dtox-i {
 #dtox-i.C .hints a:hover { color: var(--yt-spec-text-primary, #0f0f0f); }
 #dtox-i.C kbd { display: inline-block; min-width: 22px; padding: 2px 6px; margin-right: 6px; border: 1px solid var(--yt-spec-10-percent-layer, #0000001a); border-bottom-width: 2px; border-radius: 6px; font: 500 12px ui-monospace, Menlo, monospace; text-align: center; color: var(--yt-spec-text-primary, #0f0f0f); }
 
+/* ---------- D · No second search box: points at YouTube's own ---------- */
+#dtox-i.D { display: grid; place-items: start center; padding: 6vh 24px 64px; font-family: "Roboto", "Arial", sans-serif; color: var(--yt-spec-text-primary, #0f0f0f); }
+#dtox-i.D .in { display: grid; justify-items: center; gap: 14px; text-align: center; }
+#dtox-i.D .up { font-size: 28px; line-height: 1; color: var(--yt-spec-text-secondary, #606060); animation: dtox-nudge 1.6s ease-in-out 3; }
+@keyframes dtox-nudge { 50% { transform: translateY(-8px); } }
+@media (prefers-reduced-motion: reduce) { #dtox-i.D .up { animation: none; } }
+#dtox-i.D h1 { font-size: 36px; line-height: 44px; font-weight: 700; letter-spacing: -.5px; margin-top: 8px; }
+#dtox-i.D p { font-size: 16px; color: var(--yt-spec-text-secondary, #606060); }
+#dtox-i.D nav { display: flex; gap: 12px; margin-top: 10px; }
+#dtox-i.D nav a { display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 16px; border-radius: 18px; font-size: 14px; font-weight: 500; background: var(--yt-spec-badge-chip-background, #0000000d); }
+#dtox-i.D nav a:hover { background: var(--yt-spec-10-percent-layer, #0000001a); }
+#dtox-i.D nav svg { width: 20px; height: 20px; }
+
 /* ---------- prototype switcher (not part of the design) ---------- */
 #dtox-proto { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 9999; display: none; align-items: center; gap: 6px; background: #E8FF59; color: #111; font: 600 13px/1 system-ui, sans-serif; padding: 6px; border-radius: 999px; box-shadow: 0 6px 24px rgb(0 0 0 / .35); border: 2px solid #111; }
 html[data-dtox-home=intention][data-dtox-on-home] #dtox-proto { display: flex; }
