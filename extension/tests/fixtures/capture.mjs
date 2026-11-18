@@ -1,8 +1,9 @@
 // Saves a trimmed copy of a live YouTube page as a test fixture.
 //   node tests/fixtures/capture.mjs watch 'https://www.youtube.com/watch?v=jNQXAC9IVRw'
 // Video and image requests are blocked, so nothing plays. The saved page keeps YouTube's
-// element tree (names, ids, attributes) and a little text, and drops scripts, styles, media
-// and all but the first few items of long lists. Review the diff before committing a refresh.
+// element tree (names, ids, attributes, the player's controls) and a little text, and drops
+// scripts, styles, media, the contents of iframes (so no live chat messages) and all but the first few items of
+// long lists. Review the diff before committing a refresh.
 import { chromium } from '@playwright/test';
 import { writeFile } from 'node:fs/promises';
 
@@ -28,11 +29,11 @@ await page.waitForSelector('ytd-comment-thread-renderer', { timeout: 30_000 }).c
 
 const html = await page.evaluate(() => {
   const doc = document.documentElement.cloneNode(true);
-  doc.querySelectorAll('script, style, link, iframe, noscript, video, img, source, svg, template').forEach((n) => n.remove());
-  const player = doc.querySelector('#movie_player');
-  if (player) player.replaceChildren();
+  doc.querySelectorAll('script, style, link, iframe:not(#chatframe), noscript, video, img, source, svg, template').forEach((n) => n.remove());
+  // Live chat is an iframe: keep the frame, empty, so tests can see it without anyone's messages.
+  doc.querySelector('iframe#chatframe')?.removeAttribute('src');
   // Keep the first 3 items of long lists.
-  for (const list of ['ytd-comment-thread-renderer', 'ytd-compact-video-renderer', 'yt-lockup-view-model', 'ytd-rich-item-renderer', 'ytd-video-renderer']) {
+  for (const list of ['ytd-comment-thread-renderer', 'ytd-compact-video-renderer', 'yt-lockup-view-model', 'ytd-rich-item-renderer', 'ytd-video-renderer', 'ytd-playlist-panel-video-renderer', 'ytd-macro-markers-list-item-renderer', '.ytp-modern-videowall-still']) {
     const byParent = new Map();
     for (const el of doc.querySelectorAll(list)) {
       const n = (byParent.get(el.parentNode) ?? 0) + 1;
@@ -57,7 +58,18 @@ const html = await page.evaluate(() => {
     }
     for (const a of [...el.attributes]) if (a.name === 'style' || a.name.startsWith('on') || a.value.length > 300) el.removeAttribute(a.name);
   }
-  doc.querySelectorAll('[data-dtox-comments]').forEach((n) => n.removeAttribute('data-dtox-comments'));
+  // YouTube's scripts nest a <button> in a <button> (and an <a> in an <a>). Saved as HTML, the
+  // parser can't rebuild that: it closes elements early, and the player's controls end up
+  // outside #movie_player. Make each inner one a <div>, which parses back as it was.
+  for (const tag of ['button', 'a']) {
+    for (const inner of [...doc.querySelectorAll(`${tag} ${tag}`)].reverse()) {
+      const div = document.createElement('div');
+      for (const a of inner.attributes) div.setAttribute(a.name, a.value);
+      div.append(...inner.childNodes);
+      inner.replaceWith(div);
+    }
+  }
+  for (const a of [...doc.attributes]) if (a.name.startsWith('data-dtox-')) doc.removeAttribute(a.name);
   return '<!doctype html>\n' + doc.outerHTML.replace(/\n\s*\n+/g, '\n');
 });
 await browser.close();
