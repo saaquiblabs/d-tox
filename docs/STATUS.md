@@ -91,7 +91,13 @@ product page; the profile lives in `extension/proto-profile/` (git-ignored).
     Setting on in the "after" shots** (except the redirect), YouTube's popups/tooltips hidden, and the
     hidden parts' positions written to `shots/regions.json`. Watch after still leaves YouTube's empty
     right column (the real extension does that too; maybe worth widening the player in #21).
-  - Next: Najmush reacts to pass 3 and picks Home scene A or B. Then record the three #22 picks (Popup B→D, Intention Page D, page H)
+  - **Home scene: B picked** (Najmush, 2026-11-19); A and the prototype toggle are removed. #21's
+    Intention Page should follow B (question, arrow to YouTube's search, Subscriptions / Watch
+    later / History cards, "/ to search"); it still reads nothing from YouTube.
+  - Wipe drag fixed: Chrome was starting a native image drag (ghost copy, no pointer events).
+    Images are `draggable=false`, pointer capture with `pointercancel` (ported from mihrab-ummah's
+    `CoverCropper`).
+  - Next: Najmush reviews the rest of pass 3 (showcase, story/popup, numbers, end/footer). Then record the three #22 picks (Popup B→D, Intention Page D, page H)
     in #22 and here.
 
 ## Decisions (grill, 2026-11-18)
