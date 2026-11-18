@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="D-Tox">
+  <defs><linearGradient id="a" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F7F4EE"/><stop offset="1" stop-color="#DCD5C6"/></linearGradient></defs>
+  <g stroke-linejoin="round" stroke-width="8"><path d="M24 16 H62 A48 48 0 0 1 99.5 34.5 L80.5 48.5 A24 24 0 0 0 62 40 H48 V112 H24 Z" fill="url(#a)" stroke="url(#a)"/><path d="M107 47.5 A48 48 0 0 1 62 112 H56 V88 H62 A24 24 0 0 0 85 56 Z" fill="#C9BFAC" stroke="#C9BFAC"/></g>
+  <circle cx="66" cy="64" r="12" fill="#5FE0B3"/></svg>

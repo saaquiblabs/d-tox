@@ -1,0 +1,6 @@
+Fonts served from /fonts/ (latin subsets, unmodified woff2 from Google Fonts):
+
+Instrument Serif: Copyright 2022 The Instrument Serif Project Authors. SIL Open Font License 1.1.
+  https://github.com/Instrument/instrument-serif  ·  https://openfontlicense.org
+Inter: Copyright 2020 The Inter Project Authors. SIL Open Font License 1.1.
+  https://github.com/rsms/inter  ·  https://openfontlicense.org
