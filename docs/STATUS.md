@@ -58,24 +58,40 @@ product page; the profile lives in `extension/proto-profile/` (git-ignored).
     use real screenshots, Dossier-style scroll, one footer → 2d: showcase "purely broken" (frame
     taller than the screen, empty column after, stray tooltip, peeking neighbours), story section
     "not much feedback on the right", close + footer "ugly, use the space".
-  - **Pass 2e (this session, not yet seen by Najmush):**
-    - Showcase: one frame sized to fit the screen (no neighbours), page pills + "With D-Tox" switch
-      above it; dashed mint boxes mark what D-Tox hides (from `shots/regions.json`), the vacated
-      column says "Recommendations · hidden"; plays by itself (as it comes → with D-Tox → next page,
-      progress line in the pill) until touched.
-    - Story ("Ten switches. Four already on."): the right side pins the real page in a frame with the
-      popup docked below it; each step moves the camera (Shorts zooms to the shelf, Everywhere to the
-      menu's Explore section), then flips that group's switches one by one and the page changes;
-      the count climbs 4 → 10. Chips removed. Phone: each step shows its "after" shot instead.
-    - Close: "Nothing else." with YouTube's noise (Up next, 9+, Shorts, thumbnails, Trending…) around
-      it, drifting away and blurring as you scroll; privacy line + CTA. Footer: links, legal line, then
-      "D-Tox" set full width, lit by a mint spotlight that follows the pointer.
+  - 2e verdict (Najmush, 2026-11-19): footer wordmark far too big (ate the screen); finish close +
+    footer in about one screen; the noise trick lags; more numbers; story frame and popup lack
+    symmetry, type and feedback; whole page should be rich like mihrab-ummah and still fast; the
+    close should show Home full of videos emptying into something meaningful. Inspiration: Proton
+    Pass (popup craft), saaquiblabs, mihrab-ummah.
+  - **Pass 3 (2026-11-19, not yet seen by Najmush):**
+    - Showcase: a before/after **wipe** (drag, arrow keys, or it plays itself); dashed marks on the
+      "as it comes" side, a hatched "nothing here pulling you away" where the column was; chips tick
+      as the line passes each hidden thing. Dot grid + layered glow background. Fits one screen.
+    - Story: one centred browser. Per step: a spotlight marks what will go → the popup drops from
+      the toolbar icon → that group's switches flip one by one (count rolls, ticks fill, icon tiles
+      light) → it closes → the page changes with a mint sweep. Clicking the icon opens it to try.
+      Popup restyled (Proton-like): icon tile per row, two-line rows, segmented tabs, 10-tick meter,
+      Instrument Serif count.
+    - Numbers: a bento of nine (7 KB with a size comparison, 0 requests, 1 permission, 0 timers,
+      10 switches, 2 languages nightly, 1 stylesheet; main-thread % and load ms as PLACEHOLDER).
+    - **Home scene** (new, `#home`): YouTube's home built in the page from live titles/thumbnails
+      (`feed/`, `extension/scripts/prototype-feed.mjs`; signed-out Home is empty, so no capture
+      can show a feed). On scroll the chips, cards, Shorts shelf, Shorts link and Explore leave one
+      by one; the Intention Page arrives and YouTube's search lights up. **Two versions, A (as
+      built, D) and B (richer: three cards Subscriptions / Watch later / History, "/ to search"),
+      switched by the yellow prototype pill; Najmush picks after seeing them.**
+    - End: "Nothing else." + noise + CTA, then the footer, in one screen. The wordmark sits beside
+      the links at about a quarter of the height; its light is a moving glow under a static
+      knock-out (transform only).
+    - Speed: all scroll motion is CSS scroll timelines (compositor), transform/opacity only, no
+      animated blur; the fixed full-page grain layer is gone; captures are WebP at 1440/2160 with
+      srcset (300–450 KB JPGs → 18–135 KB).
   - Captures: `extension/scripts/prototype-capture.mjs product` (`Q=how+to+make+pasta`), 1440×900 @1.5,
     YouTube dark theme (cookie `PREF=f6=400`), video blocked (player shows the thumbnail), **every
     Setting on in the "after" shots** (except the redirect), YouTube's popups/tooltips hidden, and the
     hidden parts' positions written to `shots/regions.json`. Watch after still leaves YouTube's empty
     right column (the real extension does that too; maybe worth widening the player in #21).
-  - Next: Najmush reacts to 2e. Then record the three #22 picks (Popup B→D, Intention Page D, page H)
+  - Next: Najmush reacts to pass 3 and picks Home scene A or B. Then record the three #22 picks (Popup B→D, Intention Page D, page H)
     in #22 and here.
 
 ## Decisions (grill, 2026-11-18)
