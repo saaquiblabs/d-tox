@@ -1,26 +1,29 @@
 // Saves a trimmed copy of a live YouTube page as a test fixture.
 //   node tests/fixtures/capture.mjs watch 'https://www.youtube.com/watch?v=jNQXAC9IVRw'
+//   node tests/fixtures/capture.mjs gaming 'https://www.youtube.com/gaming' 1600
+// The optional width sets the window (default 1280). From about 1300 px YouTube draws its full
+// menu; below that only the narrow one.
 // Video and image requests are blocked, so nothing plays. The saved page keeps YouTube's
 // element tree (names, ids, attributes, the player's controls) and a little text, and drops
-// scripts, styles, media, the contents of iframes (so no live chat messages) and all but the first few items of
-// long lists. Review the diff before committing a refresh.
+// scripts, styles, media, the contents of iframes (so no live chat messages) and all but the
+// first few items of long lists. Review the diff before committing a refresh.
 import { chromium } from '@playwright/test';
 import { writeFile } from 'node:fs/promises';
 
-const [name, url] = process.argv.slice(2);
+const [name, url, width = '1280'] = process.argv.slice(2);
 if (!name || !url?.startsWith('https://www.youtube.com/')) {
   console.error('usage: node tests/fixtures/capture.mjs <name> <https://www.youtube.com/...>');
   process.exit(1);
 }
 
 const browser = await chromium.launch();
-const page = await browser.newPage({ locale: 'en-US', viewport: { width: 1280, height: 900 } });
+const page = await browser.newPage({ locale: 'en-US', viewport: { width: Number(width), height: 900 } });
 await page.route(/googlevideo\.com|\.(jpg|jpeg|png|webp|gif|mp4|webm)(\?|$)|\/ytimg|doubleclick|googlesyndication/, (r) => r.abort());
 await page.goto(url, { waitUntil: 'domcontentloaded' });
 await page.waitForSelector('ytd-app', { timeout: 30_000 });
 await page.evaluate(() => document.querySelector('video')?.pause());
-// Comments and other lazy parts load on scroll.
-for (let i = 0; i < 8; i++) {
+// Comments and other lazy parts load on scroll. On a Short, scrolling swipes to the next one.
+for (let i = 0; i < (url.includes('/shorts/') ? 0 : 8); i++) {
   await page.evaluate(() => (document.querySelector('ytd-watch-flexy #comments') ?? document.scrollingElement)?.scrollIntoView());
   await page.mouse.wheel(0, 800);
   await page.waitForTimeout(1500);
@@ -32,13 +35,14 @@ const html = await page.evaluate(() => {
   doc.querySelectorAll('script, style, link, iframe:not(#chatframe), noscript, video, img, source, svg, template').forEach((n) => n.remove());
   // Live chat is an iframe: keep the frame, empty, so tests can see it without anyone's messages.
   doc.querySelector('iframe#chatframe')?.removeAttribute('src');
-  // Keep the first 3 items of long lists.
+  // Keep the first 3 items of long lists, counting Shorts and other items apart so both stay.
   for (const list of ['ytd-comment-thread-renderer', 'ytd-compact-video-renderer', 'yt-lockup-view-model', 'ytd-rich-item-renderer', 'ytd-video-renderer', 'ytd-playlist-panel-video-renderer', 'ytd-macro-markers-list-item-renderer', '.ytp-modern-videowall-still']) {
-    const byParent = new Map();
+    const countsByParent = new Map();
     for (const el of doc.querySelectorAll(list)) {
-      const n = (byParent.get(el.parentNode) ?? 0) + 1;
-      byParent.set(el.parentNode, n);
-      if (n > 3) el.remove();
+      const kind = el.querySelector('a[href^="/shorts/"]') ? 'short' : 'other';
+      const counts = countsByParent.get(el.parentNode) ?? { short: 0, other: 0 };
+      countsByParent.set(el.parentNode, counts);
+      if (++counts[kind] > 3) el.remove();
     }
   }
   // Don't commit strangers' names and words: replace comment text and links with placeholders.

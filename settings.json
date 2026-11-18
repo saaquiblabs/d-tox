@@ -30,5 +30,45 @@
     "group": "Watch",
     "type": "switch",
     "calmDefault": false
+  },
+  {
+    "id": "shorts",
+    "name": "Shorts",
+    "hides": "Hides Shorts shelves, the Shorts link in the menu, Shorts in search and a channel's Shorts; a link to a Short still opens.",
+    "group": "Shorts",
+    "type": "switch",
+    "calmDefault": true
+  },
+  {
+    "id": "shorts-redirect",
+    "name": "Open Shorts in the normal player",
+    "hides": "Turns every Short into a normal video: it opens in the normal player, not the Shorts swipe feed.",
+    "group": "Shorts",
+    "type": "switch",
+    "calmDefault": false
+  },
+  {
+    "id": "search-clean-up",
+    "name": "Search clean-up",
+    "hides": "Hides the shelves in search results, such as \"People also watched\" and Shorts, and keeps every result.",
+    "group": "Search",
+    "type": "switch",
+    "calmDefault": false
+  },
+  {
+    "id": "explore",
+    "name": "Explore, Trending and Playables",
+    "hides": "Hides Explore, Trending and Playables from YouTube's menu, with the whole Explore section (Music, Gaming, News, Sports and the rest).",
+    "group": "Everywhere",
+    "type": "switch",
+    "calmDefault": false
+  },
+  {
+    "id": "bell",
+    "name": "Notifications bell",
+    "hides": "Hides the notifications bell and its red count.",
+    "group": "Everywhere",
+    "type": "switch",
+    "calmDefault": false
   }
 ]

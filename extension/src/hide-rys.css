@@ -1,0 +1,23 @@
+/*! This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not distributed with this file, You can obtain one at https://mozilla.org/MPL/2.0/. Selectors from Remove YouTube Suggestions by Lawrence Hook, https://github.com/lawrencehook/remove-youtube-suggestions */
+/*
+ * Selectors ported from RYS (src/content-script/main.css at 5330fef, November 2026), which is
+ * MPL-2.0, so this file stays MPL-2.0 (ADR 0001); the rest of D-Tox is MIT. D-Tox gates each
+ * rule on its own <html> attribute and scopes it to the pages it belongs to.
+ */
+
+/* Shorts · Shorts shelves on browse pages, search and beside a video (RYS remove_all_shorts,
+   remove_shorts_results). In search only a grid shelf of Shorts items: another kind of grid
+   shelf is left to search clean-up. :has() 2 of 5, child steps and element names only. */
+html[data-dtox-shorts] :is(ytd-browse, ytd-search, ytd-watch-flexy) ytd-reel-shelf-renderer,
+html[data-dtox-shorts] ytd-search ytd-item-section-renderer > #contents > grid-shelf-view-model:has(> div > .ytGridShelfViewModelGridShelfRow > .ytGridShelfViewModelGridShelfItem > ytm-shorts-lockup-view-model-v2),
+/* Search · search clean-up: shelves between results (RYS remove_extra_results, remove_shorts_results) */
+html[data-dtox-search-clean-up] ytd-search ytd-item-section-renderer > #contents > :is(grid-shelf-view-model, ytd-shelf-renderer, ytd-reel-shelf-renderer),
+/* Everywhere · Explore and Trending in the menu (RYS remove_explore_link), and the menu's whole
+   Explore section, found by its Movies & TV and Music links (RYS remove_explore_section).
+   :has() 3 of 5, limited to the menu. */
+html[data-dtox-explore] :is(ytd-guide-renderer, ytd-mini-guide-renderer) a:is([href="/feed/trending"], [href^="/feed/explore"]),
+html[data-dtox-explore] ytd-guide-renderer ytd-guide-section-renderer:has(> #items a:is([href^="/feed/storefront"], [href="/channel/UC-9-kyTW8ZkZNDHQJ6FgpwQ"])),
+/* Everywhere · the notifications bell (RYS remove_notif_bell) */
+html[data-dtox-bell] ytd-masthead ytd-notification-topbar-button-renderer {
+  display: none !important;
+}

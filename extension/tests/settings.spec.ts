@@ -1,13 +1,16 @@
 import { existsSync } from 'node:fs';
 import settings from '../../settings.json' with { type: 'json' };
-import { cases } from './cases';
-import { expect, test, turn } from './extension';
+import { cases, pagesOf, savedPages } from './cases';
+import { expect, store, test, turn } from './extension';
 import type { Page } from '@playwright/test';
 
 const settingSwitch = (popup: Page, name: string) => popup.getByRole('checkbox', { name, exact: true });
 const masterSwitch = (popup: Page) => popup.getByRole('checkbox', { name: 'D-Tox is on' });
 
 const groups = ['Home', 'Watch', 'Shorts', 'Search', 'Everywhere'];
+
+/** Every switch off, so one Setting can be tested alone. */
+const allOff = Object.fromEntries(settings.filter((s) => s.type === 'switch').map((s) => [s.id, false]));
 
 test('every Setting in settings.json has the agreed shape', () => {
   const ids = new Set<string>();
@@ -33,7 +36,7 @@ for (const setting of settings) {
 
     test('has a saved page to test against', () => {
       expect(c, `add "${setting.id}" to tests/cases.ts`).toBeDefined();
-      for (const page of [c!, ...('elsewhere' in c! ? (c.elsewhere ?? []) : [])])
+      for (const page of pagesOf(c!))
         expect(existsSync(new URL(`./fixtures/${page.fixture}`, import.meta.url)), `missing tests/fixtures/${page.fixture}`).toBe(true);
       if ('spec' in c!) expect(existsSync(new URL(`./${c.spec}`, import.meta.url)), `missing tests/${c.spec}`).toBe(true);
     });
@@ -46,9 +49,17 @@ for (const setting of settings) {
       }
     };
 
+    // Checks this Setting's own attribute, not only what is visible: another Setting in the
+    // Calm Default can hide the same thing (Shorts hides the search page's Shorts shelf).
     test('the page starts on the Calm Default', async ({ openSaved }) => {
       const page = await openSaved(c.fixture, c.url);
-      await distractionsHidden(page, setting.calmDefault === true);
+      const html = expect(page.locator('html'));
+      if (setting.calmDefault) {
+        await html.toHaveAttribute('data-dtox-' + setting.id);
+        await distractionsHidden(page, true);
+      } else {
+        await html.not.toHaveAttribute('data-dtox-' + setting.id);
+      }
     });
 
     if (setting.calmDefault) {
@@ -71,9 +82,12 @@ for (const setting of settings) {
     }
 
     test('switching it on and off in the popup applies to the open tab without a reload', async ({ openSaved, openPopup }) => {
+      // Every other Setting off, so none of them hides this one's Distractions too.
+      const popup = await openPopup();
+      await store(popup, allOff);
+      await popup.reload();
       const page = await openSaved(c.fixture, c.url);
       await page.evaluate(() => ((window as any).notReloaded = true));
-      const popup = await openPopup();
       const switchEl = settingSwitch(popup, setting.name);
 
       await turn(switchEl, true);
@@ -85,12 +99,48 @@ for (const setting of settings) {
       expect(await page.evaluate(() => (window as any).notReloaded)).toBe(true);
     });
 
-    for (const other of c.elsewhere ?? []) {
-      test(`leaves the rest of ${other.fixture} alone`, async ({ openSaved, openPopup }) => {
+    // Hides only what it says, on every saved page: its Distractions wherever they are (and the
+    // element a rule hides around them, such as the list that holds them), and nothing else.
+    const allDistractions = pagesOf(c).flatMap((p) => ('distractions' in p ? (p.distractions ?? []) : []));
+    for (const saved of savedPages) {
+      const spot = pagesOf(c).find((p) => p.fixture === saved.fixture);
+      const distractions = spot && 'distractions' in spot ? (spot.distractions ?? []) : [];
+      const title = distractions.length ? `on ${saved.fixture} it hides its Distractions and nothing else` : `hides nothing on ${saved.fixture}`;
+      test(title, async ({ openSaved, openPopup }) => {
         const popup = await openPopup();
-        await turn(settingSwitch(popup, setting.name), true);
-        const page = await openSaved(other.fixture, other.url);
-        for (const kept of other.keeps) await expect(page.locator(kept).first(), `${kept} stays`).toBeVisible();
+        await store(popup, allOff);
+        const page = await openSaved(saved.fixture, saved.url);
+        await page.waitForFunction(() => ![...document.documentElement.attributes].some((a) => a.name.startsWith('data-dtox-')));
+        for (const d of distractions) await expect(page.locator(d).first(), `${d} is in the saved page`).toBeVisible();
+
+        // Mark everything visible now, turn the Setting on, then look for marked things that went.
+        await page.evaluate(() => {
+          for (const el of document.body.querySelectorAll('*')) if (el.checkVisibility()) el.setAttribute('data-test-shown', '');
+        });
+        await store(popup, { [setting.id]: true });
+        await expect(page.locator('html')).toHaveAttribute('data-dtox-' + setting.id);
+
+        for (const d of distractions) {
+          for (const el of await page.locator(d).all()) await expect(el, `${d} is hidden`).toBeHidden();
+        }
+        for (const kept of spot && 'keeps' in spot ? spot.keeps : []) {
+          const all = await page.locator(kept).all();
+          expect(all.length, `${kept} is in the saved page`).toBeGreaterThan(0);
+          for (const el of all) await expect(el, `${kept} stays`).toBeVisible();
+        }
+        const wronglyHidden = await page.evaluate((allowed) => {
+          // A hidden element is allowed if it, or a hidden element around it, is a Distraction
+          // or holds one (a rule may hide the list around its items).
+          const isAllowed = (el: Element) => {
+            for (let e: Element | null = el; e && !e.checkVisibility(); e = e.parentElement)
+              if (allowed.some((sel) => e!.matches(sel) || e!.querySelector(sel))) return true;
+            return allowed.some((sel) => el.closest(sel));
+          };
+          const gone = [...document.querySelectorAll('[data-test-shown]')].filter((el) => !el.checkVisibility() && !isAllowed(el));
+          // Report only the outermost ones.
+          return gone.filter((el) => !gone.includes(el.parentElement!)).slice(0, 5).map((el) => el.outerHTML.slice(0, 160));
+        }, allDistractions);
+        expect(wronglyHidden, 'hidden but not one of its Distractions').toEqual([]);
       });
     }
 

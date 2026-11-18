@@ -1,7 +1,7 @@
 // Copies Settings from chrome.storage.sync onto <html> as data-dtox-* attributes, then follows
-// storage changes so the popup applies live. hide.css does the hiding (ADR 0001). The one thing
-// CSS can't do, Autoplay off, is below: it listens to YouTube's own events.
-// No timers, no observers.
+// storage changes so the popup applies live. hide.css does the hiding (ADR 0001). The two things
+// CSS can't do, Autoplay off and the Shorts redirect, are below: they listen to YouTube's own
+// events. No timers, no observers.
 type Values = Record<string, boolean | string>;
 
 const defaults: Values = { enabled: true, ...__DTOX_CALM_DEFAULT__ };
@@ -46,11 +46,23 @@ document.addEventListener('yt-player-updated', autoplayOff);
 // Media events don't bubble; listening in the capture phase sees the video start.
 document.addEventListener('playing', autoplayOff, true);
 
+// Shorts redirect: a Short opens in the normal player. Checked once Settings load (a full load
+// of a Short's URL) and whenever the current entry changes, which includes YouTube's own
+// history.pushState. Not on 'navigate': that fires before pushState commits, so replace() would
+// replace the page before the Short. replace(), so Back doesn't return to the Short.
+function redirectShort() {
+  const id = /^\/shorts\/([\w-]+)/.exec(location.pathname)?.[1];
+  if (id && loaded && current.enabled && current['shorts-redirect'] === true) location.replace('/watch?v=' + id);
+}
+
+navigation.addEventListener('currententrychange', redirectShort);
+
 chrome.storage.sync.get(defaults).then((stored) => {
   current = { ...defaults, ...(stored as Values) };
   loaded = true;
   apply();
   autoplayOff();
+  redirectShort();
 });
 
 chrome.storage.sync.onChanged.addListener((changes) => {
@@ -59,6 +71,8 @@ chrome.storage.sync.onChanged.addListener((changes) => {
     if (id in defaults) current[id] = (changes[id]?.newValue as Values[string] | undefined) ?? defaults[id]!;
   }
   apply();
+  // Switched on while a Short is open: open it in the normal player now, not at the next move.
+  if (changes['shorts-redirect'] || changes.enabled) redirectShort();
   if (changes['autoplay-off'] || changes.enabled) {
     autoplayPending = true;
     autoplayOff();

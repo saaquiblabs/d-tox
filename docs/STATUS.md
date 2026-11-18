@@ -1,6 +1,6 @@
 # Status
 
-Last updated: 2026-11-19, 00:30 IST. Each session overwrites this at handoff.
+Last updated: 2026-11-19 (IST). Each session overwrites this at handoff.
 
 ## Where we are
 
@@ -15,13 +15,17 @@ finished: 32 questions, all answered by Najmush on 2026-11-18. **Read `CONTEXT.m
   Setting so far: comments), `extension/` (esbuild build, `src/hide.css`, `src/content.ts`, plain
   popup, saved-page Playwright tests), `.githooks/pre-push`, placeholder `site/` and `checks/`.
   How to build, test and add a Setting: root `README.md`.
-- **Site skeleton (#26) merged (PR #33), going live now.** Umami website ID is set. `site/`: Astro 7.4.7 static, ported
-  from the studio site; `/` (stand-in for #27), `/welcome` (Calm Default from `settings.json` + pin
-  steps), `/privacy` (corrected: `chrome.storage.sync`, nothing sent), 404. `npm run verify` = unit
-  tests, build, `/welcome` vs `settings.json` check, link check, Lighthouse (all 100 on phone +
-  desktop, pages 13–17 KB, 0 KB JS; passed after the rebase on 2026-11-18). The pre-push hook runs
-  it when a push touches `site/`, `settings.json` or `extension/public/`. Brand copies pinned to
-  saaquiblabs `042b314` (`npm run sync-brand`). Goes live through the [HUMAN] steps in `site/README.md`.
+- **Site (#26) is live (2026-11-19)** at `d-tox.saaquiblabs.com`, Umami included; Najmush
+  checked it. `site/`: Astro static, `/` (stand-in for #27), `/welcome`, `/privacy`, 404;
+  `npm run verify` = tests, build, `/welcome` vs `settings.json`, links, Lighthouse. Openship
+  project `d-tox.saaquiblabs.com` (`proj_ombNMbyjVUOS-aV7`, home-vps); the domain had to be
+  added as the project's public endpoint before the edge served the real certificate. Deploys
+  are manual: `ssh najmush-oracle '~/.openship/bin/openship --local deploy --project
+  proj_ombNMbyjVUOS-aV7 --branch main --env production --watch'`.
+- **#20 (PR #36, open):** Settings shorts, shorts-redirect, search-clean-up, explore, bell.
+  RYS-derived selectors in `extension/src/hide-rys.css` (MPL-2.0, its own file). Merged with
+  #19's harness: cases may list `distractions` under `elsewhere`, and every hiding Setting is
+  checked on every saved page to hide nothing outside its Distractions.
 
 ## Decisions (grill, 2026-11-18)
 
@@ -50,7 +54,7 @@ finished: 32 questions, all answered by Najmush on 2026-11-18. **Read `CONTEXT.m
   page; a ~1 KB script copies Settings; no timers or hiding observers; at most 5 `:has()`;
   no selectors that match text. Popup in plain TS and CSS. Under 40 KB excluding icons.
 - **Build is plain esbuild, not WXT** (measured in #18: WXT added ~4.4 KB; ADR 0001).
-  Current size 2.42 KB.
+  Current size 7.16 KB (script 1,271 bytes); `:has()` 3 of 5.
 - Repo: `extension/`, `site/` (Astro static, set up like saaquiblabs `site/`),
   `settings.json` (the single list of Settings), `checks/`, `docs/`.
 - Release Gate: a manual Openship job on the home VPS. It runs the audit with every Setting on
@@ -75,22 +79,19 @@ finished: 32 questions, all answered by Najmush on 2026-11-18. **Read `CONTEXT.m
 
 ## Pipeline
 
-research ✅ → grill ✅ → spec ✅ (#16) → tickets ✅ (#18–#28) → build: #18 ✅ (PR #30), #26 ✅ (PR #33, going live), #19 ✅ (PR #34), rest next →
+research ✅ → grill ✅ → spec ✅ (#16) → tickets ✅ (#18–#28) → build: #18 ✅ (PR #30), #26 ✅ (live), #19 ✅ (PR #34), #20 PR #36, rest next →
 prototypes of the popup, Intention Page and product page (seen running before anything is picked).
 
-## Next step: #20 and #24 on branches (#19 and #26 merged)
-
-On 2026-11-18 four sessions ran in parallel and the Claude limit ran out. #20 and #24 still end
-with a `wip(#n)` commit: saved as they stood, **not tested as a whole**. Pick up from here.
+## Next step: merge #20, finish #24
 
 | Branch | Ticket | State | To finish |
 |---|---|---|---|
-| `feat/20-shorts-search-menu-bell` | #20 Shorts hide + redirect, search clean-up, Explore/Trending/Playables, bell | Code written, typecheck passes. Adds `src/hide-rys.css` (MPL-2.0, from RYS). Full suite not run; tests not proven fail-first. | Rebase on `main` now that #19 is merged (they overlap: `content.ts`, `hide.css`, `settings.json`, `tests/`). Use #19's test helpers: `turn()` in `tests/extension.ts` (waits for storage), `distractions` / `keeps` / `elsewhere` in `cases.ts`. Then full tests, `/code-review`, STATUS, PR. **Decisions for Najmush:** (1) a channel's Shorts tab can only be found by `tab-title="Shorts"` (text; ADR 0001 forbids it): amend the ADR or leave the tab; (2) the bell and signed-in home Shorts shelves are untested against real markup (only signed-out pages could be saved); (3) Release Gate risk: hiding Shorts on Shorts-heavy searches may make YouTube load page after page. |
-| `feat/24-nightly-check` | #24 nightly check (Openship job) | `checks/` written (`nightly.ts`, `job.mjs`, `lib/`), its 9 tests pass. The live run against YouTube was interrupted. | Run the live check once (`npm run nightly` in `checks/`, no video plays); `/code-review`; STATUS; PR. Then the [HUMAN] Openship job setup and the issues token. |
+| `feat/20-shorts-search-menu-bell` | #20 | PR #36. Merged with `main` (#19's harness), reviewed (2026-11-19) and review fixes in; 104 tests green. | Merge on Najmush's go-ahead. |
+| `feat/24-nightly-check` | #24 nightly check (Openship job) | `checks/` written (`nightly.ts`, `job.mjs`, `lib/`), its 9 tests pass. The live run against YouTube was interrupted. | Rebase on `main` after #20. Run the live check once (`npm run nightly` in `checks/`, no video plays); `/code-review`; STATUS; PR. Then the [HUMAN] Openship job setup and the issues token. |
 
-**Order (two sessions at most at a time, four emptied the limit):**
+**Order (two sessions at most at a time):**
 1. ✅ #19 + #26.
-2. #20 (rebased on #19) + #24.
+2. #20 (PR #36) + #24.
 3. Then #21 (after #19) and #25 (alone on a quiet machine: it measures speed). #23, #27, #28 as before; #22 prototypes still need Najmush.
 
 Merge one PR at a time; after each, rebase the other open branch on `main`.
@@ -100,11 +101,29 @@ Merge one PR at a time; after each, rebase the other open branch on `main`.
 (plus `site/` or `checks/` where the ticket uses them) and `npx playwright install chromium` once.
 Start Claude inside the worktree and say: "Continue #19 from the STATUS table."
 
-**#26 go-live ([HUMAN], `site/README.md` § Going live):** 1. create the D-Tox website in Umami and
-give Claude its ID (until then the tag, the footer line and the privacy page's Umami paragraph are
-left out); 2. Openship clone access if the public clone 403s; 3. the Openship project
-(`rootDirectory: site`, build `npm run verify`); 4. Cloudflare A record `d-tox` → `144.24.124.152`,
-grey cloud; 5. domain + certificate; 6. checks.
+**#20, accepted by Najmush (2026-11-19)**
+- "People also watched" (`ytd-shelf-renderer`) is hidden by search clean-up but untested: no
+  signed-out capture shows it (tried 4 searches); it seems signed-in only. A test needs a
+  signed-in capture, i.e. Najmush's cookies — his call if ever wanted.
+- A channel's Shorts *tab* stays visible; only its grid is hidden. It can be found only by
+  `tab-title="Shorts"` (text), which ADR 0001 forbids.
+- Untested rules (no signed-out saved page has them): the Trending, Explore and Playables
+  menu links (only the Explore section is tested), and search clean-up's
+  `ytd-horizontal-card-list-renderer`. The full menu's Shorts link is found by position (first
+  section, the entry without a link); signed-in menus may differ. All need signed-in captures.
+- "Explore, Trending and Playables" hides the menu's whole Explore section (Music, Gaming, News,
+  Sports…); its "hides" line says so (issue: "the menu offers nothing to browse").
+- Still open from the handoff: the bell and signed-in Home Shorts shelves are untested against
+  real signed-in markup; Release Gate risk that hiding Shorts on Shorts-heavy searches makes
+  YouTube load page after page (#25 should look).
+- The Shorts redirect listens to `currententrychange`, not `navigate`: `navigate` fires before
+  YouTube's pushState commits, so `replace()` replaced the page before the Short and Back left
+  YouTube. Search ads are left alone; no Setting covers ads.
+- Flaky (seen once in 4 full runs, never in 72 runs alone): `autoplay.spec.ts` › "the saved
+  page starts with YouTube autoplay on" (#19's test), likely a storage/popup race under full
+  parallel load. Fix with #21 or when it next shows.
+- #19's watch-page Settings now go through the every-saved-page check too; a hidden element
+  counts as a Distraction if it is one, holds one, or sits inside a hidden one.
 
 **Carry-overs from #26's review**
 - `/welcome` now lists #19's two Calm Default Settings (Recommendations, Autoplay off). A choice (Home) that starts on YouTube's default must use `calmDefault: false`.

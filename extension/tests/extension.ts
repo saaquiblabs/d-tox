@@ -3,6 +3,7 @@ import { createHash } from 'node:crypto';
 import settings from '../../settings.json' with { type: 'json' };
 import { readFileSync, realpathSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
+import { savedPages } from './cases';
 
 const dist = realpathSync(fileURLToPath(new URL('../dist', import.meta.url)));
 const fixtures = fileURLToPath(new URL('./fixtures/', import.meta.url));
@@ -13,7 +14,18 @@ const extensionId = [...createHash('sha256').update(dist).digest('hex').slice(0,
   .map((c) => String.fromCharCode(97 + parseInt(c, 16)))
   .join('');
 
+/** Saved page served at each youtube.com URL: every page the cases name, plus any a test opens. */
+type Served = Map<string, string>;
+
+/** Which saved page answers a URL. Any other video's watch URL gets the saved watch page (that
+ *  is where the Shorts redirect lands). Everything else is refused, so nothing is fetched. */
+function fixtureFor(served: Served, href: string) {
+  const url = new URL(href);
+  return served.get(url.href) ?? (url.origin === 'https://www.youtube.com' && url.pathname === '/watch' ? 'watch.html' : undefined);
+}
+
 type Fixtures = {
+  served: Served;
   context: BrowserContext;
   /**
    * Opens a saved page at its youtube.com URL. Nothing else is fetched. `init` runs in the page
@@ -25,22 +37,25 @@ type Fixtures = {
 };
 
 export const test = base.extend<Fixtures>({
-  context: async ({}, use) => {
+  served: async ({}, use) => {
+    await use(new Map(savedPages.map((p) => [p.url, p.fixture])));
+  },
+  context: async ({ served }, use) => {
     const context = await chromium.launchPersistentContext('', {
       channel: 'chromium',
       args: [`--disable-extensions-except=${dist}`, `--load-extension=${dist}`],
     });
+    await context.route((u) => u.protocol === 'https:' || u.protocol === 'http:', (route) => {
+      const fixture = fixtureFor(served, route.request().url());
+      if (!fixture) return route.abort();
+      return route.fulfill({ status: 200, contentType: 'text/html; charset=utf-8', body: readFileSync(fixtures + fixture, 'utf8') });
+    });
     await use(context);
     await context.close();
   },
-  openSaved: async ({ context }, use) => {
+  openSaved: async ({ context, served }, use) => {
     await use(async (fixture, url, init, arg) => {
-      const html = readFileSync(fixtures + fixture, 'utf8');
-      await context.route((u) => u.protocol === 'https:' || u.protocol === 'http:', (route) =>
-        route.request().url() === url
-          ? route.fulfill({ status: 200, contentType: 'text/html; charset=utf-8', body: html })
-          : route.abort(),
-      );
+      served.set(url, fixture);
       const page = await context.newPage();
       if (init) await page.addInitScript(init as (arg: unknown) => void, arg);
       await page.goto(url);
@@ -57,6 +72,10 @@ export const test = base.extend<Fixtures>({
 });
 
 export { expect };
+
+/** Writes Settings straight to storage from an extension page, without the popup's switches. */
+export const store = (extensionPage: Page, values: Record<string, unknown>) =>
+  extensionPage.evaluate((v) => chrome.storage.sync.set(v), values);
 
 /**
  * Turns a popup switch on or off and waits until chrome.storage.sync holds it. The popup writes
