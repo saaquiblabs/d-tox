@@ -7,6 +7,8 @@ import { savedPages } from './cases';
 
 const dist = realpathSync(fileURLToPath(new URL('../dist', import.meta.url)));
 const fixtures = fileURLToPath(new URL('./fixtures/', import.meta.url));
+/** The page the extension opens once on install. Served as a stub, so nothing is fetched. */
+export const welcomeUrl = 'https://d-tox.saaquiblabs.com/welcome';
 
 // Chrome derives an unpacked extension's id from its absolute path: the first 32 hex digits of
 // its SHA-256, written with the letters a–p.
@@ -46,6 +48,7 @@ export const test = base.extend<Fixtures>({
       args: [`--disable-extensions-except=${dist}`, `--load-extension=${dist}`],
     });
     await context.route((u) => u.protocol === 'https:' || u.protocol === 'http:', (route) => {
+      if (route.request().url() === welcomeUrl) return route.fulfill({ contentType: 'text/html', body: '<title>Welcome</title>' });
       const fixture = fixtureFor(served, route.request().url());
       if (!fixture) return route.abort();
       return route.fulfill({ status: 200, contentType: 'text/html; charset=utf-8', body: readFileSync(fixtures + fixture, 'utf8') });

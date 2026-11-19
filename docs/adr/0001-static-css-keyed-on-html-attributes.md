@@ -20,4 +20,10 @@ v1.4.1 made YouTube 3–14× slower on the main thread: it rewrote a style tag a
 - The script after #20 (plus the Shorts redirect): 1,271 bytes minified (700 gzipped). `:has()`
   rules: 3 of 5 (a Short in search, a Shorts grid shelf in search, the menu's Explore section),
   each with child steps only; their cost is first measured by the Release Gate (#25).
+- The script after #21 (plus the Intention Page's element and the Home redirect): 1,996 bytes
+  minified (1,021 gzipped), over the ~1 KB aim. Most of the growth builds the Intention Page:
+  CSS can't create a form, so the script makes one small element at `document_start`, and
+  `intention.css` shows it. No new
+  `:has()`; the page is known from `location.pathname` on the same `currententrychange` the
+  Shorts redirect uses.
 - Selectors ported from RYS stay MPL-2.0 in their own file, with credit; the rest is MIT. Unhook's code is under an EULA and must not be copied.

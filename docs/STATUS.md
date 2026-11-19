@@ -1,6 +1,6 @@
 # Status
 
-Last updated: 2026-11-19 (IST), 04:40. Each session overwrites this at handoff.
+Last updated: 2026-11-19 (IST), 13:30. Each session overwrites this at handoff.
 
 ## Where we are
 
@@ -108,19 +108,49 @@ finished: 32 questions, all answered by Najmush on 2026-11-18. **Read `CONTEXT.m
 
 ## Pipeline
 
-research ✅ → grill ✅ → spec ✅ (#16) → tickets ✅ (#18–#28) → build: #18 ✅ (PR #30), #26 ✅ (live), #19 ✅ (PR #34), #20 ✅ (PR #36), #24 ✅ (PR #37), rest next →
+research ✅ → grill ✅ → spec ✅ (#16) → tickets ✅ (#18–#28) → build: #18 ✅ (PR #30), #26 ✅ (live), #19 ✅ (PR #34), #20 ✅ (PR #36), #24 ✅ (PR #37), #27 live (PRs #39–#41, polish left), #21 in review (`feat/21-home-choice`), rest next →
 prototypes of the popup, Intention Page and product page (seen running before anything is picked).
 
-## Next step: #21 and #25
+## Next step: review #21, then #25
 
-#20 and #24 are merged. No branch is open. Next: #21 (Home choice + Intention Page) and #25
-(Release Gate, alone on a quiet machine: it measures speed). Najmush: the issues token for the
-nightly check (5 minutes, `checks/README.md`).
+#21 is built on `feat/21-home-choice` (PR pending Najmush's go-ahead). Next: #25 (Release Gate,
+alone on a quiet machine: it measures speed; needs a residential address, see #24 notes), then
+#23 (popup and Intention Page design). Najmush: the issues token for the nightly check
+(5 minutes, `checks/README.md`).
 
 **Order (two sessions at most at a time):**
 1. ✅ #19 + #26.
 2. ✅ #20 (PR #36) + #24 (PR #37).
-3. Then #21 (after #19) and #25 (alone on a quiet machine: it measures speed). #23, #27, #28 as before; #22 prototypes still need Najmush.
+3. #21 (in review). Then #25 (alone on a quiet machine). #23, #27 polish, #28 as before.
+
+**#21 (2026-11-19), what the next tickets should know**
+- Home is the first choice Setting: `settings.json` gives `choices` (`intention`,
+  `subscriptions`, `default`) and `calmDefault: "intention"`. `default` (or the master switch
+  off) sets no attribute, like a switch that's off. The popup shows a choice as a `<select>`.
+- The Intention Page is one element, `#dtox-intention`, that `content.ts` appends to `<html>` at
+  `document_start` (outside YouTube's app), `hidden` except on `/` once Settings have loaded;
+  `src/intention.css` shows it only under `html[data-dtox-home="intention"]`. Plain styling,
+  YouTube's colour variables with fallbacks, so it follows `html[dark]`. The search form is a
+  plain GET to `/results`; the links are `/feed/subscriptions` and `/playlist?list=WL`. Nothing
+  is read from the page, so `/privacy` ("reads nothing") still holds.
+- `hide.css` hides `ytd-browse[page-subtype="home"]` and YouTube's feed-shaped loading
+  placeholder (`#home-page-skeleton > #home-container-skeleton`, seen live while home loads)
+  whenever Home isn't on YouTube's default.
+- Subscriptions: `location.replace('/feed/subscriptions')` on `/`, at load and on
+  `currententrychange` (YouTube's pushState), so Back skips home. Same pattern as the Shorts redirect.
+- `src/background.ts` (the first service worker) opens `/welcome` on install only. Updates do
+  nothing: v1.4.1 kept its settings in `chrome.storage.local`, which v2 never reads, so an update
+  already starts on the Calm Default (no clearing needed). An update can't be tested in
+  Playwright (`chrome.runtime.reload()` leaves the extension off); only install is tested.
+- Script 1,996 bytes (ADR 0001 updated); extension 10.11 KB of 40.
+- Nightly: choices are no longer skipped; a choice is checked on its Calm Default value. Home
+  passed live in English and Hindi (2026-11-19, from the Mac). The same run failed End screens
+  in Hindi (`.ytp-fullscreen-grid .ytp-modern-videowall-still` not found on the playlist page;
+  English passed): not from #21, watch whether it repeats.
+- Checked live on the Mac: full load, YouTube's own move to home (logo from search), search
+  from the box, and YouTube's dark theme (switched in its own menu).
+- Not done: the full guide (≥1312 px) pushes YouTube's content right, but the card centres on
+  the window, so it sits slightly left of the content's middle. Design is #23.
 
 Merge one PR at a time; after each, rebase the other open branch on `main`.
 
@@ -175,7 +205,7 @@ Start Claude inside the worktree and say: "Continue #19 from the STATUS table."
 **Carry-overs from #26's review**
 - `/welcome` now lists #19's two Calm Default Settings (Recommendations, Autoplay off). A choice (Home) that starts on YouTube's default must use `calmDefault: false`.
 - The site's fonts are the system stack: Gellix is a trial licence and this repo is public.
-- `/privacy` says the extension reads nothing from YouTube's pages: re-check it in #21 (Intention Page).
+- `/privacy` says the extension reads nothing from YouTube's pages: re-checked in #21, still true.
 - The site's address is written in `astro.config.mjs`, `src/site.ts` and `tests/verify.mjs`.
 
 **#19 (merged 2026-11-19), what the next tickets should know**

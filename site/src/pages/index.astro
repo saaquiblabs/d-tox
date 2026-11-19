@@ -396,7 +396,7 @@ html[data-solo=after] .yt .q .box{border-color:#3ea6ff;box-shadow:0 0 0 3px rgb(
 const tick = () => new Promise((r) => setTimeout(r, 0));
 async function build() {
 const SOLO = new URLSearchParams(location.search).get('yt'); if (SOLO) document.documentElement.dataset.solo = SOLO;
-// Copy of ../../settings.json (2026-11-19) plus the Home choice (#21), which isn't in it yet.
+// Copy of ../../settings.json (2026-11-19), with the page's own short hints and names.
 const SETTINGS = [
   {id:'home',name:'Home',group:'Home',calm:true,hint:'Asks what you’re here for'},
   {id:'recommendations',name:'Recommendations',group:'Watch',calm:true,hint:'The column beside the video'},

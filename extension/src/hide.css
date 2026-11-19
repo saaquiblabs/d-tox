@@ -58,3 +58,12 @@ html[data-dtox-search-clean-up] ytd-search ytd-item-section-renderer > #contents
 html[data-dtox-explore] :is(ytd-guide-renderer, ytd-mini-guide-renderer) a[href^="/playables"] {
   display: none !important;
 }
+
+/* Home · the feed (and its chips), under the Intention Page or on the way to Subscriptions.
+   content.ts leaves the attribute off when Home is on YouTube's default. Also the grey
+   feed-shaped placeholder in YouTube's first HTML, shown until its app draws (the menu's
+   placeholder beside it stays). */
+html[data-dtox-home] ytd-browse[page-subtype="home"],
+html[data-dtox-home] #home-page-skeleton > #home-container-skeleton {
+  display: none !important;
+}
