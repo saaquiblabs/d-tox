@@ -112,17 +112,18 @@ finished: 32 questions, all answered by Najmush on 2026-11-18. **Read `CONTEXT.m
 research ✅ → grill ✅ → spec ✅ (#16) → tickets ✅ (#18–#28) → build: #18 ✅ (PR #30), #26 ✅ (live), #19 ✅ (PR #34), #20 ✅ (PR #36), #24 ✅ (PR #37), #27 live (PRs #39–#41, polish left), #21 ✅ (PR #42), #23 Intention Page B ✅ (PR #43), #23 popup in review, rest next →
 prototypes of the popup, Intention Page and product page (seen running before anything is picked).
 
-## Next step: review #23's popup, then #25
+## Next step: #25
 
-#23 is done in two PRs. The Intention Page B is merged (PR #43; Najmush checked it live: "better
-than what we had so far"). The popup is on `feat/23-popup`, in review. Next: #25 (Release Gate,
+#23 is done in two PRs: the Intention Page B (PR #43; Najmush checked it live: "better than what
+we had so far") and the popup (PR #44, three passes; Najmush, 2026-11-19: "lock this and move
+ahead"). Site deployed with `/changelog`. Next: #25 (Release Gate,
 alone on a quiet machine: it measures speed; needs a residential address, see #24 notes), then
 #27 polish and #28. Najmush: the issues token for the nightly check (5 minutes, `checks/README.md`).
 
 **Order (two sessions at most at a time):**
 1. ✅ #19 + #26.
 2. ✅ #20 (PR #36) + #24 (PR #37).
-3. ✅ #21. ✅ #23's Intention Page (PR #43); its popup in review. Then #25 (alone on a quiet machine), #27 polish, #28.
+3. ✅ #21. ✅ #23 (PRs #43, #44). Then #25 (alone on a quiet machine), #27 polish, #28.
 
 **#23 popup (2026-11-19), what the next tickets should know**
 - Pass 1 (the product page's popup, 360 px) → Najmush: "better", but make it "richer and
@@ -142,7 +143,7 @@ alone on a quiet machine: it measures speed; needs a residential address, see #2
   - `/changelog` ("What's new") on the site: v2.0.0 (coming soon) and v1.0.0–v1.4.1 retold from
     the GitHub releases. The popup and site footers link to it. Add an entry with each version
     bump. Needs a site deploy before the popup link works.
-- **Pass 3 (agreed with Najmush 2026-11-19), built on `feat/23-popup`, waiting for his review.**
+- **Pass 3 (agreed with Najmush 2026-11-19), reviewed and merged (PR #44).**
   Najmush: "show things VISUALLY rather than text cluttering", "negative space, air to breathe",
   "eloquent language (less words, rich meaning)", "and performance".
   - Paused: a grey night fades over the card (`.hero::before`, opacity, 300 ms); ticks, count,
@@ -172,7 +173,7 @@ alone on a quiet machine: it measures speed; needs a residential address, see #2
     when the address leaves home and shows on `yt-navigate-finish`, with an 0.18 s fade. Checked
     on live YouTube (search → logo): no overlap.
   - Size 32.41 KB of 40 (27.72 before pass 3); the Intention Page change is 0.2 KB. Screenshots on/off × light/dark shared
-    with Najmush. After merge: deploy the site (`/changelog` is 404 until then).
+    with Najmush.
 - Controls are native: `input[type=checkbox][role=switch]`, Home as a `radiogroup`. Tests find
   switches with `settingSwitch()` in `tests/extension.ts`, which opens the group's tab first.
 - `tests/popup.spec.ts` runs axe (`@axe-core/playwright`, dev only) on every tab with every "i"
