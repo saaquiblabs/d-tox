@@ -142,6 +142,29 @@ alone on a quiet machine: it measures speed; needs a residential address, see #2
   - `/changelog` ("What's new") on the site: v2.0.0 (coming soon) and v1.0.0–v1.4.1 retold from
     the GitHub releases. The popup and site footers link to it. Add an entry with each version
     bump. Needs a site deploy before the popup link works.
+- **Pass 3, agreed with Najmush (2026-11-19), not built yet (do this next, on `feat/23-popup`):**
+  Najmush: "show things VISUALLY rather than text cluttering", "negative space, air to breathe",
+  "eloquent language (less words, rich meaning)", "and performance"; on/off and tabs give too
+  little feedback, contrast too low.
+  1. On/off unmistakable: paused turns the night card grey (glow, ticks, mint and gradient count
+     go grey), rows lose their mint; one ~300 ms transition, not a cut.
+  2. Toolbar icon shows off: greyed icon set (`icon-off-*.png`) via `chrome.action.setIcon` in
+     `background.ts`, on storage change and at startup. Nothing new on YouTube.
+  3. Feedback: tab change slides and fades the panel the way you moved and the selected tab gets
+     stronger contrast; flipping a switch pops its icon tile, and the count and ticks move;
+     paused switches clearly grey. Only `transform` and `opacity` are animated; none of it runs
+     when the system asks for reduced motion.
+  4. Fewer words: drop "for YouTube", "The Calm Default / Your own mix", the paused sub-lines and
+     the Home caption "What YouTube's home shows". Keep each row's hint.
+  5. Air: no fixed panel height (no empty gap under Home); the popup's height follows the tab,
+     smoothly.
+  6. Find a switch (Najmush's "search", meaning the switches, not YouTube): a magnifier at the end
+     of the tab row, not a box. Click it, press "/", or start typing, and the tabs become a
+     field; matching rows from every group show in place and can be switched there (matched on
+     name, hint and the full line). Esc or an empty field brings the tabs back. Popup only,
+     nothing sent anywhere.
+  Then: screenshots on/off × light/dark, tests (incl. axe, the find, the toolbar icon), STATUS,
+  push to PR #44, Najmush reviews. After merge: deploy the site (`/changelog` is 404 until then).
 - Controls are native: `input[type=checkbox][role=switch]`, Home as a `radiogroup`. Tests find
   switches with `settingSwitch()` in `tests/extension.ts`, which opens the group's tab first.
 - `tests/popup.spec.ts` runs axe (`@axe-core/playwright`, dev only) on every tab with every "i"
