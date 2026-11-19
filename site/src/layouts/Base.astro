@@ -36,6 +36,11 @@ const canonical = noindex ? null : urlOf(Astro.url.pathname.replace(/\/$/, "") |
     <meta property="og:description" content={description} />
     {canonical && <meta property="og:url" content={canonical} />}
     <meta property="og:locale" content="en_IN" />
+    <meta property="og:image" content={urlOf("/og.jpg")} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="D-Tox for YouTube: YouTube for what you came for. Nothing else." />
+    <meta name="twitter:card" content="summary_large_image" />
     {/* Visit counts: self-hosted Umami, no cookies (the Privacy page and footer say so). */}
     {analytics.websiteId && (
       <script is:inline defer src={analytics.src} data-website-id={analytics.websiteId} data-domains={analytics.domains}></script>

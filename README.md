@@ -1,7 +1,14 @@
+<p align="center"><a href="https://d-tox.saaquiblabs.com"><img src="site/public/og.jpg" alt="D-Tox for YouTube: YouTube for what you came for. Nothing else." width="720"></a></p>
+
 # D-Tox for YouTube
 
-YouTube for what you came for. D-Tox hides the parts of YouTube that pull you elsewhere, and
-it stays measurably light. A Saaquib Labs product. MIT.
+**YouTube for what you came for. Nothing else.** D-Tox hides the parts of YouTube that pull you
+elsewhere: the Home feed, Shorts, recommendations, autoplay. It stays measurably light. Free, open
+source, sends nothing anywhere. A Saaquib Labs product. MIT.
+
+[Add to Chrome](https://chromewebstore.google.com/detail/ocngpkbaoflpfjamgcnnjbdnhmakmgel) ·
+[d-tox.saaquiblabs.com](https://d-tox.saaquiblabs.com) · [Privacy](https://d-tox.saaquiblabs.com/privacy) ·
+[Report a problem](https://github.com/saaquiblabs/d-tox/issues)
 
 > The rebuild (v2.0.0) is in progress: see `docs/STATUS.md`, `CONTEXT.md` and `docs/adr/`.
 
