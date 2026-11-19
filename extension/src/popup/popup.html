@@ -9,15 +9,21 @@
     <!-- The popup (#23); popup.ts fills it from settings.json. -->
     <header class="hero">
       <div class="hd">
-        <h1 class="brand"><img src="icon-48.png" alt="" width="30" height="30" /><span>D-Tox<small>for YouTube</small></span></h1>
+        <h1 class="brand"><img src="icon-48.png" alt="" width="30" height="30" />D-Tox</h1>
         <input type="checkbox" role="switch" class="sw big" id="enabled" aria-label="D-Tox is on" disabled />
       </div>
       <p id="status" aria-live="polite"></p>
       <div class="ticks" aria-hidden="true"></div>
     </header>
     <main>
-      <div class="tabs" role="tablist" aria-label="Settings"><span class="pill" aria-hidden="true"></span></div>
-      <div id="panels"></div>
+      <div class="bar">
+        <div class="tabs" role="tablist" aria-label="Settings"><span class="pill" aria-hidden="true"></span></div>
+        <input type="search" id="find" aria-label="Find a switch" placeholder="Find a switch" autocomplete="off" spellcheck="false" hidden />
+        <button type="button" class="seek" aria-label="Find a switch" aria-keyshortcuts="/" aria-controls="find" aria-expanded="false">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6" /><path d="m20 20-5-5" /></svg>
+        </button>
+      </div>
+      <div id="panels"><p class="none" hidden>Nothing matches</p></div>
     </main>
     <footer class="ft">
       <a href="https://d-tox.saaquiblabs.com/privacy" target="_blank">Privacy</a>

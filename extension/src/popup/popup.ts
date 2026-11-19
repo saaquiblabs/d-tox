@@ -2,9 +2,12 @@ import settings from '../../../settings.json' with { type: 'json' };
 
 // The popup: the master switch and how many Settings are on (the dark card at the top), a tab per
 // group, and a row per Setting (icon, name saying what it does, short hint, "i" for the full line,
-// switch). Home is three described choices. Each change is written to chrome.storage.sync; the
-// content script in every open YouTube tab picks it up at once. The controls are native inputs,
-// so keyboard and screen readers get them for free.
+// switch). Home is three described choices. A magnifier (or "/", or just typing) turns the tabs
+// into a field that finds switches across every group, in place. Each change is written to
+// chrome.storage.sync; the content script in every open YouTube tab picks it up at once. The
+// controls are native inputs, so keyboard and screen readers get them for free.
+// Motion is transform and opacity only (and the panel's height), and none of it runs when the
+// system asks for reduced motion.
 type Setting = (typeof settings)[number];
 
 const defaults: Record<string, boolean | string> = { enabled: true };
@@ -49,13 +52,43 @@ const ticks = document.querySelector('.ticks')!;
 const tablist = document.querySelector('.tabs') as HTMLElement;
 const pill = tablist.querySelector('.pill') as HTMLElement;
 const panels = document.getElementById('panels')!;
+const find = document.getElementById('find') as HTMLInputElement;
+const seek = document.querySelector('.seek') as HTMLButtonElement;
+const none = panels.querySelector('.none') as HTMLElement;
 document.getElementById('version')!.textContent = 'v' + chrome.runtime.getManifest().version;
 for (let i = 0; i < settings.length; i++) ticks.append(el('i'));
 
 const values: Record<string, boolean | string> = {};
 const isOn = (s: Setting) => (s.type === 'choice' ? values[s.id] !== 'default' : values[s.id] === true);
-const isCalmDefault = () => settings.every((s) => values[s.id] === s.calmDefault);
 let shown = '';
+let lit = -1; // ticks lit last time, so the ones that change can move
+
+const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+const moving = () => document.body.classList.contains('ready') && !reduced.matches;
+const move = (e: Element, frames: Keyframe[], ms = 300, easing = 'cubic-bezier(0.22, 1, 0.36, 1)') => {
+  if (moving()) e.animate(frames, { duration: ms, easing });
+};
+const FADE: Keyframe[] = [{ opacity: 0 }, { opacity: 1 }];
+const POP: Keyframe[] = [{ transform: 'scale(1)' }, { transform: 'scale(1.16)' }, { transform: 'scale(1)' }];
+
+/** Runs a change to what the panels show, easing the popup's height from the old to the new. */
+function resize(change: () => void) {
+  if (!moving()) return change();
+  const from = panels.offsetHeight;
+  panels.style.height = '';
+  change();
+  const to = panels.offsetHeight;
+  if (from === to) return;
+  panels.style.height = from + 'px';
+  panels.classList.add('sizing');
+  void panels.offsetHeight; // start from the old height
+  panels.style.height = to + 'px';
+}
+panels.addEventListener('transitionend', (e) => {
+  if (e.target !== panels) return;
+  panels.style.height = '';
+  panels.classList.remove('sizing');
+});
 
 const save = (id: string, value: boolean | string) => {
   values[id] = value;
@@ -68,12 +101,14 @@ function refresh() {
   const n = settings.filter(isOn).length;
   document.body.classList.toggle('off', !values.enabled);
   const big = values.enabled ? String(n) : 'Paused';
-  const [line, sub] = values.enabled
-    ? [`of ${settings.length} switches on`, isCalmDefault() ? 'The Calm Default' : 'Your own mix']
-    : ['YouTube shows everything', 'Your choices are kept'];
-  status.replaceChildren(el('b', { className: shown && shown !== big ? 'bump' : '' }, big), el('span', {}, line, el('small', {}, sub)));
+  const b = el('b', { className: shown && shown !== big ? 'bump' : '' }, big);
+  status.replaceChildren(...(values.enabled ? [b, el('span', {}, `of ${settings.length} switches on`)] : [b]));
   shown = big;
-  ticks.querySelectorAll('i').forEach((t, i) => t.classList.toggle('on', i < n));
+  ticks.querySelectorAll('i').forEach((t, i) => {
+    t.classList.toggle('on', i < n);
+    if (lit >= 0 && i >= Math.min(lit, n) && i < Math.max(lit, n)) move(t, [{ transform: 'scaleY(1)' }, { transform: 'scaleY(2.2)' }, { transform: 'scaleY(1)' }], 400);
+  });
+  lit = n;
   for (const tab of tablist.querySelectorAll<HTMLElement>('[role=tab]'))
     tab.classList.toggle('dot', settings.some((s) => s.group === tab.dataset.group && isOn(s)));
 }
@@ -95,34 +130,133 @@ function row(s: Setting) {
     'aria-label': s.name,
     'aria-describedby': hides.id,
   });
-  sw.addEventListener('change', () => save(s.id, sw.checked));
+  const tile = icon(s.id);
+  sw.addEventListener('change', () => {
+    save(s.id, sw.checked);
+    move(tile, POP, 350);
+  });
   const name = el('label', { htmlFor: s.id, className: 'nm' }, el('span', {}, s.name), el('small', {}, s.hint));
-  return el('div', { className: 'row' }, icon(s.id), name, more, sw, hides);
+  const r = el('div', { className: 'row' }, tile, name, more, sw, hides);
+  r.dataset.find = [s.name, s.hint, s.hides].join(' ').toLowerCase();
+  return r;
 }
 
 /** A choice Setting (Home): one card per choice, each a native radio button with its own line. */
 function choice(s: Setting) {
-  const title = el('p', { className: 'cap', id: s.id + '-cap' }, s.hint);
-  const group = attrs(el('div', { className: 'card choices' }), { role: 'radiogroup', 'aria-labelledby': title.id });
+  const group = attrs(el('div', { className: 'card choices' }), { role: 'radiogroup', 'aria-label': s.name });
   for (const c of s.choices!) {
     const radio = el('input', { type: 'radio', name: s.id, value: c.id, checked: values[s.id] === c.id });
-    radio.addEventListener('change', () => save(s.id, c.id));
+    const tile = icon(c.id);
+    radio.addEventListener('change', () => {
+      save(s.id, c.id);
+      move(tile, POP, 350);
+    });
     const name = el('span', { className: 'nm' }, el('span', {}, c.name), el('small', {}, c.hint));
-    group.append(el('label', { className: 'opt' }, radio, icon(c.id), name, el('i', { className: 'check' })));
+    const opt = el('label', { className: 'opt' }, radio, tile, name, el('i', { className: 'check' }));
+    opt.dataset.find = [s.name, c.name, c.hint].join(' ').toLowerCase();
+    group.append(opt);
   }
-  return el('div', { className: 'choice' }, title, group);
+  return group;
 }
 
+const tabs = () => [...tablist.querySelectorAll<HTMLElement>('[role=tab]')];
+const panelOf = (t: HTMLElement) => document.getElementById(t.getAttribute('aria-controls')!)!;
+let current: HTMLElement | undefined;
+
+/** Opens a tab's panel. The new panel slides in from the side you moved towards. */
 function select(tab: HTMLElement, focus = false) {
-  for (const t of tablist.querySelectorAll<HTMLElement>('[role=tab]')) {
-    const on = t === tab;
-    t.setAttribute('aria-selected', String(on));
-    t.tabIndex = on ? 0 : -1;
-    document.getElementById(t.getAttribute('aria-controls')!)!.hidden = !on;
-  }
+  const before = current ? tabs().indexOf(current) : -1;
+  const after = tabs().indexOf(tab);
+  current = tab;
+  resize(() => {
+    for (const t of tabs()) {
+      const on = t === tab;
+      t.setAttribute('aria-selected', String(on));
+      t.tabIndex = on ? 0 : -1;
+      panelOf(t).hidden = !on;
+    }
+  });
   pill.style.cssText = `left:${tab.offsetLeft}px;width:${tab.offsetWidth}px`;
+  if (before >= 0 && before !== after)
+    move(panelOf(tab), [{ transform: `translateX(${after > before ? 16 : -16}px)`, opacity: 0 }, { transform: 'none', opacity: 1 }], 280);
   if (focus) tab.focus();
 }
+
+/** Find: the tabs give way to a field; rows from every group that match it show in place. */
+function openFind(text = '') {
+  if (find.hidden) {
+    resize(() => {
+      tablist.hidden = true;
+      find.hidden = false;
+      seek.setAttribute('aria-expanded', 'true');
+      seek.setAttribute('aria-label', 'Close find');
+      document.body.classList.add('finding');
+      find.value = text;
+      filter();
+    });
+    move(find, FADE, 200);
+  } else if (text) {
+    find.value += text;
+    resize(filter);
+  }
+  find.focus();
+}
+
+function closeFind(focusTab: boolean) {
+  if (find.hidden) return;
+  resize(() => {
+    find.value = '';
+    find.hidden = true;
+    tablist.hidden = false;
+    seek.setAttribute('aria-expanded', 'false');
+    seek.setAttribute('aria-label', 'Find a switch');
+    document.body.classList.remove('finding');
+    none.hidden = true;
+    for (const item of panels.querySelectorAll<HTMLElement>('[data-find]')) item.hidden = false;
+    for (const t of tabs()) panelOf(t).hidden = t !== current;
+  });
+  move(tablist, FADE, 200);
+  if (focusTab) current?.focus();
+}
+
+function filter() {
+  const words = find.value.toLowerCase().split(/\s+/).filter(Boolean);
+  let any = false;
+  for (const panel of panels.querySelectorAll<HTMLElement>('[role=tabpanel]')) {
+    let hit = false;
+    for (const item of panel.querySelectorAll<HTMLElement>('[data-find]')) {
+      item.hidden = !words.every((w) => item.dataset.find!.includes(w));
+      hit ||= !item.hidden;
+    }
+    panel.hidden = !hit;
+    any ||= hit;
+  }
+  none.hidden = any;
+}
+
+find.addEventListener('input', () => (find.value ? resize(filter) : closeFind(true)));
+find.addEventListener('blur', () => {
+  if (!find.value) closeFind(false);
+});
+seek.addEventListener('mousedown', (e) => e.preventDefault()); // keeps focus in the field, so its blur doesn't close it first
+seek.addEventListener('click', () => (find.hidden ? openFind() : closeFind(true)));
+document.addEventListener('keydown', (e) => {
+  if (e.ctrlKey || e.metaKey || e.altKey || e.isComposing) return;
+  if (e.target === find) {
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      closeFind(true);
+    }
+    return;
+  }
+  if (e.key === '/') {
+    e.preventDefault();
+    openFind();
+  } else if (e.key.length === 1 && /\S/.test(e.key) && !master.disabled) {
+    e.preventDefault();
+    openFind(e.key);
+  }
+});
 
 // Build only once storage has answered, so no control ever shows the wrong state: a switch drawn
 // off and then turned on would undo a click that landed in between.
@@ -143,16 +277,16 @@ chrome.storage.sync.get(defaults).then((stored) => {
     panel.append(...inGroup.filter((s) => s.choices).map(choice));
     const rows = inGroup.filter((s) => !s.choices).map(row);
     if (rows.length) panel.append(el('div', { className: 'card' }, ...rows));
-    panels.append(panel);
+    none.before(panel);
   }
   // Arrow keys move between tabs (the tab pattern); Tab goes on into the open panel.
   tablist.addEventListener('keydown', (e) => {
-    const tabs = [...tablist.querySelectorAll<HTMLElement>('[role=tab]')];
-    const i = tabs.indexOf(document.activeElement as HTMLElement);
-    const to = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: tabs.length - 1 }[(e as KeyboardEvent).key];
+    const all = tabs();
+    const i = all.indexOf(document.activeElement as HTMLElement);
+    const to = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: all.length - 1 }[e.key];
     if (i < 0 || to === undefined) return;
     e.preventDefault();
-    select(tabs[(to + tabs.length) % tabs.length]!, true);
+    select(all[(to + all.length) % all.length]!, true);
   });
   select(tablist.querySelector('[role=tab]')!);
   refresh();

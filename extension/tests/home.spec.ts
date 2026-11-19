@@ -128,7 +128,7 @@ test("the popup's Home choice switches the open tab without a reload", async ({ 
   const page = await openSaved(home.fixture, home.url);
   await page.evaluate(() => ((window as any).notReloaded = true));
   const popup = await openPopup();
-  const choice = popup.getByRole('radiogroup', { name: setting.hint });
+  const choice = popup.getByRole('radiogroup', { name: setting.name });
   const radio = (id: string) => choice.getByRole('radio', { name: new RegExp('^' + setting.choices!.find((c) => c.id === id)!.name) });
   await expect(choice.getByRole('radio')).toHaveCount(3);
   for (const c of setting.choices!) await expect(choice.getByText(c.hint, { exact: true })).toBeVisible();

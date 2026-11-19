@@ -1,6 +1,8 @@
 // Renders the extension's icons (extension/public/icon-{16,48,128}.png) from the folded-D mark
 // (site/public/logo, #22), and the site's social card (site/public/og.jpg, 1200×630; also the repo's social preview). The mark sits
 // on the product page's dark tile, so it reads on Chrome's light and dark toolbars alike.
+// Each icon also gets a paused twin (icon-off-*.png), grey and dimmed, which background.ts shows
+// in the toolbar while D-Tox is off.
 // extension/public is the single source: the site copies its favicon from there (site/scripts/copy-icons.mjs).
 //   node scripts/render-icons.mjs
 import { chromium } from '@playwright/test';
@@ -14,11 +16,11 @@ const browser = await chromium.launch({ channel: 'chromium' });
 
 // size, tile inset, corner radius, mark size (fractions of the icon), artwork
 const ICONS = [[16, 0, .22, .86, 'd-small.svg'], [48, 0, .22, .8, 'd-small.svg'], [128, .0625, .2, .7, 'd-ivory.svg']];
-for (const [n, inset, r, mark, file] of ICONS) {
+for (const [n, inset, r, mark, file] of ICONS) for (const off of [false, true]) {
   const page = await browser.newPage({ viewport: { width: n, height: n }, deviceScaleFactor: 1 });
   const t = n * (1 - 2 * inset);
-  await page.setContent(`<body style="margin:0;background:transparent"><div style="position:absolute;left:${n * inset}px;top:${n * inset}px;width:${t}px;height:${t}px;border-radius:${t * r}px;background:radial-gradient(70% 70% at 30% 20%,#174536,#090F0D 75%);box-shadow:inset 0 0 0 ${n > 16 ? 1 : 0}px rgb(255 255 255 / .1);display:grid;place-items:center"><img src="${svg(file)}" style="width:${t * mark}px;height:${t * mark}px"></div></body>`);
-  await page.screenshot({ path: at(`../public/icon-${n}.png`), omitBackground: true });
+  await page.setContent(`<body style="margin:0;background:transparent"><div style="${off ? 'filter:grayscale(1) brightness(1.1);opacity:.5;' : ''}position:absolute;left:${n * inset}px;top:${n * inset}px;width:${t}px;height:${t}px;border-radius:${t * r}px;background:radial-gradient(70% 70% at 30% 20%,#174536,#090F0D 75%);box-shadow:inset 0 0 0 ${n > 16 ? 1 : 0}px rgb(255 255 255 / .1);display:grid;place-items:center"><img src="${svg(file)}" style="width:${t * mark}px;height:${t * mark}px"></div></body>`);
+  await page.screenshot({ path: at(`../public/icon-${off ? 'off-' : ''}${n}.png`), omitBackground: true });
   await page.close();
 }
 
@@ -36,4 +38,4 @@ em{color:#A8E6CE}p{position:absolute;left:80px;bottom:72px;margin:0;font:500 24p
 await og.evaluate(() => document.fonts.ready);
 await og.screenshot({ path: at('../../site/public/og.jpg'), type: 'jpeg', quality: 82 });
 await browser.close();
-console.log('icons 16, 48, 128 → extension/public; og.jpg → site/public');
+console.log('icons 16, 48, 128 (and paused twins) → extension/public; og.jpg → site/public');

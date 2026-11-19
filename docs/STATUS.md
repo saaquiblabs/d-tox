@@ -142,36 +142,31 @@ alone on a quiet machine: it measures speed; needs a residential address, see #2
   - `/changelog` ("What's new") on the site: v2.0.0 (coming soon) and v1.0.0–v1.4.1 retold from
     the GitHub releases. The popup and site footers link to it. Add an entry with each version
     bump. Needs a site deploy before the popup link works.
-- **Pass 3, agreed with Najmush (2026-11-19), not built yet (do this next, on `feat/23-popup`):**
+- **Pass 3 (agreed with Najmush 2026-11-19), built on `feat/23-popup`, waiting for his review.**
   Najmush: "show things VISUALLY rather than text cluttering", "negative space, air to breathe",
-  "eloquent language (less words, rich meaning)", "and performance"; on/off and tabs give too
-  little feedback, contrast too low.
-  1. On/off unmistakable: paused turns the night card grey (glow, ticks, mint and gradient count
-     go grey), rows lose their mint; one ~300 ms transition, not a cut.
-  2. Toolbar icon shows off: greyed icon set (`icon-off-*.png`) via `chrome.action.setIcon` in
-     `background.ts`, on storage change and at startup. Nothing new on YouTube.
-  3. Feedback: tab change slides and fades the panel the way you moved and the selected tab gets
-     stronger contrast; flipping a switch pops its icon tile, and the count and ticks move;
-     paused switches clearly grey. Only `transform` and `opacity` are animated; none of it runs
-     when the system asks for reduced motion.
-  4. Fewer words: drop "for YouTube", "The Calm Default / Your own mix", the paused sub-lines and
-     the Home caption "What YouTube's home shows". Keep each row's hint.
-  5. Air: no fixed panel height (no empty gap under Home); the popup's height follows the tab,
-     smoothly.
-  6. Find a switch (Najmush's "search", meaning the switches, not YouTube): a magnifier at the end
-     of the tab row, not a box. Click it, press "/", or start typing, and the tabs become a
-     field; matching rows from every group show in place and can be switched there (matched on
-     name, hint and the full line). Esc or an empty field brings the tabs back. Popup only,
-     nothing sent anywhere.
-  Then: screenshots on/off × light/dark, tests (incl. axe, the find, the toolbar icon), STATUS,
-  push to PR #44, Najmush reviews. After merge: deploy the site (`/changelog` is 404 until then).
+  "eloquent language (less words, rich meaning)", "and performance".
+  - Paused: a grey night fades over the card (`.hero::before`, opacity, 300 ms); ticks, count,
+    logo and every mint below go grey (`body.off` resets `--acc`). The toolbar icon goes grey
+    too: `background.ts` sets `icon-off-*.png` (rendered by `scripts/render-icons.mjs`) and the
+    title "D-Tox (paused)" on a storage change, on install/update and at startup.
+  - Motion (Web Animations, transform/opacity only, skipped under reduced motion): the panel
+    slides in from the side you moved; a switched row's icon tile pops; changed ticks stretch;
+    the count bumps. The popup has no fixed height: `#panels` eases between heights (`resize()`).
+  - Fewer words: no "for YouTube", no Calm Default / own mix line, paused is just "Paused", no
+    Home caption (the radiogroup is named "Home page").
+  - Find: a magnifier after the tabs (outside the tablist, so Tab goes tabs → magnifier →
+    panel). Click, "/" or any typed character opens a field; rows (and Home choices) from every
+    group whose name, hint or full line hold every word show in place; "Nothing matches"
+    otherwise. Esc, an empty field, or the × closes it and focus returns to the open tab.
+    Untested in a real toolbar popup: whether Chrome lets Esc reach the field or closes the popup.
+  - Size 31.70 KB of 40 (27.72 before pass 3), all popup. Screenshots on/off × light/dark shared
+    with Najmush. After merge: deploy the site (`/changelog` is 404 until then).
 - Controls are native: `input[type=checkbox][role=switch]`, Home as a `radiogroup`. Tests find
   switches with `settingSwitch()` in `tests/extension.ts`, which opens the group's tab first.
 - `tests/popup.spec.ts` runs axe (`@axe-core/playwright`, dev only) on every tab with every "i"
-  open, in light and dark, and paused. When paused only the drawings fade (text keeps contrast).
+  open, in light and dark, paused, and while finding. Paused text keeps its contrast.
 - Count font: Instrument Serif cut to "0-9" and "Paused" (2.1 KB, `public/fonts`, OFL); esbuild
   leaves `/fonts/*` external. Brand image is `icon-48.png`.
-- Size: 27.72 KB of 40 (was 12.54). The growth is popup-only; nothing new loads on YouTube.
 
 **#21 (2026-11-19), what the next tickets should know**
 - Home is the first choice Setting: `settings.json` gives `choices` (`intention`,
