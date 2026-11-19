@@ -19,10 +19,15 @@ npm run sync-brand           # refresh the brand copies (needs your access to sa
 - **Settings:** the build reads `../settings.json` (`src/settings.ts`). `/welcome` lists every
   Setting in the Calm Default with its "hides" line; `tests/welcome.mjs` fails `verify` when the
   built page and the file disagree.
+- **Look:** every page shares `src/styles/site.css` (self-hosted Instrument Serif and Inter, OFL;
+  the colour tokens; header and footer) and `src/components/Header.astro`, `Footer.astro`. `/` has
+  its own page styles inline; the other pages add `src/styles/base.css` through `Base.astro`.
+  Astro inlines all styles (`inlineStylesheets: "always"`), so nothing blocks the first paint.
 - **Brand:** `src/brand/tokens.css` and `public/brand/symbol-flat.svg` are copies from the
   `saaquiblabs` repo, pinned to the commit in `src/brand/PINNED`. Don't edit them; run
-  `npm run sync-brand [-- <sha>]` and commit the result. Gellix is not copied (trial licence, and this
-  repo is public): the pages use the system font.
+  `npm run sync-brand [-- <sha>]` and commit the result. The pages use the flat S
+  (`symbol-flat.svg`); `tokens.css` is kept in sync but no page imports it since the product page's
+  look (#27).
 - **Icons:** `npm run build` copies the extension's icons from `../extension/public/` (gitignored here).
 - **Analytics:** self-hosted Umami, cookieless. The tag is left out until `analytics.websiteId` in
   `src/site.ts` is set (step 1 below). Lighthouse blocks it during `verify`.

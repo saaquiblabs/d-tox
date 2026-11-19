@@ -30,7 +30,16 @@ finished: 32 questions, all answered by Najmush on 2026-11-18. **Read `CONTEXT.m
   Serif + Inter self-hosted (OFL, `public/fonts/LICENSES.txt`). Gate: 100 everywhere, `/` ~395 KB
   phone. **Still to polish (#27):** PLACEHOLDER numbers (#25), the feed uses real creators'
   thumbnails (replace before promoting the page), the hero mark is hidden on phones (it was the
-  slow LCP), Header/Footer components are not shared with `/privacy` and `/welcome` yet.
+  slow LCP). Every page now shares the look: `components/Header`, `components/Footer` and
+  `styles/site.css` (fonts, tokens, header, footer) are used by `/` and by `Base.astro`
+  (`/privacy`, `/welcome`, 404); styles are inlined per page. Gate 100 everywhere, inner pages
+  ~127 KB.
+  New icon: the folded-D mark on the page's dark tile, rendered by `extension/scripts/render-icons.mjs`
+  into `extension/public/icon-{16,48,128}.png` (the toolbar icon and, copied, the favicon) plus
+  `site/public/og.jpg` (social card on every page; also the README banner). Repo description,
+  homepage and topics updated. **[HUMAN]** upload `site/public/og.jpg` as the repo's social preview
+  (GitHub Settings → Social preview; no API) and the new 128 icon to the Web Store listing at the
+  next release.
   The page builds itself after first paint, section by section, and the Home scene and the noise
   only when scrolled near (the VPS gate measured 430 ms blocking time when it was one task).
   The prototype's history and Najmush's verdicts live on `proto/22-prototypes` (docs/STATUS.md

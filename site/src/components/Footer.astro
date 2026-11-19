@@ -1,37 +1,43 @@
 ---
-// Footer: Privacy · Changelog · Sponsor (the popup's footer too), "A Saaquib Labs product", and the
-// line that says what the site counts. Ported in spirit from the studio site's Footer.astro: the
-// flat S is a CSS mask, so it takes the text colour in both themes.
-import { analytics, footer, studio } from "../site";
+// Footer, on every page (#27): the name as a knock-out over a light that follows the pointer, three
+// columns of links, and the line that says what the site counts. From the product page (the #22
+// prototype, direction H); styles in src/styles/site.css. The flat S is a CSS mask, so it takes the
+// text colour.
+import { analytics, footer, repo, studio } from "../site";
 
 const year = new Date().getFullYear();
 const here = Astro.url.pathname.replace(/\/$/, "") || "/";
+const columns: [string, { label: string; href: string }[]][] = [
+  ["Product", [{ label: "See it", href: "/#see" }, { label: "Settings", href: "/#settings" }, footer[1]]],
+  ["Open source", [{ label: "GitHub", href: repo }, { label: "Report a problem", href: `${repo}/issues` }, footer[2]]],
+  ["Trust", [footer[0], { label: "MIT licence", href: `${repo}/blob/main/LICENSE` }, studio]],
+];
 ---
 
-<footer class="ft">
-  <div class="wrap ft-in">
-    <nav aria-label="Footer">
-      <ul>
-        {footer.map((l) => <li><a href={l.href} aria-current={l.href === here ? "page" : undefined}>{l.label}</a></li>)}
-      </ul>
-    </nav>
-    <p class="by"><a href={studio.href}><span class="s" aria-hidden="true"></span>A {studio.label} product</a> · MIT · © {year}</p>
-    {/* Said only once the Umami tag is on the page (src/site.ts). */}
-    {analytics.websiteId && <p class="note">This site counts visits with Umami, which we run ourselves. No cookies. <a href="/privacy">How we count</a>.</p>}
+<footer class="sft"><div class="wrap">
+  <div class="row">
+    <div class="wm" aria-hidden="true"><span class="base"></span><span class="lamp"></span>
+      <svg viewBox="0 0 1000 300"><defs><mask id="wmk"><rect x="-5000" y="-5000" width="20000" height="20000" fill="#fff" /><text x="0" y="0" font-family="Instrument Serif" font-size="320" letter-spacing="-10" fill="#000">D-Tox</text></mask></defs><rect x="-5000" y="-5000" width="20000" height="20000" fill="#090F0D" mask="url(#wmk)" /></svg></div>
+    <div>
+      <nav class="links" aria-label="Footer">
+        {columns.map(([h, links]) => (
+          <div><p class="fh">{h}</p><ul>{links.map((l) => <li><a href={l.href} aria-current={l.href === here ? "page" : undefined}>{l.label}</a></li>)}</ul></div>
+        ))}
+      </nav>
+      <p class="legal"><a href={studio.href}><span class="s-mask"></span> A {studio.label} product · © {year}</a>{analytics.websiteId && <span>Visits counted by our own Umami. No cookies.</span>}</p>
+    </div>
   </div>
-</footer>
-
-<style>
-  .ft { border-top: 1px solid var(--border); margin-top: clamp(48px, 6vw, 80px); }
-  .ft-in { display: grid; gap: 12px; padding-block: 40px 64px; font-size: var(--t-small); color: var(--text-2); }
-  ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px 24px; }
-  a { color: var(--text-2); text-decoration: none; }
-  a:hover, a[aria-current="page"] { color: var(--text); }
-  .note a { text-decoration: underline; }
-  .by a { display: inline-flex; align-items: center; gap: 8px; }
-  .s {
-    width: 16px; height: 16px; background: currentColor;
-    -webkit-mask: url(/brand/symbol-flat.svg) center / contain no-repeat;
-    mask: url(/brand/symbol-flat.svg) center / contain no-repeat;
-  }
-</style>
+</div></footer>
+<script is:inline>
+  // Fit the knock-out to the text once the font is in (and whenever the footer is laid out again), then let the light follow the pointer.
+  (() => {
+    const wm = document.querySelector('.wm'), svg = wm.querySelector('svg'), text = svg.querySelector('text'), lamp = wm.querySelector('.lamp');
+    const home = () => { lamp.style.setProperty('--sx', wm.clientWidth * .52 + 'px'); lamp.style.setProperty('--sy', wm.clientHeight * .55 + 'px'); };
+    const fit = () => { if (!wm.clientWidth) return; const b = text.getBBox(); svg.setAttribute('viewBox', `${b.x - 4} ${b.y + b.height * .1} ${b.width + 8} ${b.height * .82}`); home(); };
+    document.fonts.ready.then(() => new ResizeObserver(fit).observe(wm));
+    let q = 0, x = 0, y = 0;
+    wm.addEventListener('pointermove', (e) => { const r = wm.getBoundingClientRect(); x = e.clientX - r.left; y = e.clientY - r.top; wm.classList.add('live');
+      if (!q) q = requestAnimationFrame(() => { q = 0; lamp.style.setProperty('--sx', x + 'px'); lamp.style.setProperty('--sy', y + 'px'); }); });
+    wm.addEventListener('pointerleave', () => { wm.classList.remove('live'); home(); });
+  })();
+</script>

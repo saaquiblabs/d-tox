@@ -1,53 +1,63 @@
-/* Base styles, ported from the saaquiblabs studio site's src/styles/base.css (trimmed to what these
-   pages use). Tokens come from src/brand/tokens.css (npm run sync-brand). The look is a placeholder
-   until the product-page prototypes are picked (#22, #27). */
-
+/* The pages that use Base.astro (Privacy, Welcome, 404): their content, in the product page's look
+   (#27). Tokens, fonts, header and footer come from site.css. */
 *, *::before, *::after { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; color-scheme: light dark; scroll-padding-top: 24px; }
-body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--text);
-  font: 400 var(--t-body)/1.65 var(--font);
-  font-kerning: normal;
-  overflow-x: clip;
-}
-img, svg { max-width: 100%; height: auto; display: block; }
-a { color: inherit; text-underline-offset: .2em; text-decoration-thickness: 1px; }
-a:hover { text-decoration-thickness: 2px; }
-:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; border-radius: 4px; }
+html { -webkit-text-size-adjust: 100%; scroll-padding-top: 88px; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 400 17px/1.65 var(--sans); font-feature-settings: "cv01", "ss03"; overflow-x: clip; }
+img { max-width: 100%; display: block; }
+a { color: inherit; }
+main:focus { outline: none; }
 h1, h2, h3, p { margin: 0; }
-h1 { font-size: var(--t-display); font-weight: 500; line-height: 1.08; letter-spacing: -.02em; }
-h2 { font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 500; line-height: 1.15; letter-spacing: -.02em; }
-h3 { font-size: var(--t-h3); font-weight: 500; line-height: 1.25; letter-spacing: -.015em; }
-code { font: .9em var(--mono); }
+h1, h2, h3 { font-family: var(--disp); font-weight: 400; }
+h1 { font-size: clamp(48px, 7vw, 84px); line-height: 1; letter-spacing: -.02em; text-wrap: balance; }
+h2 { font-size: clamp(30px, 3.4vw, 42px); line-height: 1.08; letter-spacing: -.01em; text-wrap: balance; }
+h3 { font-size: 24px; line-height: 1.2; }
+code { font: .9em ui-monospace, SFMono-Regular, Menlo, monospace; }
 
-.lead { font-size: var(--t-lead); color: var(--text-2); line-height: 1.65; }
-.label { font-size: var(--t-label); font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: var(--text-2); }
-.second { font-weight: 300; font-style: italic; color: var(--text-2); }
-.wrap { max-width: var(--container); margin-inline: auto; padding-inline: var(--gutter); }
-.prose { max-width: 44rem; display: grid; gap: 14px; }
-.prose a { text-decoration: underline; }
-
-/* Skip link: first focusable element on every page. */
-.skip {
-  position: absolute; left: 16px; top: -100px; z-index: 100;
-  background: var(--btn-bg); color: var(--btn-fg);
-  padding: 8px 14px; border-radius: var(--r-pill); text-decoration: none;
+/* The page's opening: a lit panel like the product page's showcase. */
+.head {
+  position: relative; isolation: isolate; overflow: hidden; display: grid; gap: 18px;
+  padding: clamp(48px, 7vw, 88px) clamp(24px, 5vw, 64px); border-radius: clamp(24px, 3vw, 36px);
+  background: radial-gradient(60% 70% at 15% 0%, #174536 0%, transparent 70%), radial-gradient(40% 60% at 100% 100%, #13302A 0%, transparent 70%), #08130F;
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / .06), inset 0 1px 0 rgb(255 255 255 / .1);
 }
-.skip:focus { top: 16px; }
-
-/* Pill buttons */
-.btn {
-  display: inline-flex; align-items: center; gap: .5em;
-  padding: .9em 1.75em; border-radius: var(--r-pill);
-  font-weight: 500; font-size: .9375rem; line-height: 1;
-  text-decoration: none; border: 1px solid transparent;
+.head::before {
+  content: ""; position: absolute; inset: 0; z-index: -1;
+  background-image: radial-gradient(rgb(255 255 255 / .09) 1px, transparent 1.2px); background-size: 22px 22px;
+  -webkit-mask: radial-gradient(60% 80% at 20% 30%, #000, transparent 75%); mask: radial-gradient(60% 80% at 20% 30%, #000, transparent 75%);
 }
-.btn-solid { background: var(--btn-bg); color: var(--btn-fg); }
-.btn-ghost { border-color: var(--border); color: var(--text); }
-.btn-ghost:hover { border-color: var(--text-2); }
+.label { font: italic 400 22px/1 var(--disp); color: var(--acc); }
+.second, em { font-style: italic; color: var(--em); }
+.lead { font-size: clamp(17px, 1.5vw, 20px); color: var(--t2); line-height: 1.55; text-wrap: balance; }
+
+.prose { max-width: 46rem; display: grid; gap: 14px; color: var(--t2); }
+.prose h2 { color: var(--text); margin-bottom: 4px; }
+.prose b, .prose strong { color: var(--text); font-weight: 500; }
+.prose a { color: var(--text); text-decoration: underline; text-decoration-color: rgb(var(--acc-rgb) / .6); text-underline-offset: .2em; text-decoration-thickness: 1px; transition: text-decoration-color .2s; }
+.prose a:hover { text-decoration-color: var(--acc); }
+
+/* A quiet card for tables and lists that should read as one block. */
+.card { border-radius: 20px; background: linear-gradient(180deg, var(--surf), var(--bg2)); border: 1px solid var(--line); padding: 8px 24px; }
+
+.btn-ghost { display: inline-flex; align-items: center; padding: .95em 1.5em; border-radius: 999px; border: 1px solid var(--line2); font: 500 15px/1 var(--sans); color: var(--t2); text-decoration: none; transition: color .2s, border-color .2s; }
+.btn-ghost:hover { color: var(--text); border-color: rgb(255 255 255 / .24); }
+
+/* Room before the footer. */
+main { display: block; padding-bottom: clamp(72px, 9vw, 128px); }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; animation: none !important; }
+}
+
+/* Wide screens: the mark floats in the panel's empty half, as in the product page's hero. */
+@media (min-width: 1001px) {
+  .head { padding-right: 38%; }
+  .head::after {
+    content: ""; position: absolute; z-index: -1; right: 8%; top: 50%; width: min(22%, 240px); aspect-ratio: 1; translate: 0 -50%;
+    background: url(/logo/d-ivory.svg) center / contain no-repeat;
+    filter: drop-shadow(0 40px 60px rgb(0 0 0 / .55)) drop-shadow(0 0 50px rgb(var(--acc-rgb) / .18));
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .head::after { animation: float 7s ease-in-out infinite; }
+    @keyframes float { 50% { transform: translateY(-10px) rotate(-1deg); } }
+  }
 }

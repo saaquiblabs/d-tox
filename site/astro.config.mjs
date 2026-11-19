@@ -9,7 +9,8 @@ export default defineConfig({
   // Pages are addressed as the site links them: /welcome, not /welcome/. Canonical tags, the
   // sitemap and Openship's routing (cleanUrls, trailingSlash false) agree.
   trailingSlash: "never",
-  build: { format: "directory" },
+  // Styles go inline in each page (they are small), so no stylesheet blocks the first paint.
+  build: { format: "directory", inlineStylesheets: "always" },
   // Every page except the 404 page.
   integrations: [sitemap({ filter: (url) => !/\/404\/?$/.test(url) })],
 });
