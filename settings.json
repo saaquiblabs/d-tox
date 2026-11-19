@@ -1,5 +1,27 @@
 [
   {
+    "id": "home",
+    "name": "Home",
+    "hides": "Hides the recommended feed on YouTube's home page and asks \"What are you here for?\", with a search box and links to Subscriptions and Watch later.",
+    "group": "Home",
+    "type": "choice",
+    "choices": [
+      {
+        "id": "intention",
+        "name": "Intention Page"
+      },
+      {
+        "id": "subscriptions",
+        "name": "Subscriptions"
+      },
+      {
+        "id": "default",
+        "name": "YouTube default"
+      }
+    ],
+    "calmDefault": "intention"
+  },
+  {
     "id": "recommendations",
     "name": "Recommendations",
     "hides": "Hides the suggested videos beside and below the video you're watching. Playlists, live chat, chapters and transcripts stay.",

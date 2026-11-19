@@ -12,7 +12,7 @@ import type { Case, Hides } from '../../extension/tests/cases.ts';
 import type { Result } from './issues.ts';
 
 export type Language = { name: string; hl: string; locale: string };
-export type Setting = { id: string; name: string; type: string };
+export type Setting = { id: string; name: string; type: string; calmDefault: boolean | string };
 export type Options = { revealTries?: number; settleMs?: number; hideTimeoutMs?: number; tries?: number };
 
 export const languages: Language[] = [
@@ -125,8 +125,8 @@ async function unmatched(page: Page, selectors: string[]) {
   );
 }
 
-async function setAttribute(page: Page, name: string) {
-  await page.evaluate((n) => document.documentElement.setAttribute(n, ''), name);
+async function setAttribute(page: Page, name: string, value = '') {
+  await page.evaluate(([n, v]) => document.documentElement.setAttribute(n, v), [name, value] as const);
 }
 
 type Outcome = { blocked: string } | { problem: string } | { ok: true; note?: string };
@@ -172,7 +172,8 @@ async function checkOnce(context: BrowserContext, language: Language, setting: S
 
     if ((await unmatched(page, distractions)).length < distractions.length)
       throw new Error('the check is broken: a Distraction is marked hidden with every Setting off');
-    await setAttribute(page, `data-dtox-${setting.id}`);
+    // A choice (Home) is checked on its Calm Default value, as content.ts would set it.
+    await setAttribute(page, `data-dtox-${setting.id}`, typeof setting.calmDefault === 'string' ? setting.calmDefault : '');
     let left = await unmatched(page, distractions);
     for (const end = Date.now() + o.hideTimeoutMs; left.length && Date.now() < end; left = await unmatched(page, distractions))
       await page.waitForTimeout(100);
@@ -204,10 +205,6 @@ export async function checkLanguage(
       const problem = `no case: add "${setting.id}" to extension/tests/cases.ts`;
       results.push({ kind: 'setting', setting, language: language.name, problem });
       lines.push(`  ✗  ${label}: ${problem}`);
-      continue;
-    }
-    if (setting.type !== 'switch') {
-      lines.push(`  -  ${label}: skipped, choice Settings have no live check yet`);
       continue;
     }
     if (!('distractions' in c)) {

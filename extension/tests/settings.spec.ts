@@ -9,13 +9,16 @@ const masterSwitch = (popup: Page) => popup.getByRole('checkbox', { name: 'D-Tox
 
 const groups = ['Home', 'Watch', 'Shorts', 'Search', 'Everywhere'];
 
-/** Every switch off, so one Setting can be tested alone. */
-const allOff = Object.fromEntries(settings.filter((s) => s.type === 'switch').map((s) => [s.id, false]));
+/** Every switch off and every choice on YouTube's default, so one Setting can be tested alone. */
+const allOff = Object.fromEntries(settings.map((s) => [s.id, s.type === 'switch' ? false : 'default']));
 
 test('every Setting in settings.json has the agreed shape', () => {
   const ids = new Set<string>();
   for (const s of settings as Record<string, unknown>[]) {
-    expect(Object.keys(s).sort(), JSON.stringify(s)).toEqual(['calmDefault', 'group', 'hides', 'id', 'name', 'type']);
+    const keys = ['calmDefault', 'group', 'hides', 'id', 'name', 'type'];
+    // A choice lists its values; 'default' is YouTube's own, which the content script treats as off.
+    if (s.type === 'choice') keys.push('choices');
+    expect(Object.keys(s).sort(), JSON.stringify(s)).toEqual(keys.sort());
     expect(s.id, 'id: lowercase words joined by hyphens').toMatch(/^[a-z]+(-[a-z]+)*$/);
     expect(s.id).not.toBe('enabled'); // the master switch's storage key
     expect(ids.has(s.id as string), `duplicate id ${s.id}`).toBe(false);
@@ -26,7 +29,12 @@ test('every Setting in settings.json has the agreed shape', () => {
     expect(groups).toContain(s.group);
     expect(['switch', 'choice']).toContain(s.type);
     if (s.type === 'switch') expect(typeof s.calmDefault).toBe('boolean');
-    else expect(typeof s.calmDefault).toBe('string');
+    else {
+      const choices = (s.choices as { id: string; name: string }[]).map((c) => c.id);
+      expect(choices).toContain('default');
+      // A choice that starts on YouTube's default is out of the Calm Default: calmDefault false.
+      expect([false, ...choices.filter((c) => c !== 'default')]).toContain(s.calmDefault);
+    }
   }
 });
 

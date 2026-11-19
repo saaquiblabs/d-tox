@@ -1,7 +1,7 @@
 // Copies Settings from chrome.storage.sync onto <html> as data-dtox-* attributes, then follows
-// storage changes so the popup applies live. hide.css does the hiding (ADR 0001). The two things
-// CSS can't do, Autoplay off and the Shorts redirect, are below: they listen to YouTube's own
-// events. No timers, no observers.
+// storage changes so the popup applies live. hide.css does the hiding (ADR 0001). What CSS can't
+// do is below: the Intention Page's element, Autoplay off and the two redirects (Shorts, Home on
+// Subscriptions). They listen to YouTube's own events. No timers, no observers.
 type Values = Record<string, boolean | string>;
 
 const defaults: Values = { enabled: true, ...__DTOX_CALM_DEFAULT__ };
@@ -14,7 +14,8 @@ function apply() {
     if (id === 'enabled') continue;
     const value = current.enabled ? current[id] : false;
     const name = 'data-dtox-' + id;
-    if (value === false) root.removeAttribute(name);
+    // A choice left on 'default' (YouTube's own) is off, like a switch.
+    if (value === false || value === 'default') root.removeAttribute(name);
     else root.setAttribute(name, value === true ? '' : String(value));
   }
 }
@@ -23,6 +24,37 @@ function apply() {
 // Default, so a Distraction hidden by default never flashes. (Someone who turned one back on
 // sees it a moment later instead.)
 apply();
+
+// The Intention Page: one element on <html>, outside YouTube's app, so it exists before YouTube
+// draws anything. hide.css hides the home feed; intention.css shows this only while Home is on the
+// Intention Page and the page is home (it is `hidden` everywhere else). The form and links are
+// plain YouTube URLs: nothing is read from the page.
+const el = <K extends keyof HTMLElementTagNameMap>(tag: K, props: object, ...kids: (Node | string)[]) => {
+  const e = Object.assign(document.createElement(tag), props);
+  e.append(...kids);
+  return e;
+};
+const card = el(
+  'div',
+  { id: 'dtox-intention', hidden: true },
+  el(
+    'form',
+    { action: '/results', role: 'search' },
+    el('label', { htmlFor: 'dtox-q' }, 'What are you here for?'),
+    el('input', { id: 'dtox-q', name: 'search_query', type: 'search', required: true, autocomplete: 'off' }),
+    el('button', {}, 'Search'),
+  ),
+  el('nav', {}, el('a', { href: '/feed/subscriptions' }, 'Subscriptions'), el('a', { href: '/playlist?list=WL' }, 'Watch later')),
+);
+root.append(card);
+
+// Shown once Settings load (so someone on Subscriptions never sees it on the way), on every move
+// to or from home, YouTube's own pushState included. On Subscriptions, home is replaced by it,
+// so Back doesn't return to home.
+function home() {
+  card.hidden = !(loaded && location.pathname === '/');
+  if (!card.hidden && current.enabled && current.home === 'subscriptions') location.replace('/feed/subscriptions');
+}
 
 // Autoplay off. Click YouTube's own autoplay button to off on the first watch page in this tab,
 // then leave it alone: YouTube keeps the button's state from video to video, so if the Learner
@@ -55,7 +87,10 @@ function redirectShort() {
   if (id && loaded && current.enabled && current['shorts-redirect'] === true) location.replace('/watch?v=' + id);
 }
 
-navigation.addEventListener('currententrychange', redirectShort);
+navigation.addEventListener('currententrychange', () => {
+  redirectShort();
+  home();
+});
 
 chrome.storage.sync.get(defaults).then((stored) => {
   current = { ...defaults, ...(stored as Values) };
@@ -63,6 +98,7 @@ chrome.storage.sync.get(defaults).then((stored) => {
   apply();
   autoplayOff();
   redirectShort();
+  home();
 });
 
 chrome.storage.sync.onChanged.addListener((changes) => {
@@ -73,6 +109,7 @@ chrome.storage.sync.onChanged.addListener((changes) => {
   apply();
   // Switched on while a Short is open: open it in the normal player now, not at the next move.
   if (changes['shorts-redirect'] || changes.enabled) redirectShort();
+  if (changes.home || changes.enabled) home();
   if (changes['autoplay-off'] || changes.enabled) {
     autoplayPending = true;
     autoplayOff();

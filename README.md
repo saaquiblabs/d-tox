@@ -41,16 +41,19 @@ MPL-2.0) are declared in the manifest, so Chrome applies them before YouTube dra
 Each rule is gated on an attribute on `<html>` (`html[data-dtox-comments] …`) and scoped to its
 page. `extension/src/content.ts` copies Settings from `chrome.storage.sync` onto `<html>` and
 follows storage changes, which is how the popup applies to open tabs at once (ADR 0001).
-JavaScript does only what CSS can't: Autoplay off clicks YouTube's own autoplay button, and
-the Shorts redirect opens a Short in the normal player, on YouTube's own events (no timers, no
-observers).
+JavaScript does only what CSS can't: it adds the Intention Page's one element (shown by
+`extension/src/intention.css`), Autoplay off clicks YouTube's own autoplay button, and the
+Shorts and Home-on-Subscriptions redirects, all on YouTube's own events (no timers, no
+observers). `extension/src/background.ts` opens `/welcome` on install, and does nothing else.
 
 ### Adding a Setting
 
 1. Add it to `settings.json` (id, name, "Hides …" line, group, type, Calm Default value). A
    Setting that changes a behaviour rather than hiding something says "Turns …" instead.
-   `calmDefault` is `true`/`false` for a switch; for a choice it is the value it starts on, or
-   `false` if it starts on YouTube's own behaviour.
+   `calmDefault` is `true`/`false` for a switch. A choice (Home) also lists its `choices`
+   (`id`, `name`), one of them `default` (YouTube's own, which sets no attribute), and
+   `calmDefault` is the value it starts on. The popup shows a choice as a select, and its rules can
+   be gated on its value, `html[data-dtox-<id>="<value>"]`.
 2. Hiding: add its rule to `extension/src/hide.css`, gated on `html[data-dtox-<id>]` and scoped
    to its page. Selectors ported from RYS go in `extension/src/hide-rys.css`, which stays
    MPL-2.0. A behaviour CSS can't change goes in `extension/src/content.ts`, driven by YouTube's

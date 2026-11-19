@@ -48,12 +48,22 @@ const gaming: SavedPage = { fixture: 'gaming.html', url: 'https://www.youtube.co
 /** A Short opened from a link. No Setting may hide it. */
 export const short: SavedPage = { fixture: 'short.html', url: 'https://www.youtube.com/shorts/k5Z7sFwFF7Q' };
 
+/** YouTube's home page. Signed out it holds only a "Try searching" nudge, which stands in for the feed. */
+export const home: SavedPage = { fixture: 'home.html', url: 'https://www.youtube.com/' };
+
 const watchPlaylist: SavedPage = {
   fixture: 'watch-playlist.html',
   url: 'https://www.youtube.com/watch?v=aircAruvnKk&list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi',
 };
 
 export const cases: Record<string, Case> = {
+  // A choice: settings.spec.ts skips it, home.spec.ts tests each value. The nightly check puts
+  // its Calm Default value (the Intention Page) on <html> and expects the feed hidden.
+  home: {
+    ...home,
+    distractions: ['ytd-browse[page-subtype="home"] ytd-rich-grid-renderer'],
+    keeps: ['ytd-masthead', 'ytd-mini-guide-entry-renderer a[href="/feed/subscriptions"]'],
+  },
   recommendations: {
     ...watchPlaylist,
     distractions: ['ytd-watch-flexy ytd-watch-next-secondary-results-renderer yt-lockup-view-model'],

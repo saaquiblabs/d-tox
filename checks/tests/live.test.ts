@@ -12,7 +12,7 @@ const hideCss = await readStylesheets();
 const [english, hindi] = languages;
 const fast = { revealTries: 2, settleMs: 100, hideTimeoutMs: 1500, tries: 1 };
 
-const comments: Setting = { id: 'comments', name: 'Comments', type: 'switch' };
+const comments: Setting = { id: 'comments', name: 'Comments', type: 'switch', calmDefault: false };
 
 /** Answers every request: `pages` maps a pathname to its HTML, all else 404s. */
 async function serve(context: BrowserContext, pages: Record<string, string>) {
@@ -38,6 +38,18 @@ test('a Setting whose rule still hides its Distraction passes', async (t) => {
   const { results, lines } = await checkLanguage(context, english!, [comments], cases, fast);
   assert.deepEqual(results, []);
   assert.match(lines.join('\n'), /✓.*Comments/);
+});
+
+test('a choice (Home) is checked on its Calm Default value', async (t) => {
+  // Gated on the value, so the check passes only if it sets "intention", not just the attribute.
+  const css = hideCss.replace('html[data-dtox-home] ytd-browse', 'html[data-dtox-home="intention"] ytd-browse');
+  const context = await open(t, css);
+  const homeHtml = readFileSync(new URL('../../extension/tests/fixtures/home.html', import.meta.url), 'utf8');
+  await serve(context, { '/': homeHtml });
+  const home: Setting = { id: 'home', name: 'Home', type: 'choice', calmDefault: 'intention' };
+  const { results, lines } = await checkLanguage(context, english!, [home], cases, fast);
+  assert.deepEqual(results, []);
+  assert.match(lines.join('\n'), /✓.*Home/);
 });
 
 test('a rule that no longer matches is reported as still visible', async (t) => {
@@ -119,7 +131,7 @@ test('asks YouTube for the language by URL and plays no video', async (t) => {
 test('a Setting with no case is a failure, not a silent skip', async (t) => {
   const context = await open(t);
   await serve(context, {});
-  const { results } = await checkLanguage(context, english!, [{ id: 'mystery', name: 'Mystery', type: 'switch' }], cases, fast);
+  const { results } = await checkLanguage(context, english!, [{ id: 'mystery', name: 'Mystery', type: 'switch', calmDefault: false }], cases, fast);
   assert.equal(results.length, 1);
   assert.match(results[0]!.problem, /cases\.ts/);
 });
@@ -144,7 +156,7 @@ test('a Setting with several Distractions passes when its rule matches each, sho
   const playlistHtml = readFileSync(new URL('../../extension/tests/fixtures/watch-playlist.html', import.meta.url), 'utf8');
   const context = await open(t);
   await serve(context, { '/watch': playlistHtml });
-  const endScreens: Setting = { id: 'end-screens', name: 'End screens', type: 'switch' };
+  const endScreens: Setting = { id: 'end-screens', name: 'End screens', type: 'switch', calmDefault: false };
   const { results, lines } = await checkLanguage(context, english!, [endScreens], cases, fast);
   assert.deepEqual(results, []);
   assert.match(lines.join('\n'), /✓.*End screens.*2 of 5 Distractions need a playing video/);
@@ -163,7 +175,7 @@ test('a Distraction that needs a playing video is not looked for', async (t) => 
 test('a Setting that changes a behaviour is skipped by name, not failed', async (t) => {
   const context = await open(t);
   await serve(context, {});
-  const autoplay: Setting = { id: 'autoplay-off', name: 'Autoplay off', type: 'switch' };
+  const autoplay: Setting = { id: 'autoplay-off', name: 'Autoplay off', type: 'switch', calmDefault: false };
   const { results, lines } = await checkLanguage(context, english!, [autoplay], cases, fast);
   assert.deepEqual(results, []);
   assert.match(lines.join('\n'), /Autoplay off.*skipped.*autoplay\.spec\.ts/);
@@ -189,7 +201,7 @@ test('every stylesheet the extension injects is loaded, not only hide.css', asyn
   const searchHtml = readFileSync(new URL('../../extension/tests/fixtures/search.html', import.meta.url), 'utf8');
   const context = await open(t);
   await serve(context, { '/results': searchHtml });
-  const cleanUp: Setting = { id: 'search-clean-up', name: 'Search clean-up', type: 'switch' };
+  const cleanUp: Setting = { id: 'search-clean-up', name: 'Search clean-up', type: 'switch', calmDefault: false };
   const { results } = await checkLanguage(context, english!, [cleanUp], cases, fast);
   assert.deepEqual(results, []);
 });
@@ -197,7 +209,7 @@ test('every stylesheet the extension injects is loaded, not only hide.css', asyn
 test('a Setting whose every Distraction needs sign-in is skipped with the reason', async (t) => {
   const context = await open(t);
   await serve(context, {});
-  const bell: Setting = { id: 'bell', name: 'Notifications bell', type: 'switch' };
+  const bell: Setting = { id: 'bell', name: 'Notifications bell', type: 'switch', calmDefault: false };
   const { results, lines } = await checkLanguage(context, english!, [bell], cases, fast);
   assert.deepEqual(results, []);
   assert.match(lines.join('\n'), /bell.*skipped.*a signed-in account/);
@@ -209,7 +221,7 @@ test('a page captured wide is opened at that width', async (t) => {
   await serve(context, { '/gaming': gamingHtml });
   let width = 0;
   context.on('page', (p) => p.on('domcontentloaded', () => (width = p.viewportSize()!.width)));
-  const explore: Setting = { id: 'explore', name: 'Explore', type: 'switch' };
+  const explore: Setting = { id: 'explore', name: 'Explore', type: 'switch', calmDefault: false };
   const { results } = await checkLanguage(context, english!, [explore], cases, fast);
   assert.deepEqual(results, []);
   assert.equal(width, 1600);

@@ -34,7 +34,6 @@ npm test               # typecheck + the checker against saved pages and a fake 
 | `skipped, it changes a behaviour` | behaviour Settings (Autoplay off) are tested by their own spec, not here | — |
 | `BLOCKED in Hindi` | bot check, consent page, page in the wrong language, or YouTube didn't load | not a pass: nothing was checked in that language |
 | `note: the player's bot check … refused the video` | YouTube refuses video to the VPS's datacenter address but renders the page; nothing checked needs the video | — (if a Distraction is then missing, it is BLOCKED instead) |
-| `skipped, choice Settings…` | choice Settings (Home) have no live check yet | add one with #21 |
 
 A Setting gets a second try before it counts as broken. Any failure exits 1, so Openship emails
 “Job failed”. With `DTOX_ISSUES_TOKEN` set, it also opens a `needs-triage` issue: one per broken
