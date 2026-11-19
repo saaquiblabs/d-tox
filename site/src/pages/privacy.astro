@@ -36,11 +36,11 @@ const extension: [string, string][] = [
 
     <section class="prose" aria-labelledby="ext">
       <h2 id="ext">The extension</h2>
-      <table>
+      <div class="card"><table>
         <tbody>
           {extension.map(([k, v]) => <tr><th scope="row">{k}</th><td>{v}</td></tr>)}
         </tbody>
-      </table>
+      </table></div>
       <p>Remove D-Tox from Chrome and its Settings go with it. The code is open: <a href={repo}>read it on GitHub</a>.</p>
     </section>
 
@@ -61,14 +61,16 @@ const extension: [string, string][] = [
 </Base>
 
 <style>
-  .pv { display: grid; gap: clamp(40px, 6vw, 64px); padding-block: clamp(48px, 8vw, 96px) 0; }
-  .head { display: grid; gap: 16px; }
+  .pv { display: grid; gap: clamp(48px, 6vw, 72px); padding-top: clamp(16px, 3vw, 32px); }
   table { border-collapse: collapse; width: 100%; }
-  th, td { text-align: left; vertical-align: top; padding: 12px 0; border-bottom: 1px solid var(--border); }
-  th { font-weight: 500; width: 34%; padding-right: 24px; }
-  td { color: var(--text-2); }
+  th, td { text-align: left; vertical-align: top; padding: 16px 0; border-bottom: 1px solid var(--line); }
+  tr:last-child th, tr:last-child td { border-bottom: 0; }
+  th { font-weight: 500; color: var(--text); width: 34%; padding-right: 24px; }
+  td { color: var(--t2); }
   @media (max-width: 560px) {
     th, td { display: block; width: auto; padding: 0; border: 0; }
-    tr { display: block; padding: 12px 0; border-bottom: 1px solid var(--border); }
+    td { margin-top: 4px; }
+    tr { display: block; padding: 14px 0; border-bottom: 1px solid var(--line); }
+    tr:last-child { border-bottom: 0; }
   }
 </style>
