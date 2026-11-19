@@ -74,7 +74,7 @@ finished: 32 questions, all answered by Najmush on 2026-11-18. **Read `CONTEXT.m
 - Intention Page: "What are you here for?", pointing at YouTube's own search (no second search
   box: Najmush, #22), with cards for Subscriptions, Watch later and History, and "/ to search".
   Session intention with timers is v2.1, not v1.
-- Popup: master switch (no pause timer), Settings grouped Home · Watch · Shorts · Search ·
+- Popup: master switch (no pause timer), Settings grouped Home · Videos (was Watch) · Shorts · Search ·
   Everywhere, footer Privacy · Changelog · Sponsor. No options page. Follows system dark
   mode; the Intention Page follows YouTube's theme.
 - Install opens `d-tox.saaquiblabs.com/welcome` once (not on update).
@@ -125,23 +125,30 @@ alone on a quiet machine: it measures speed; needs a residential address, see #2
 3. ✅ #21. ✅ #23's Intention Page (PR #43); its popup in review. Then #25 (alone on a quiet machine), #27 polish, #28.
 
 **#23 popup (2026-11-19), what the next tickets should know**
-- Design: the popup on the product page's story (#22 pass 3, the newest Najmush has seen),
-  not the earlier D on `proto/22-prototypes`: icon per row, name and short hint, tabs per group
-  with a dot, the "4 of 10 on" count with ten ticks. Kept from D: the full "hides" line behind
-  "?". It follows the system's light/dark (dark = the page's spruce and mint; light uses a
-  deeper green, #0b7a55, for contrast). 360 px wide.
-- `settings.json` gains `hint` (a few words, no full stop; the shape test checks it). The
-  product page still has its own copy of the hints in `site/src/pages/index.astro`.
-- Controls are native: `input[type=checkbox][role=switch]` and, for Home, three radio buttons in
-  a segmented row (`radiogroup`) in place of the select. Tests find switches with
-  `settingSwitch()` in `tests/extension.ts`, which opens the group's tab first.
-- `tests/popup.spec.ts` runs axe (`@axe-core/playwright`, dev only) on every tab with every "?"
-  open, in light and dark, and with D-Tox off. When D-Tox is off only the drawings fade (the
-  text keeps its contrast).
-- Brand image is `icon-48.png` (the ivory mark vanished on light). The count uses Instrument
-  Serif cut to "0-9Of" (1.6 KB, `public/fonts`, OFL); built as external `/fonts/*` in esbuild.
-- Size: 23.15 KB of 40 (was 12.54). The growth is popup-only (style, icons, font); nothing new
-  loads on YouTube.
+- Pass 1 (the product page's popup, 360 px) → Najmush: "better", but make it "richer and
+  luxurious"; "Recommendations" switched on read as *show* them; Home on Subscriptions felt stuck;
+  the changelog should be on our site. Pass 2 is what's on `feat/23-popup`:
+  - A night card on top in both themes (spruce, mint glow, the count in Instrument Serif, ten
+    glowing ticks, "The Calm Default" / "Your own mix", "Paused" when off). Below it, cards in
+    the system's light or dark; a sliding tab pill; switch rows with icon tiles that light up;
+    "i" opens the full line. Home is three choice cards (Ask me first · Subscriptions ·
+    YouTube's feed), each with its own line. 380 px.
+  - **Wording rule:** a switch is named for what it does when on ("Hide recommendations",
+    "Stop autoplay", "Play Shorts as videos", "Clean up search"); the shape test enforces the
+    verbs. Group "Watch" is now "Videos". `settings.json` has `hint` per Setting and per choice.
+    The product page's copy (`site/src/pages/index.astro`) was updated to match.
+  - Home: moving Home off Subscriptions while the tab in front shows Subscriptions now takes it
+    to Home at once (`content.ts`, checked live and in `home.spec.ts`).
+  - `/changelog` ("What's new") on the site: v2.0.0 (coming soon) and v1.0.0–v1.4.1 retold from
+    the GitHub releases. The popup and site footers link to it. Add an entry with each version
+    bump. Needs a site deploy before the popup link works.
+- Controls are native: `input[type=checkbox][role=switch]`, Home as a `radiogroup`. Tests find
+  switches with `settingSwitch()` in `tests/extension.ts`, which opens the group's tab first.
+- `tests/popup.spec.ts` runs axe (`@axe-core/playwright`, dev only) on every tab with every "i"
+  open, in light and dark, and paused. When paused only the drawings fade (text keeps contrast).
+- Count font: Instrument Serif cut to "0-9" and "Paused" (2.1 KB, `public/fonts`, OFL); esbuild
+  leaves `/fonts/*` external. Brand image is `icon-48.png`.
+- Size: 27.72 KB of 40 (was 12.54). The growth is popup-only; nothing new loads on YouTube.
 
 **#21 (2026-11-19), what the next tickets should know**
 - Home is the first choice Setting: `settings.json` gives `choices` (`intention`,

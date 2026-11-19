@@ -1,66 +1,69 @@
 [
   {
     "id": "home",
-    "name": "Home",
-    "hint": "Asks what you’re here for",
+    "name": "Home page",
+    "hint": "What YouTube’s home shows",
     "hides": "Hides the recommended feed on YouTube's home page and asks \"What are you here for?\", pointing to YouTube's search, with links to Subscriptions, Watch later and History.",
     "group": "Home",
     "type": "choice",
     "choices": [
       {
         "id": "intention",
-        "name": "Intention Page"
+        "name": "Ask me first",
+        "hint": "“What are you here for?”, no feed"
       },
       {
         "id": "subscriptions",
-        "name": "Subscriptions"
+        "name": "Subscriptions",
+        "hint": "Only the channels you follow"
       },
       {
         "id": "default",
-        "name": "YouTube default"
+        "name": "YouTube’s feed",
+        "hint": "The usual recommended videos"
       }
     ],
     "calmDefault": "intention"
   },
   {
     "id": "recommendations",
-    "name": "Recommendations",
+    "name": "Hide recommendations",
     "hint": "The column beside the video",
     "hides": "Hides the suggested videos beside and below the video you're watching. Playlists, live chat, chapters and transcripts stay.",
-    "group": "Watch",
+    "group": "Videos",
     "type": "switch",
     "calmDefault": true
   },
   {
     "id": "end-screens",
-    "name": "End screens",
-    "hint": "Cards over the last seconds",
+    "name": "Hide end screens",
+    "hint": "The video grid as a video ends",
     "hides": "Hides the grid of videos and the info cards that appear at the end of a video.",
-    "group": "Watch",
+    "group": "Videos",
     "type": "switch",
     "calmDefault": false
   },
   {
     "id": "autoplay-off",
-    "name": "Autoplay off",
+    "name": "Stop autoplay",
     "hint": "Nothing plays next by itself",
     "hides": "Turns YouTube's autoplay off, so the next video doesn't start by itself. The autoplay button still works, and playlists still play in order.",
-    "group": "Watch",
+    "group": "Videos",
     "type": "switch",
     "calmDefault": true
   },
   {
     "id": "comments",
-    "name": "Comments",
+    "name": "Hide comments",
     "hint": "The thread under the video",
     "hides": "Hides the comments below the video you're watching.",
-    "group": "Watch",
+    "group": "Videos",
     "type": "switch",
     "calmDefault": false
   },
   {
     "id": "shorts",
-    "name": "Shorts",
+    "name": "Hide Shorts",
     "hint": "Shelves, tab and menu link",
     "hides": "Hides Shorts shelves, the Shorts link in the menu, Shorts in search and a channel's Shorts; a link to a Short still opens.",
     "group": "Shorts",
@@ -69,8 +72,8 @@
   },
   {
     "id": "shorts-redirect",
-    "name": "Open Shorts in the normal player",
-    "hint": "Not in the Shorts swipe feed",
+    "name": "Play Shorts as videos",
+    "hint": "No swipe feed: the normal player",
     "hides": "Turns every Short into a normal video: it opens in the normal player, not the Shorts swipe feed.",
     "group": "Shorts",
     "type": "switch",
@@ -78,8 +81,8 @@
   },
   {
     "id": "search-clean-up",
-    "name": "Search clean-up",
-    "hint": "Shelves between results",
+    "name": "Clean up search",
+    "hint": "No shelves between results",
     "hides": "Hides the shelves in search results, such as \"People also watched\" and Shorts, and keeps every result.",
     "group": "Search",
     "type": "switch",
@@ -87,8 +90,8 @@
   },
   {
     "id": "explore",
-    "name": "Explore, Trending and Playables",
-    "hint": "The menu’s browse section",
+    "name": "Hide Explore and Trending",
+    "hint": "And Playables, from the menu",
     "hides": "Hides Explore, Trending and Playables from YouTube's menu, with the whole Explore section (Music, Gaming, News, Sports and the rest).",
     "group": "Everywhere",
     "type": "switch",
@@ -96,8 +99,8 @@
   },
   {
     "id": "bell",
-    "name": "Notifications bell",
-    "hint": "The red count on the bell",
+    "name": "Hide the notifications bell",
+    "hint": "And its red count",
     "hides": "Hides the notifications bell and its red count.",
     "group": "Everywhere",
     "type": "switch",

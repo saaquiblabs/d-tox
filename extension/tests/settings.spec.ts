@@ -5,7 +5,7 @@ import { expect, masterSwitch, settingSwitch, store, test, turn } from './extens
 import type { Page } from '@playwright/test';
 
 
-const groups = ['Home', 'Watch', 'Shorts', 'Search', 'Everywhere'];
+const groups = ['Home', 'Videos', 'Shorts', 'Search', 'Everywhere'];
 
 /** Every switch off and every choice on YouTube's default, so one Setting can be tested alone. */
 const allOff = Object.fromEntries(settings.map((s) => [s.id, s.type === 'switch' ? false : 'default']));
@@ -24,12 +24,20 @@ test('every Setting in settings.json has the agreed shape', () => {
     expect(typeof s.name === 'string' && s.name.length > 0).toBe(true);
     // A Setting that changes a behaviour (autoplay) says what it turns, not what it hides.
     expect(s.hides, 'hides: one line starting "Hides " or "Turns "').toMatch(/^(Hides|Turns) [^\n]+\.$/);
-    // The popup's second line: a few words, no full stop (the "hides" line is behind "?").
+    // The popup's second line: a few words, no full stop (the "hides" line is behind "i").
     expect(s.hint, 'hint: a few words under the name in the popup').toMatch(/^[^\n.]{1,34}$/);
+    // A switch's name says what it does when on, so "on" can't read as "show it" (Najmush,
+    // 2026-11-19: "Recommendations" switched on read as wanting to see them).
+    if (s.type === 'switch') expect(s.name, 'a switch is named for what it does').toMatch(/^(Hide|Stop|Play|Clean up) /);
     expect(groups).toContain(s.group);
     expect(['switch', 'choice']).toContain(s.type);
     if (s.type === 'switch') expect(typeof s.calmDefault).toBe('boolean');
     else {
+      // Each choice is a card in the popup: a name and a line of its own.
+      for (const c of s.choices as Record<string, unknown>[]) {
+        expect(Object.keys(c).sort(), JSON.stringify(c)).toEqual(['hint', 'id', 'name']);
+        expect(c.hint).toMatch(/^[^\n]{1,40}$/);
+      }
       const choices = (s.choices as { id: string; name: string }[]).map((c) => c.id);
       expect(choices).toContain('default');
       // A choice that starts on YouTube's default is out of the Calm Default: calmDefault false.

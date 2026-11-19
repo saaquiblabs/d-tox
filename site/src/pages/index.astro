@@ -398,16 +398,16 @@ async function build() {
 const SOLO = new URLSearchParams(location.search).get('yt'); if (SOLO) document.documentElement.dataset.solo = SOLO;
 // Copy of ../../settings.json (2026-11-19), with the page's own short hints and names.
 const SETTINGS = [
-  {id:'home',name:'Home',group:'Home',calm:true,hint:'Asks what you’re here for'},
-  {id:'recommendations',name:'Recommendations',group:'Watch',calm:true,hint:'The column beside the video'},
-  {id:'end-screens',name:'End screens',group:'Watch',calm:false,hint:'Cards over the last seconds'},
-  {id:'autoplay-off',name:'Autoplay off',group:'Watch',calm:true,hint:'Nothing plays next by itself'},
-  {id:'comments',name:'Comments',group:'Watch',calm:false,hint:'The thread under the video'},
-  {id:'shorts',name:'Shorts',group:'Shorts',calm:true,hint:'Shelves, tab and menu link'},
-  {id:'shorts-redirect',name:'Shorts as videos',group:'Shorts',calm:false,hint:'A Short opens in the normal player'},
-  {id:'search-clean-up',name:'Search clean-up',group:'Search',calm:false,hint:'Shelves between results'},
-  {id:'explore',name:'Explore and Trending',group:'Everywhere',calm:false,hint:'The menu’s browse section'},
-  {id:'bell',name:'Notifications bell',group:'Everywhere',calm:false,hint:'The red count on the bell'},
+  {id:'home',name:'Home page',group:'Home',calm:true,hint:'Asks what you’re here for'},
+  {id:'recommendations',name:'Hide recommendations',group:'Videos',calm:true,hint:'The column beside the video'},
+  {id:'end-screens',name:'Hide end screens',group:'Videos',calm:false,hint:'The video grid as a video ends'},
+  {id:'autoplay-off',name:'Stop autoplay',group:'Videos',calm:true,hint:'Nothing plays next by itself'},
+  {id:'comments',name:'Hide comments',group:'Videos',calm:false,hint:'The thread under the video'},
+  {id:'shorts',name:'Hide Shorts',group:'Shorts',calm:true,hint:'Shelves, tab and menu link'},
+  {id:'shorts-redirect',name:'Play Shorts as videos',group:'Shorts',calm:false,hint:'No swipe feed: the normal player'},
+  {id:'search-clean-up',name:'Clean up search',group:'Search',calm:false,hint:'No shelves between results'},
+  {id:'explore',name:'Hide Explore and Trending',group:'Everywhere',calm:false,hint:'And Playables, from the menu'},
+  {id:'bell',name:'Hide the notifications bell',group:'Everywhere',calm:false,hint:'And its red count'},
 ];
 const ICONS = {
   home:'<path d="M4 11 12 4l8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"/>',
@@ -422,7 +422,7 @@ const ICONS = {
   bell:'<path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.5 1.5h-15zM10 20.5a2 2 0 0 0 4 0"/>',
 };
 const svg = (d, cls = '') => `<svg viewBox="0 0 24 24" class="${cls}" aria-hidden="true">${d}</svg>`;
-const GROUPS = ['Home','Watch','Shorts','Search','Everywhere'];
+const GROUPS = ['Home','Videos','Shorts','Search','Everywhere'];
 const inG = g => SETTINGS.filter(s => s.group === g);
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const chromeIcon = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 6.5a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7ZM4.1 7.2 7.9 13.8A4.5 4.5 0 0 0 12 16.5c.3 0 .6 0 .9-.1l-2.8 4.9A8.5 8.5 0 0 1 4.1 7.2Zm15.8 1.3a8.5 8.5 0 0 1-6.6 12.8l3.8-6.6a4.5 4.5 0 0 0 .4-4.2c-.1-.3-.3-.5-.4-.7h2.8ZM12 3.5a8.5 8.5 0 0 1 7.2 4H12a4.5 4.5 0 0 0-4.4 3.4L5 6.4A8.5 8.5 0 0 1 12 3.5Z"/></svg>';
@@ -442,7 +442,7 @@ const SHOW = [
 // ---- story steps: capture, spotlight (% of the page), its label ----
 const STEPS = [
   { g: 'Home', h: 'Home asks first.', p: 'No feed waiting. Just “What are you here for?” and YouTube’s own search.', k: 'home', r: 'feed', l: 'The feed' },
-  { g: 'Watch', h: 'The video, and only the video.', p: 'Suggestions, end screens and comments step aside. Nothing plays next by itself.', k: 'watch', r: 'recommendations', l: 'Recommendations' },
+  { g: 'Videos', h: 'The video, and only the video.', p: 'Suggestions, end screens and comments step aside. Nothing plays next by itself.', k: 'watch', r: 'recommendations', l: 'Recommendations' },
   { g: 'Shorts', h: 'No swipe hole.', p: 'Shorts leave every page. One a friend sends opens as a normal video.', k: 'search', r: 'shorts', l: 'Shorts shelf' },
   { g: 'Search', h: 'Every result. No detours.', p: 'The shelves between results go; every result stays.', k: 'search', r: [18.3, 12.4, 62, 86], l: 'Between results' },
   { g: 'Everywhere', h: 'Quieter edges.', p: 'No Explore, no Trending, no red count on the bell.', k: 'home', r: 'explore', l: 'Explore' },
@@ -572,9 +572,9 @@ fetch('/shots/regions.json').then(r => r.json()).catch(() => ({})).then(REG => {
       <div class="meter"><p><b>${n}</b>of 10 on</p><div class="ticks">${Array.from({ length: 10 }, (_, i) => `<i class="${i < n ? 'on' : ''}"></i>`).join('')}</div></div>
       <nav role="tablist">${GROUPS.map(g => `<button role="tab" data-t="${g}" aria-selected="${g === tab}">${g}${inG(g).some(s => on[s.id]) ? '<i></i>' : ''}</button>`).join('')}</nav>
       <div class="list">${inG(tab).map(s => s.id === 'home'
-        ? `<div class="row on${hit.has('home') ? ' hit' : ''}"><span class="ic">${svg(ICONS.home)}</span><span class="nm">Home<small>${s.hint}</small></span><span class="seg"><span class="on">Ask</span><span>Subs</span><span>Feed</span></span></div>`
+        ? `<div class="row on${hit.has('home') ? ' hit' : ''}"><span class="ic">${svg(ICONS.home)}</span><span class="nm">Home<small>${s.hint}</small></span><span class="seg"><span class="on">Ask first</span><span>Subs</span><span>Feed</span></span></div>`
         : `<div class="row${on[s.id] ? ' on' : ''}${hit.has(s.id) ? ' hit' : ''}"><span class="ic">${svg(ICONS[s.id])}</span><span class="nm">${esc(s.name)}<small>${esc(s.hint)}</small></span><button class="sw" role="switch" data-s="${s.id}" aria-checked="${on[s.id]}" aria-label="${esc(s.name)}"></button></div>`).join('')}</div>
-      <div class="ft"><span>Privacy</span><span>Changelog</span><span>Sponsor</span><span>v2.0.0</span></div>`;
+      <div class="ft"><span>Privacy</span><span>What’s new</span><span>Sponsor</span><span>v2.0.0</span></div>`;
   };
   // flip one switch in place (no redraw), so its thumb slides and its icon lights
   const flip = id => { on[id] = true; hit.add(id);

@@ -108,6 +108,7 @@ chrome.storage.sync.get(defaults).then((stored) => {
 });
 
 chrome.storage.sync.onChanged.addListener((changes) => {
+  const wasSubscriptions = current.home === 'subscriptions';
   current = { ...current };
   for (const id in changes) {
     if (id in defaults) current[id] = (changes[id]?.newValue as Values[string] | undefined) ?? defaults[id]!;
@@ -116,6 +117,10 @@ chrome.storage.sync.onChanged.addListener((changes) => {
   // Switched on while a Short is open: open it in the normal player now, not at the next move.
   if (changes['shorts-redirect'] || changes.enabled) redirectShort();
   if (changes.home || changes.enabled) home();
+  // Home moved off Subscriptions while this tab shows Subscriptions (where Home sent it): show the
+  // new Home now, in the tab in front, rather than leave the Learner there until they reload.
+  if (changes.home && wasSubscriptions && current.home !== 'subscriptions' && location.pathname === '/feed/subscriptions' && document.visibilityState === 'visible')
+    location.assign('/');
   if (changes['autoplay-off'] || changes.enabled) {
     autoplayPending = true;
     autoplayOff();

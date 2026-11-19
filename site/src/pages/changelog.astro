@@ -1,0 +1,120 @@
+---
+// What's new: every version, newest first, in plain words. The popup's "What's new" link opens
+// this page. v1.x is retold from its GitHub releases (najmushsaaquib/d-tox, March–April 2026).
+// Add an entry here in the same PR that bumps extension/package.json's version.
+import Base from "../layouts/Base.astro";
+import { pages } from "../seo";
+import { repo } from "../site";
+
+type Entry = { version: string; date?: { iso: string; text: string }; title: string; items: string[] };
+
+const entries: Entry[] = [
+  {
+    version: "2.0.0",
+    title: "Rebuilt from scratch: lighter, calmer, clearer",
+    items: [
+      "Home asks “What are you here for?” in place of the recommended feed, and points you to YouTube’s own search. Or have Home open your Subscriptions, or keep YouTube’s feed.",
+      "Starts calm: recommendations, Shorts and autoplay are off from the first install, and Home asks first.",
+      "Ten switches, each named for what it does: hide recommendations, end screens, comments, Shorts, Explore and Trending, the notifications bell; stop autoplay; play Shorts as normal videos; clean up search.",
+      "A new popup: how many switches are on, one tab per part of YouTube, and the full story of each switch one tap away. Light and dark, by keyboard or screen reader.",
+      "Fast: one small stylesheet does the hiding. No timers and nothing watching the page, built to keep YouTube as fast as without it. v1 made YouTube several times slower.",
+      "Checked every night on live YouTube, in English and Hindi, so a YouTube change is caught early.",
+      "Still sends nothing anywhere.",
+    ],
+  },
+  {
+    version: "1.4.1",
+    date: { iso: "2026-04-28", text: "28 April 2026" },
+    title: "Privacy link",
+    items: ["A Privacy link in the popup.", "A link to the D-Tox website from Chrome’s extensions page."],
+  },
+  {
+    version: "1.4.0",
+    date: { iso: "2026-04-28", text: "28 April 2026" },
+    title: "Fixes",
+    items: [
+      "With recommendations hidden, the video’s title and description no longer stretch across the whole screen.",
+      "Switches apply at once, without a stutter.",
+      "No more reloading YouTube after moving between pages.",
+      "The Shorts and Explore switches work in one click.",
+      "A welcome page opens when you install.",
+    ],
+  },
+  {
+    version: "1.3.0",
+    date: { iso: "2026-04-01", text: "1 April 2026" },
+    title: "Switches rebuilt",
+    items: [
+      "Shorts hidden everywhere, including YouTube’s new layout: home, search, the menu and filters.",
+      "Every switch applies at once, without a reload.",
+      "The video centres and widens when recommendations are hidden.",
+    ],
+  },
+  {
+    version: "1.2.0",
+    date: { iso: "2026-03-31", text: "31 March 2026" },
+    title: "Support and bug reports",
+    items: ["A Support panel in place of a bare payment link.", "Report a bug through a short form, no GitHub account needed."],
+  },
+  {
+    version: "1.1.0",
+    date: { iso: "2026-03-25", text: "25 March 2026" },
+    title: "Request a feature",
+    items: ["Suggest a feature from the popup through a short form."],
+  },
+  {
+    version: "1.0.1",
+    date: { iso: "2026-03-25", text: "25 March 2026" },
+    title: "Clearer switches",
+    items: ["Every switch says what it does under its name, instead of in a tooltip."],
+  },
+  {
+    version: "1.0.0",
+    date: { iso: "2026-03-24", text: "24 March 2026" },
+    title: "First release",
+    items: ["Twenty switches in five groups, one master switch, and nothing collected."],
+  },
+];
+---
+
+<Base {...pages["/changelog"]}>
+  <article class="wrap cl">
+    <header class="head">
+      <p class="label">What’s new</p>
+      <h1>Every version,<br /><span class="second">in plain words.</span></h1>
+      <p class="lead">The code behind each one is <a href={`${repo}/releases`}>on GitHub</a>.</p>
+    </header>
+
+    <ol class="list">
+      {entries.map((e) => (
+        <li id={`v${e.version}`}>
+          <div class="meta">
+            <p class="v">v{e.version}</p>
+            {e.date ? <time datetime={e.date.iso}>{e.date.text}</time> : <span class="soon">Coming soon</span>}
+          </div>
+          <div class="body">
+            <h2>{e.title}</h2>
+            <ul>{e.items.map((i) => <li>{i}</li>)}</ul>
+          </div>
+        </li>
+      ))}
+    </ol>
+  </article>
+</Base>
+
+<style>
+  .cl { display: grid; gap: clamp(48px, 6vw, 72px); padding-top: clamp(16px, 3vw, 32px); }
+  .lead a { color: var(--text); text-decoration: underline; text-decoration-color: rgb(var(--acc-rgb) / .6); text-underline-offset: .2em; }
+  .list { list-style: none; margin: 0; padding: 0; display: grid; }
+  .list > li { display: grid; grid-template-columns: 180px 1fr; gap: 32px; padding: 36px 0; border-top: 1px solid var(--line); }
+  .list > li:first-child { border-top: 0; padding-top: 0; }
+  .meta { display: grid; gap: 6px; align-content: start; font-size: 14px; color: var(--t3); }
+  .v { margin: 0; font: 400 34px/1 var(--disp); color: var(--text); letter-spacing: -0.01em; }
+  .soon { justify-self: start; padding: 4px 10px; border-radius: 999px; background: rgb(var(--acc-rgb) / 0.12); color: var(--acc); font-size: 12.5px; font-weight: 500; }
+  h2 { margin: 0; font-size: 22px; line-height: 1.3; }
+  ul { margin: 14px 0 0; padding-left: 1.1em; display: grid; gap: 8px; color: var(--t2); }
+  ul li::marker { color: var(--acc); }
+  @media (max-width: 640px) {
+    .list > li { grid-template-columns: 1fr; gap: 14px; }
+  }
+</style>

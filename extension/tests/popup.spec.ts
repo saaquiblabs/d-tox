@@ -24,16 +24,17 @@ test('a tab per group, each holding its Settings with name and hint', async ({ o
     await expect(panel).toHaveCount(1);
     await expect(panel).toHaveAccessibleName(g);
     for (const s of settings.filter((x) => x.group === g)) {
-      await expect(panel.getByText(s.name, { exact: true })).toBeVisible();
-      await expect(panel.getByText(s.hint, { exact: true })).toBeVisible();
+      // A choice (Home) shows its hint as the question, then each choice with its own line.
+      for (const text of [s.hint, ...(s.choices ? s.choices.flatMap((c) => [c.name, c.hint]) : [s.name])])
+        await expect(panel.getByText(text, { exact: true })).toBeVisible();
     }
   }
 });
 
-test('"?" shows the full line, and every control is described by it', async ({ openPopup }) => {
+test('"i" shows the full line, and every switch is described by it', async ({ openPopup }) => {
   const popup = await openPopup();
   await ready(popup);
-  for (const s of settings) {
+  for (const s of settings.filter((x) => x.type === 'switch')) {
     await popup.getByRole('tab', { name: s.group, exact: true }).click();
     const more = popup.getByRole('button', { name: 'More about ' + s.name });
     const line = popup.getByText(s.hides, { exact: true });
@@ -41,8 +42,7 @@ test('"?" shows the full line, and every control is described by it', async ({ o
     await more.click();
     await expect(more).toHaveAttribute('aria-expanded', 'true');
     await expect(line).toBeVisible();
-    const control = s.type === 'switch' ? popup.getByRole('switch', { name: s.name, exact: true }) : popup.getByRole('radiogroup', { name: /^Home/ });
-    await expect(control).toHaveAccessibleDescription(s.hides);
+    await expect(popup.getByRole('switch', { name: s.name, exact: true })).toHaveAccessibleDescription(s.hides);
   }
 });
 
@@ -51,22 +51,21 @@ test('the count follows the switches and the master switch', async ({ openPopup 
   await ready(popup);
   const status = popup.locator('#status');
   const ticksOn = popup.locator('.ticks i.on');
-  await expect(status).toHaveText(`${calmCount} of ${settings.length} on`);
+  await expect(status).toHaveText(`${calmCount}of ${settings.length} switches onThe Calm Default`);
   await expect(ticksOn).toHaveCount(calmCount);
   await expect(popup.getByRole('tab', { name: 'Search' })).not.toHaveClass(/dot/);
 
-  await turn(await settingSwitch(popup, 'Search clean-up'), true);
-  await expect(status).toHaveText(`${calmCount + 1} of ${settings.length} on`);
+  await turn(await settingSwitch(popup, 'Clean up search'), true);
+  await expect(status).toHaveText(`${calmCount + 1}of ${settings.length} switches onYour own mix`);
   await expect(ticksOn).toHaveCount(calmCount + 1);
   await expect(popup.getByRole('tab', { name: 'Search' })).toHaveClass(/dot/);
 
   await turn(masterSwitch(popup), false);
-  await expect(status).toContainText('Off');
-  await expect(status).toContainText('Your Settings are kept');
+  await expect(status).toHaveText('PausedYouTube shows everythingYour choices are kept');
   await popup.reload();
   await ready(popup);
   await expect(masterSwitch(popup)).not.toBeChecked();
-  await expect(await settingSwitch(popup, 'Search clean-up')).toBeChecked();
+  await expect(await settingSwitch(popup, 'Clean up search')).toBeChecked();
 });
 
 test('arrow keys move between tabs', async ({ openPopup }) => {
@@ -74,22 +73,22 @@ test('arrow keys move between tabs', async ({ openPopup }) => {
   await ready(popup);
   await popup.getByRole('tab', { name: 'Home' }).focus();
   await popup.keyboard.press('ArrowRight');
-  await expect(popup.getByRole('tab', { name: 'Watch' })).toBeFocused();
-  await expect(popup.getByRole('tab', { name: 'Watch' })).toHaveAttribute('aria-selected', 'true');
+  await expect(popup.getByRole('tab', { name: 'Videos' })).toBeFocused();
+  await expect(popup.getByRole('tab', { name: 'Videos' })).toHaveAttribute('aria-selected', 'true');
   await popup.keyboard.press('ArrowLeft');
   await popup.keyboard.press('ArrowLeft');
   await expect(popup.getByRole('tab', { name: 'Everywhere' })).toBeFocused();
   // Tab goes from the tabs into the open panel.
   await popup.keyboard.press('Tab');
-  await expect(popup.getByRole('button', { name: 'More about Explore, Trending and Playables' })).toBeFocused();
+  await expect(popup.getByRole('button', { name: 'More about Hide Explore and Trending' })).toBeFocused();
 });
 
-test('the footer links to Privacy, the Changelog and Sponsor, with the version', async ({ openPopup }) => {
+test("the footer links to Privacy, What's new (our changelog) and Sponsor, with the version", async ({ openPopup }) => {
   const popup = await openPopup();
   await ready(popup);
   const footer = popup.locator('footer');
   await expect(footer.getByRole('link', { name: 'Privacy' })).toHaveAttribute('href', 'https://d-tox.saaquiblabs.com/privacy');
-  await expect(footer.getByRole('link', { name: 'Changelog' })).toHaveAttribute('href', 'https://github.com/saaquiblabs/d-tox/releases');
+  await expect(footer.getByRole('link', { name: 'What’s new' })).toHaveAttribute('href', 'https://d-tox.saaquiblabs.com/changelog');
   await expect(footer.getByRole('link', { name: 'Sponsor' })).toHaveAttribute('href', 'https://github.com/sponsors/saaquiblabs');
   await expect(footer).toContainText(/v\d+\.\d+\.\d+/);
 });
@@ -99,10 +98,11 @@ for (const scheme of ['light', 'dark'] as const) {
     const popup = await openPopup();
     await popup.emulateMedia({ colorScheme: scheme });
     await ready(popup);
-    await expect(popup.locator('body')).toHaveCSS('background-color', scheme === 'light' ? 'rgb(244, 247, 245)' : 'rgb(9, 15, 13)');
+    await expect(popup.locator('body')).toHaveCSS('background-color', scheme === 'light' ? 'rgb(238, 242, 240)' : 'rgb(7, 12, 10)');
     for (const g of groups) {
       await popup.getByRole('tab', { name: g, exact: true }).click();
       for (const more of await popup.getByRole('tabpanel').getByRole('button', { name: /^More about/ }).all()) await more.click();
+      await expect(popup.locator('body')).toHaveClass(/ready/); // transitions on, as a person sees it
       const { violations } = await new AxeBuilder({ page: popup }).analyze();
       expect(violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target).join(', ')}`), `${g} tab`).toEqual([]);
     }

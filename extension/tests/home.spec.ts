@@ -128,18 +128,33 @@ test("the popup's Home choice switches the open tab without a reload", async ({ 
   const page = await openSaved(home.fixture, home.url);
   await page.evaluate(() => ((window as any).notReloaded = true));
   const popup = await openPopup();
-  const choice = popup.getByRole('radiogroup', { name: /^Home/ });
+  const choice = popup.getByRole('radiogroup', { name: setting.hint });
+  const radio = (id: string) => choice.getByRole('radio', { name: new RegExp('^' + setting.choices!.find((c) => c.id === id)!.name) });
   await expect(choice.getByRole('radio')).toHaveCount(3);
-  await expect(choice.locator('label')).toHaveText(['Intention Page', 'Subscriptions', 'YouTube default']);
-  await expect(choice.getByRole('radio', { name: 'Intention Page' })).toBeChecked();
+  for (const c of setting.choices!) await expect(choice.getByText(c.hint, { exact: true })).toBeVisible();
+  await expect(radio('intention')).toBeChecked();
 
-  await choice.getByRole('radio', { name: 'YouTube default' }).check();
+  await radio('default').check();
   await expect(feed(page)).toBeVisible();
   await expect(card(page)).toBeHidden();
-  await choice.getByRole('radio', { name: 'Intention Page' }).check();
+  await radio('intention').check();
   await expect(card(page)).toBeVisible();
   await expect(feed(page)).toBeHidden();
   expect(await page.evaluate(() => (window as any).notReloaded)).toBe(true);
+});
+
+// Najmush, 2026-11-19: once on Subscriptions, choosing another Home left the tab there until a reload.
+test('moving Home off Subscriptions while on Subscriptions shows the new Home at once', async ({ context, served, openPopup }) => {
+  served.set(subscriptionsUrl, 'gaming.html');
+  const popup = await openPopup();
+  await store(popup, { home: 'subscriptions' });
+  const tab = await context.newPage();
+  await tab.goto(home.url, { waitUntil: 'commit' }).catch(() => {}); // replaced while loading
+  await expect(tab).toHaveURL(subscriptionsUrl);
+  await tab.waitForLoadState();
+  await store(popup, { home: 'intention' });
+  await expect(tab).toHaveURL(home.url);
+  await expect(card(tab)).toBeVisible();
 });
 
 test("the master switch gives back YouTube's home", async ({ openSaved, openPopup }) => {
