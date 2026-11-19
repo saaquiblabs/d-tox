@@ -2,7 +2,7 @@
   {
     "id": "home",
     "name": "Home",
-    "hides": "Hides the recommended feed on YouTube's home page and asks \"What are you here for?\", with a search box and links to Subscriptions and Watch later.",
+    "hides": "Hides the recommended feed on YouTube's home page and asks \"What are you here for?\", pointing to YouTube's search, with links to Subscriptions, Watch later and History.",
     "group": "Home",
     "type": "choice",
     "choices": [

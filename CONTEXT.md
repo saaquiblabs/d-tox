@@ -29,7 +29,7 @@ A person's choice to hide or keep one Distraction, or to switch a YouTube behavi
 _Avoid_: toggle, option, flag
 
 **Intention Page**:
-What YouTube's home page becomes under D-Tox: a "What are you here for?" prompt with a search box, in place of the recommended feed.
+What YouTube's home page becomes under D-Tox: a "What are you here for?" prompt that points to YouTube's own search, with links to Subscriptions, Watch later and History, in place of the recommended feed. It has no search box of its own.
 _Avoid_: blank home, search-only mode, focus page
 
 **Calm Default**:

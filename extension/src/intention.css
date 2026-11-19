@@ -1,8 +1,11 @@
 /*
- * The Intention Page (#21): content.ts puts #dtox-intention on <html>, outside YouTube's app,
- * and this shows it only while Home is on the Intention Page and the page is home. Plain on
- * purpose: the design comes in #23. YouTube sets its theme with html[dark] and its own colour
- * variables; the fallbacks are for a page without YouTube's styles (the saved pages in tests).
+ * The Intention Page, design B from the #22 prototypes (the Home scene on the product page):
+ * an arrow up at YouTube's own search, the question, three cards, and "/ to search". No search
+ * box of its own (Najmush, 2026-11-19: "we already have a search button on youtube").
+ * content.ts puts #dtox-intention on <html>, outside YouTube's app; this shows it only while
+ * Home is on the Intention Page and the page is home. It follows YouTube's theme (html[dark]),
+ * with YouTube's own colour variables where they fit and fallbacks for pages without YouTube's
+ * styles (the saved pages in tests). YouTube's root font size is 10px, so sizes are in px.
  */
 #dtox-intention {
   display: none;
@@ -11,69 +14,167 @@
 html[data-dtox-home="intention"] > #dtox-intention:not([hidden]) {
   --dtox-text: var(--yt-spec-text-primary, #0f0f0f);
   --dtox-muted: var(--yt-spec-text-secondary, #606060);
-  --dtox-field: var(--yt-spec-base-background, #fff);
-  --dtox-line: var(--yt-spec-10-percent-layer, #0000001a);
-  /* Over the empty page, under the masthead's menus and YouTube's drawers; clicks pass through
-     everywhere but the form and links. */
+  --dtox-card: #f2f2f2;
+  --dtox-card-line: #e5e5e5;
+  --dtox-tile: #fff;
+  --dtox-kbd: #ccc;
+  /* Over YouTube's empty page area, under the masthead's menus and YouTube's drawers. Clicks
+     pass through everywhere but the links. */
   position: fixed;
   inset: 56px 0 0;
   z-index: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-top: 18vh;
-  gap: 16px;
+  display: grid;
+  justify-items: center;
+  align-content: start;
+  padding: 12vh 24px 0;
+  text-align: center;
   pointer-events: none;
   color: var(--dtox-text);
-  font: 16px/1.4 Roboto, Arial, sans-serif;
+  font: 400 16px/1.4 Roboto, Arial, sans-serif;
+}
+
+/* Centre on YouTube's content, not the window: its menu takes 72px from 792px wide and 240px
+   from 1312px (YouTube's own breakpoints; off by 84px if someone folds the full menu away). */
+@media (min-width: 792px) {
+  html[data-dtox-home="intention"] > #dtox-intention:not([hidden]) {
+    left: 72px;
+  }
+}
+@media (min-width: 1312px) {
+  html[data-dtox-home="intention"] > #dtox-intention:not([hidden]) {
+    left: 240px;
+  }
 }
 
 html[dark][data-dtox-home="intention"] > #dtox-intention {
   --dtox-text: var(--yt-spec-text-primary, #f1f1f1);
   --dtox-muted: var(--yt-spec-text-secondary, #aaa);
-  --dtox-field: var(--yt-spec-base-background, #0f0f0f);
-  --dtox-line: var(--yt-spec-10-percent-layer, #ffffff33);
+  --dtox-card: #1b1b1b;
+  --dtox-card-line: #2a2a2a;
+  --dtox-tile: #272727;
+  --dtox-kbd: #3f3f3f;
 }
 
 #dtox-intention > * {
+  margin: 0;
   pointer-events: auto;
 }
 
-#dtox-intention form {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 8px;
-  width: min(560px, 100vw - 32px);
+#dtox-intention .up {
+  font-size: 30px;
+  line-height: 1;
+  color: var(--dtox-muted);
 }
 
-#dtox-intention label {
-  flex-basis: 100%;
-  text-align: center;
-  font-size: 28px;
+#dtox-intention h1 {
+  margin-top: 18px;
+  font-size: 46px;
+  line-height: 54px;
+  font-weight: 700;
+  letter-spacing: -1px;
 }
 
-#dtox-intention input,
-#dtox-intention button {
-  height: 40px;
-  border: 1px solid var(--dtox-line);
-  border-radius: 20px;
-  padding: 0 16px;
-  color: var(--dtox-text);
-  background: var(--dtox-field);
-  font: inherit;
-}
-
-#dtox-intention input {
-  flex: 1;
-  min-width: 0;
+#dtox-intention p {
+  margin-top: 10px;
+  color: var(--dtox-muted);
 }
 
 #dtox-intention nav {
-  display: flex;
-  gap: 24px;
+  display: grid;
+  grid-template-columns: repeat(3, 236px);
+  gap: 14px;
+  margin-top: 30px;
+  text-align: left;
 }
 
-#dtox-intention a {
+@media (max-width: 860px) {
+  #dtox-intention nav {
+    grid-template-columns: min(320px, 100vw - 48px);
+  }
+}
+
+#dtox-intention nav a {
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  grid-template-rows: 40px auto auto;
+  column-gap: 0;
+  padding: 18px;
+  border: 1px solid var(--dtox-card-line);
+  border-radius: 16px;
+  background: var(--dtox-card);
+  color: inherit;
+  text-decoration: none;
+}
+
+#dtox-intention nav a:hover {
+  border-color: var(--dtox-muted);
+}
+
+#dtox-intention nav a:focus-visible {
+  outline: 2px solid var(--dtox-text);
+  outline-offset: 2px;
+}
+
+/* The icon tile: the icon is a mask, so it takes the text colour in either theme. */
+#dtox-intention i {
+  grid-column: 1;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--dtox-tile);
+}
+
+#dtox-intention i::before {
+  content: "";
+  display: block;
+  width: 24px;
+  height: 24px;
+  margin: 8px;
+  background: currentColor;
+  -webkit-mask: var(--dtox-icon) center / contain no-repeat;
+  mask: var(--dtox-icon) center / contain no-repeat;
+}
+
+#dtox-intention .subscriptions {
+  --dtox-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='7' width='18' height='13' rx='2'/%3E%3Cpath d='M6 4h12M10.5 11v5l4-2.5z'/%3E%3C/svg%3E");
+}
+
+#dtox-intention .watch {
+  --dtox-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='8.5'/%3E%3Cpath d='M12 7.5V12l3 2'/%3E%3C/svg%3E");
+}
+
+#dtox-intention .history {
+  --dtox-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3.5 12a8.5 8.5 0 1 0 2.5-6M3 4v4h4M12 8v4.5l3 2'/%3E%3C/svg%3E");
+}
+
+#dtox-intention b {
+  grid-column: 1 / -1;
+  margin-top: 14px;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+#dtox-intention small {
+  grid-column: 1 / -1;
+  margin-top: 4px;
+  font-size: 13px;
+  line-height: 18px;
   color: var(--dtox-muted);
+}
+
+#dtox-intention .foot {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 28px;
+  font-size: 13px;
+}
+
+#dtox-intention kbd {
+  padding: 3px 7px;
+  border: 1px solid var(--dtox-kbd);
+  border-bottom-width: 2px;
+  border-radius: 5px;
+  font: 500 12px/1 Roboto, Arial, sans-serif;
+  color: var(--dtox-text);
 }

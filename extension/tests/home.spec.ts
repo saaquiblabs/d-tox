@@ -20,10 +20,22 @@ test('the Calm Default shows the Intention Page in place of the feed', async ({ 
   expect(setting.calmDefault).toBe('intention');
   const page = await openSaved(home.fixture, home.url);
   await expect(card(page)).toBeVisible();
-  await expect(page.getByRole('searchbox', { name: 'What are you here for?' })).toBeVisible();
-  await expect(card(page).getByRole('link', { name: 'Subscriptions' })).toHaveAttribute('href', '/feed/subscriptions');
-  await expect(card(page).getByRole('link', { name: 'Watch later' })).toHaveAttribute('href', '/playlist?list=WL');
+  await expect(card(page).getByRole('heading', { name: 'What are you here for?' })).toBeVisible();
+  const links = card(page).getByRole('link');
+  await expect(links).toHaveCount(3);
+  await expect(card(page).getByRole('link', { name: /^Subscriptions/ })).toHaveAttribute('href', '/feed/subscriptions');
+  await expect(card(page).getByRole('link', { name: /^Watch later/ })).toHaveAttribute('href', '/playlist?list=WL');
+  await expect(card(page).getByRole('link', { name: /^History/ })).toHaveAttribute('href', '/feed/history');
   await expect(feed(page)).toBeHidden();
+});
+
+// Najmush, 2026-11-19 (#22): "we already have a search button on youtube". It points up at
+// YouTube's search instead, whose own shortcut is "/".
+test('has no search box of its own', async ({ openSaved }) => {
+  const page = await openSaved(home.fixture, home.url);
+  await expect(card(page)).toBeVisible();
+  await expect(card(page).locator('input, form, button')).toHaveCount(0);
+  await expect(card(page).locator('kbd')).toHaveText('/');
 });
 
 // toBeHidden() retries, so it can't see a flash. This records whether the feed could be seen at
@@ -57,20 +69,15 @@ test("the feed's loading placeholder doesn't show either", async ({ openSaved })
   await expect(page.locator('#guide-skeleton')).toBeVisible();
 });
 
-test('the search box searches YouTube', async ({ openSaved }) => {
-  const page = await openSaved(home.fixture, home.url);
-  const search = page.waitForRequest((r) => r.url() === 'https://www.youtube.com/results?search_query=linear+algebra');
-  await page.getByRole('searchbox', { name: 'What are you here for?' }).fill('linear algebra');
-  await page.keyboard.press('Enter');
-  await search;
-});
-
 test("follows YouTube's light and dark theme", async ({ openSaved }) => {
   const page = await openSaved(home.fixture, home.url);
-  const label = card(page).locator('label');
-  await expect(label).toHaveCSS('color', 'rgb(15, 15, 15)');
+  const heading = card(page).locator('h1');
+  const cardBg = card(page).locator('nav a').first();
+  await expect(heading).toHaveCSS('color', 'rgb(15, 15, 15)');
+  await expect(cardBg).toHaveCSS('background-color', 'rgb(242, 242, 242)');
   await page.evaluate(() => document.documentElement.setAttribute('dark', ''));
-  await expect(label).toHaveCSS('color', 'rgb(241, 241, 241)');
+  await expect(heading).toHaveCSS('color', 'rgb(241, 241, 241)');
+  await expect(cardBg).toHaveCSS('background-color', 'rgb(27, 27, 27)');
 });
 
 test("shows on YouTube's own moves to home and back, and nowhere else", async ({ openSaved }) => {
