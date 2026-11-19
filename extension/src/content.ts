@@ -54,13 +54,18 @@ const intention = el(
 );
 root.append(intention);
 
-// Shown once Settings load (so someone on Subscriptions never sees it on the way), on every move
-// to or from home, YouTube's own pushState included. On Subscriptions, home is replaced by it,
-// so Back doesn't return to home.
-function home() {
-  intention.hidden = !(loaded && location.pathname === '/');
-  if (!intention.hidden && current.enabled && current.home === 'subscriptions') location.replace('/feed/subscriptions');
+// Shown once Settings load (so someone on Subscriptions never sees it on the way). On YouTube's
+// own moves (pushState, Back) it hides the moment the address leaves home, but shows only once
+// YouTube has drawn home (yt-navigate-finish): shown at the address change, it sat over the page
+// YouTube was still showing (Najmush, 2026-11-19: the question over search results). On
+// Subscriptions, home is replaced by it, so Back doesn't return to home.
+function home(show = true) {
+  const atHome = loaded && location.pathname === '/';
+  if (!atHome) intention.hidden = true;
+  else if (show) intention.hidden = false;
+  if (atHome && current.enabled && current.home === 'subscriptions') location.replace('/feed/subscriptions');
 }
+document.addEventListener('yt-navigate-finish', () => home());
 
 // Autoplay off. Click YouTube's own autoplay button to off on the first watch page in this tab,
 // then leave it alone: YouTube keeps the button's state from video to video, so if the Learner
@@ -95,7 +100,7 @@ function redirectShort() {
 
 navigation.addEventListener('currententrychange', () => {
   redirectShort();
-  home();
+  home(false);
 });
 
 chrome.storage.sync.get(defaults).then((stored) => {

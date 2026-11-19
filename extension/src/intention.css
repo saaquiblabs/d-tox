@@ -31,6 +31,19 @@ html[data-dtox-home="intention"] > #dtox-intention:not([hidden]) {
   pointer-events: none;
   color: var(--dtox-text);
   font: 400 16px/1.4 Roboto, Arial, sans-serif;
+  animation: dtox-in 0.18s ease-out;
+}
+
+@keyframes dtox-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #dtox-intention {
+    animation: none !important;
+  }
 }
 
 /* Centre on YouTube's content, not the window: its menu takes 72px from 792px wide and 240px

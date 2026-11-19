@@ -6,8 +6,9 @@ import settings from '../../../settings.json' with { type: 'json' };
 // into a field that finds switches across every group, in place. Each change is written to
 // chrome.storage.sync; the content script in every open YouTube tab picks it up at once. The
 // controls are native inputs, so keyboard and screen readers get them for free.
-// Motion is transform and opacity only (and the panel's height), and none of it runs when the
-// system asks for reduced motion.
+// Motion is transform and opacity only, and none of it runs when the system asks for reduced
+// motion. The popup's height snaps to the open tab: easing it made Chrome resize the popup's
+// window every frame, which jittered.
 type Setting = (typeof settings)[number];
 
 const defaults: Record<string, boolean | string> = { enabled: true };
@@ -71,24 +72,6 @@ const move = (e: Element, frames: Keyframe[], ms = 300, easing = 'cubic-bezier(0
 const FADE: Keyframe[] = [{ opacity: 0 }, { opacity: 1 }];
 const POP: Keyframe[] = [{ transform: 'scale(1)' }, { transform: 'scale(1.16)' }, { transform: 'scale(1)' }];
 
-/** Runs a change to what the panels show, easing the popup's height from the old to the new. */
-function resize(change: () => void) {
-  if (!moving()) return change();
-  const from = panels.offsetHeight;
-  panels.style.height = '';
-  change();
-  const to = panels.offsetHeight;
-  if (from === to) return;
-  panels.style.height = from + 'px';
-  panels.classList.add('sizing');
-  void panels.offsetHeight; // start from the old height
-  panels.style.height = to + 'px';
-}
-panels.addEventListener('transitionend', (e) => {
-  if (e.target !== panels) return;
-  panels.style.height = '';
-  panels.classList.remove('sizing');
-});
 
 const save = (id: string, value: boolean | string) => {
   values[id] = value;
@@ -168,15 +151,13 @@ function select(tab: HTMLElement, focus = false) {
   const before = current ? tabs().indexOf(current) : -1;
   const after = tabs().indexOf(tab);
   current = tab;
-  resize(() => {
-    for (const t of tabs()) {
-      const on = t === tab;
-      t.setAttribute('aria-selected', String(on));
-      t.tabIndex = on ? 0 : -1;
-      panelOf(t).hidden = !on;
-    }
-  });
-  pill.style.cssText = `left:${tab.offsetLeft}px;width:${tab.offsetWidth}px`;
+  for (const t of tabs()) {
+    const on = t === tab;
+    t.setAttribute('aria-selected', String(on));
+    t.tabIndex = on ? 0 : -1;
+    panelOf(t).hidden = !on;
+  }
+  pill.style.cssText = `transform:translateX(${tab.offsetLeft}px);width:${tab.offsetWidth}px`;
   if (before >= 0 && before !== after)
     move(panelOf(tab), [{ transform: `translateX(${after > before ? 16 : -16}px)`, opacity: 0 }, { transform: 'none', opacity: 1 }], 280);
   if (focus) tab.focus();
@@ -185,36 +166,32 @@ function select(tab: HTMLElement, focus = false) {
 /** Find: the tabs give way to a field; rows from every group that match it show in place. */
 function openFind(text = '') {
   if (find.hidden) {
-    resize(() => {
-      tablist.hidden = true;
-      find.hidden = false;
-      seek.setAttribute('aria-expanded', 'true');
-      seek.setAttribute('aria-label', 'Close find');
-      document.body.classList.add('finding');
-      find.value = text;
-      filter();
-    });
+    tablist.hidden = true;
+    find.hidden = false;
+    seek.setAttribute('aria-expanded', 'true');
+    seek.setAttribute('aria-label', 'Close find');
+    document.body.classList.add('finding');
+    find.value = text;
+    filter();
     move(find, FADE, 200);
   } else if (text) {
     find.value += text;
-    resize(filter);
+    filter();
   }
   find.focus();
 }
 
 function closeFind(focusTab: boolean) {
   if (find.hidden) return;
-  resize(() => {
-    find.value = '';
-    find.hidden = true;
-    tablist.hidden = false;
-    seek.setAttribute('aria-expanded', 'false');
-    seek.setAttribute('aria-label', 'Find a switch');
-    document.body.classList.remove('finding');
-    none.hidden = true;
-    for (const item of panels.querySelectorAll<HTMLElement>('[data-find]')) item.hidden = false;
-    for (const t of tabs()) panelOf(t).hidden = t !== current;
-  });
+  find.value = '';
+  find.hidden = true;
+  tablist.hidden = false;
+  seek.setAttribute('aria-expanded', 'false');
+  seek.setAttribute('aria-label', 'Find a switch');
+  document.body.classList.remove('finding');
+  none.hidden = true;
+  for (const item of panels.querySelectorAll<HTMLElement>('[data-find]')) item.hidden = false;
+  for (const t of tabs()) panelOf(t).hidden = t !== current;
   move(tablist, FADE, 200);
   if (focusTab) current?.focus();
 }
@@ -234,7 +211,7 @@ function filter() {
   none.hidden = any;
 }
 
-find.addEventListener('input', () => (find.value ? resize(filter) : closeFind(true)));
+find.addEventListener('input', () => (find.value ? filter() : closeFind(true)));
 find.addEventListener('blur', () => {
   if (!find.value) closeFind(false);
 });

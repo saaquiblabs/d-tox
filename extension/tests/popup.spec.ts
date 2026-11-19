@@ -168,7 +168,6 @@ test('nothing moves when the system asks for reduced motion', async ({ openPopup
   await popup.keyboard.press('/');
   await turn(masterSwitch(popup), false);
   expect(await popup.evaluate(() => document.getAnimations().length)).toBe(0);
-  await expect(popup.locator('#panels')).not.toHaveClass(/sizing/);
 });
 
 test("the footer links to Privacy, What's new (our changelog) and Sponsor, with the version", async ({ openPopup }) => {

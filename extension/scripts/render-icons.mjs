@@ -1,7 +1,7 @@
 // Renders the extension's icons (extension/public/icon-{16,48,128}.png) from the folded-D mark
 // (site/public/logo, #22), and the site's social card (site/public/og.jpg, 1200×630; also the repo's social preview). The mark sits
 // on the product page's dark tile, so it reads on Chrome's light and dark toolbars alike.
-// Each icon also gets a paused twin (icon-off-*.png), grey and dimmed, which background.ts shows
+// Each icon also gets a paused twin (icon-off-*.png), a flat grey mark, which background.ts shows
 // in the toolbar while D-Tox is off.
 // extension/public is the single source: the site copies its favicon from there (site/scripts/copy-icons.mjs).
 //   node scripts/render-icons.mjs
@@ -19,7 +19,10 @@ const ICONS = [[16, 0, .22, .86, 'd-small.svg'], [48, 0, .22, .8, 'd-small.svg']
 for (const [n, inset, r, mark, file] of ICONS) for (const off of [false, true]) {
   const page = await browser.newPage({ viewport: { width: n, height: n }, deviceScaleFactor: 1 });
   const t = n * (1 - 2 * inset);
-  await page.setContent(`<body style="margin:0;background:transparent"><div style="${off ? 'filter:grayscale(1) brightness(1.1);opacity:.5;' : ''}position:absolute;left:${n * inset}px;top:${n * inset}px;width:${t}px;height:${t}px;border-radius:${t * r}px;background:radial-gradient(70% 70% at 30% 20%,#174536,#090F0D 75%);box-shadow:inset 0 0 0 ${n > 16 ? 1 : 0}px rgb(255 255 255 / .1);display:grid;place-items:center"><img src="${svg(file)}" style="width:${t * mark}px;height:${t * mark}px"></div></body>`);
+  // Paused: no tile, only the mark as a flat mid grey (like other extensions' "off" icons), which
+  // reads on light and dark toolbars alike and can't be mistaken for the dark "on" tile.
+  if (off) await page.setContent(`<body style="margin:0;background:transparent;display:grid;place-items:center;height:${n}px;overflow:hidden"><img src="${svg('d-small.svg')}" style="width:${n * 1.2}px;height:${n * 1.2}px;flex:none;filter:brightness(0) invert(.56)"></body>`);
+  else await page.setContent(`<body style="margin:0;background:transparent"><div style="position:absolute;left:${n * inset}px;top:${n * inset}px;width:${t}px;height:${t}px;border-radius:${t * r}px;background:radial-gradient(70% 70% at 30% 20%,#174536,#090F0D 75%);box-shadow:inset 0 0 0 ${n > 16 ? 1 : 0}px rgb(255 255 255 / .1);display:grid;place-items:center"><img src="${svg(file)}" style="width:${t * mark}px;height:${t * mark}px"></div></body>`);
   await page.screenshot({ path: at(`../public/icon-${off ? 'off-' : ''}${n}.png`), omitBackground: true });
   await page.close();
 }

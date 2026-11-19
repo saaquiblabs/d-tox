@@ -25,7 +25,6 @@
   --thumb-on: #fff;
   --thumb: #fff;
   --track: rgb(9 15 13 / 0.14);
-  --pill: #fff;
   --shadow: 0 1px 2px rgb(9 15 13 / 0.05), 0 10px 28px -14px rgb(9 15 13 / 0.22);
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
   --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -46,7 +45,6 @@
     --thumb-on: #04140e;
     --thumb: #c9d3cf;
     --track: rgb(255 255 255 / 0.13);
-    --pill: rgb(255 255 255 / 0.13);
     --shadow: 0 1px 0 rgb(255 255 255 / 0.03) inset, 0 12px 30px -16px rgb(0 0 0 / 0.8);
   }
 }
@@ -59,7 +57,7 @@
 }
 
 body {
-  width: 380px;
+  width: 400px;
   margin: 0;
   padding: 10px;
   background: var(--bg);
@@ -250,16 +248,20 @@ body.off .ticks i.on {
   transition: transform 0.35s var(--spring), background 0.25s;
 }
 
-/* ---- tabs: one per group, a pill that slides, a dot when something in it is on ---- */
-main {
+/* ---- tabs: one per group. The open tab is a piece of the night card (spruce, mint ring) that
+   slides; the others step back. A dot under a tab's name when something in it is on. The
+   magnifier is its own tile beside them. ---- */
+.nav {
+  display: flex;
+  gap: 8px;
   margin-top: 12px;
 }
 .bar {
+  flex: auto;
   display: flex;
-  align-items: center;
-  height: 42px;
+  height: 46px;
   padding: 4px;
-  border-radius: 12px;
+  border-radius: 14px;
   background: var(--surf2);
   box-shadow: 0 0 0 1px var(--line) inset;
 }
@@ -267,22 +269,72 @@ main {
   position: relative;
   display: flex;
   flex: auto;
-  align-self: stretch;
 }
 .pill {
   position: absolute;
   top: 0;
   bottom: 0;
-  border-radius: 9px;
-  background: var(--pill);
-  box-shadow: 0 1px 3px rgb(0 0 0 / 0.14), 0 0 0 1px var(--line);
+  left: 0;
+  border-radius: 10px;
+  background:
+    radial-gradient(120% 160% at 100% 0%, rgb(124 240 196 / 0.24), transparent 60%),
+    linear-gradient(160deg, #183429, #0a120f);
+  box-shadow:
+    0 0 0 1px rgb(124 240 196 / 0.28) inset,
+    0 6px 14px -6px rgb(4 20 14 / 0.7);
+}
+.ready .pill {
+  transition: transform 0.35s var(--ease), width 0.35s var(--ease), background 0.3s;
+}
+.tabs button {
+  all: unset;
+  position: relative;
+  flex: auto;
+  padding: 0 4px;
+  line-height: 38px;
+  border-radius: 10px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--t3);
+  cursor: pointer;
+}
+.ready .tabs button {
+  transition: color 0.2s, transform 0.15s var(--ease);
+}
+.tabs button:hover {
+  color: var(--text);
+}
+.tabs button:active {
+  transform: scale(0.94);
+}
+.tabs button[aria-selected="true"] {
+  color: #f4fbf8;
+}
+.tabs button:focus-visible {
+  outline: 2px solid var(--acc);
+  outline-offset: -2px;
+}
+.tabs button.dot::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 4px;
+  width: 4px;
+  height: 4px;
+  margin-left: -2px;
+  border-radius: 50%;
+  background: var(--acc);
+}
+.tabs button[aria-selected="true"].dot::after {
+  background: #7cf0c4;
+  box-shadow: 0 0 6px #7cf0c4;
 }
 #find {
   all: unset;
   flex: auto;
-  align-self: stretch;
-  padding: 0 10px;
-  font-size: 13px;
+  padding: 0 12px;
+  font-size: 13.5px;
   color: var(--text);
 }
 #find::placeholder {
@@ -296,74 +348,49 @@ main {
   flex: none;
   display: grid;
   place-items: center;
-  width: 32px;
-  height: 32px;
-  margin-left: 2px;
-  border-radius: 9px;
-  color: var(--t3);
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  background: var(--surf);
+  box-shadow: var(--shadow), 0 0 0 1px var(--line);
+  color: var(--t2);
   cursor: pointer;
 }
+.ready .seek {
+  transition: color 0.2s, background 0.2s, transform 0.15s var(--ease);
+}
 .seek:hover {
-  color: var(--text);
+  color: var(--acc);
+}
+.seek:active {
+  transform: scale(0.92);
 }
 .seek:focus-visible {
   outline: 2px solid var(--acc);
-  outline-offset: -2px;
+  outline-offset: 2px;
 }
 .seek svg {
-  width: 17px;
-  height: 17px;
+  width: 19px;
+  height: 19px;
   fill: none;
   stroke: currentColor;
   stroke-width: 2;
   stroke-linecap: round;
 }
+.seek .x,
+.finding .seek .lens {
+  display: none;
+}
+.finding .seek .x {
+  display: inline;
+}
 .finding .seek {
+  background: var(--acc-soft);
   color: var(--acc);
-}
-.ready .pill {
-  transition: left 0.35s var(--ease), width 0.35s var(--ease);
-}
-.tabs button {
-  all: unset;
-  position: relative;
-  flex: auto;
-  padding: 0 6px;
-  line-height: 34px;
-  border-radius: 9px;
-  text-align: center;
-  font-size: 12.5px;
-  font-weight: 550;
-  color: var(--t3);
-  cursor: pointer;
-}
-.tabs button[aria-selected="true"] {
-  color: var(--text);
-}
-.tabs button:not([aria-selected="true"]):hover {
-  color: var(--t2);
-}
-.tabs button:focus-visible {
-  outline: 2px solid var(--acc);
-  outline-offset: -2px;
-}
-.tabs button.dot::after {
-  content: "";
-  display: inline-block;
-  vertical-align: 7px;
-  margin-left: 3px;
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: var(--acc);
 }
 
 /* ---- panels and cards ---- */
-/* No fixed height: the popup is as tall as the open tab, and eases between heights. */
-#panels.sizing {
-  overflow: hidden;
-  transition: height 0.3s var(--ease);
-}
+/* No fixed height: the popup is as tall as the open tab. */
 .panel {
   padding-top: 10px;
 }
@@ -525,6 +552,14 @@ body.off {
   --acc-hi: var(--t3);
   --acc-soft: var(--surf2);
   --thumb-on: var(--surf);
+}
+body.off .pill {
+  background: linear-gradient(160deg, #3b403e, #222524);
+  box-shadow: 0 6px 14px -6px rgb(0 0 0 / 0.5);
+}
+body.off .tabs button[aria-selected="true"].dot::after {
+  background: #b4bcb9;
+  box-shadow: none;
 }
 body.off #panels .sw:checked {
   background: var(--t3);

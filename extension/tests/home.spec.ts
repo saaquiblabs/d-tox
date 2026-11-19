@@ -13,8 +13,13 @@ const subscriptionsUrl = 'https://www.youtube.com/feed/subscriptions';
 const card = (page: Page) => page.locator('#dtox-intention');
 /** The feed, as a person sees it. Signed out, YouTube's home holds only a "Try searching" nudge. */
 const feed = (page: Page) => page.locator('ytd-browse[page-subtype="home"] ytd-feed-nudge-renderer');
-/** YouTube's own navigation: no page load, just pushState. */
-const youtubeGoesTo = (page: Page, url: string) => page.evaluate((u) => history.pushState({}, '', u), url);
+/** YouTube's own navigation: no page load, just pushState, then yt-navigate-finish once it has drawn the page. */
+const youtubeGoesTo = async (page: Page, url: string) => {
+  await page.evaluate((u) => history.pushState({}, '', u), url);
+  await youtubeDrew(page);
+};
+// Tolerates the page being gone: a redirect (Shorts, Subscriptions) can replace it first.
+const youtubeDrew = (page: Page) => page.evaluate(() => document.dispatchEvent(new Event('yt-navigate-finish'))).catch(() => {});
 
 test('the Calm Default shows the Intention Page in place of the feed', async ({ openSaved }) => {
   expect(setting.calmDefault).toBe('intention');
@@ -90,7 +95,22 @@ test("shows on YouTube's own moves to home and back, and nowhere else", async ({
   await expect(card(page)).toBeHidden();
   await page.goBack();
   await expect(page).toHaveURL(home.url);
+  await youtubeDrew(page);
   await expect(card(page)).toBeVisible();
+});
+
+// Najmush, 2026-11-19: shown at the address change, the question sat over the search results
+// YouTube was still showing while it loaded home.
+test('waits for YouTube to draw home before showing, and hides as soon as it leaves', async ({ openSaved }) => {
+  const page = await openSaved(watch.fixture, watch.url);
+  await page.waitForTimeout(500); // Settings loaded (else their arrival shows it, as on a full load of home)
+  await page.evaluate(() => history.pushState({}, '', '/'));
+  await page.waitForTimeout(300);
+  await expect(card(page)).toBeHidden(); // YouTube still shows the video page
+  await youtubeDrew(page);
+  await expect(card(page)).toBeVisible();
+  await page.evaluate((u) => history.pushState({}, '', u), watch.url);
+  await expect(card(page)).toBeHidden(); // at once, before YouTube draws the video page
 });
 
 test('on Subscriptions, home opens Subscriptions', async ({ context, served, openPopup }) => {

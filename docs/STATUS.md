@@ -148,18 +148,28 @@ alone on a quiet machine: it measures speed; needs a residential address, see #2
   - Paused: a grey night fades over the card (`.hero::before`, opacity, 300 ms); ticks, count,
     logo and every mint below go grey (`body.off` resets `--acc`). The toolbar icon goes grey
     too: `background.ts` sets `icon-off-*.png` (rendered by `scripts/render-icons.mjs`) and the
-    title "D-Tox (paused)" on a storage change, on install/update and at startup.
+    title "D-Tox (paused)" on a storage change, on install/update and at startup. The paused icon
+    is a flat grey mark with no tile (like uBlock's off icon): a dimmed tile still read as on.
   - Motion (Web Animations, transform/opacity only, skipped under reduced motion): the panel
     slides in from the side you moved; a switched row's icon tile pops; changed ticks stretch;
-    the count bumps. The popup has no fixed height: `#panels` eases between heights (`resize()`).
+    the count bumps. The popup has no fixed height and snaps to the open tab: easing the height
+    made Chrome resize the popup window every frame, which jittered (removed after review).
   - Fewer words: no "for YouTube", no Calm Default / own mix line, paused is just "Paused", no
     Home caption (the radiogroup is named "Home page").
-  - Find: a magnifier after the tabs (outside the tablist, so Tab goes tabs → magnifier →
-    panel). Click, "/" or any typed character opens a field; rows (and Home choices) from every
+  - Tabs (after Najmush's review: cramped, too little feedback): 400 px popup; the open tab is a
+    spruce pill with a mint ring (grey when paused), the others in the tertiary text colour
+    (opacity dimming failed axe contrast); the dot sits under the name; tabs and the magnifier
+    shrink a little when pressed.
+  - Find: a magnifier in its own tile beside the tab bar (outside the tablist, so Tab goes tabs →
+    magnifier → panel); it turns into a mint × while finding. Click, "/" or any typed character opens a field; rows (and Home choices) from every
     group whose name, hint or full line hold every word show in place; "Nothing matches"
     otherwise. Esc, an empty field, or the × closes it and focus returns to the open tab.
     Untested in a real toolbar popup: whether Chrome lets Esc reach the field or closes the popup.
-  - Size 31.70 KB of 40 (27.72 before pass 3), all popup. Screenshots on/off × light/dark shared
+  - Intention Page jitter (Najmush's screenshot: the question over search results while YouTube
+    loaded home): it showed at the address change, before YouTube drew home. Now it hides at once
+    when the address leaves home and shows on `yt-navigate-finish`, with an 0.18 s fade. Checked
+    on live YouTube (search → logo): no overlap.
+  - Size 32.41 KB of 40 (27.72 before pass 3); the Intention Page change is 0.2 KB. Screenshots on/off × light/dark shared
     with Najmush. After merge: deploy the site (`/changelog` is 404 until then).
 - Controls are native: `input[type=checkbox][role=switch]`, Home as a `radiogroup`. Tests find
   switches with `settingSwitch()` in `tests/extension.ts`, which opens the group's tab first.
