@@ -25,35 +25,41 @@ function apply() {
 // sees it a moment later instead.)
 apply();
 
-// The Intention Page: one element on <html>, outside YouTube's app, so it exists before YouTube
-// draws anything. hide.css hides the home feed; intention.css shows this only while Home is on the
-// Intention Page and the page is home (it is `hidden` everywhere else). The form and links are
-// plain YouTube URLs: nothing is read from the page.
+// The Intention Page (design B, #22): one element on <html>, outside YouTube's app, so it exists
+// before YouTube draws anything. hide.css hides the home feed; intention.css draws this (icons
+// included) only while Home is on the Intention Page and the page is home (it is `hidden`
+// everywhere else). No search box of its own: it points at YouTube's, and "/" is YouTube's own
+// shortcut to it. The links are plain YouTube URLs: nothing is read from the page.
 const el = <K extends keyof HTMLElementTagNameMap>(tag: K, props: object, ...kids: (Node | string)[]) => {
   const e = Object.assign(document.createElement(tag), props);
   e.append(...kids);
   return e;
 };
-const card = el(
+const card = (href: string, name: string, line: string) =>
+  el('a', { href, className: name.split(' ')[0]!.toLowerCase() }, el('i', {}), el('b', {}, name), el('small', {}, line));
+const intention = el(
   'div',
   { id: 'dtox-intention', hidden: true },
+  el('span', { className: 'up', ariaHidden: 'true' }, '↑'),
+  el('h1', {}, 'What are you here for?'),
+  el('p', {}, 'Search for it up there, or pick up where you meant to.'),
   el(
-    'form',
-    { action: '/results', role: 'search' },
-    el('label', { htmlFor: 'dtox-q' }, 'What are you here for?'),
-    el('input', { id: 'dtox-q', name: 'search_query', type: 'search', required: true, autocomplete: 'off' }),
-    el('button', {}, 'Search'),
+    'nav',
+    {},
+    card('/feed/subscriptions', 'Subscriptions', 'New from the channels you chose.'),
+    card('/playlist?list=WL', 'Watch later', 'What you saved for this moment.'),
+    card('/feed/history', 'History', 'Pick up where you left off.'),
   ),
-  el('nav', {}, el('a', { href: '/feed/subscriptions' }, 'Subscriptions'), el('a', { href: '/playlist?list=WL' }, 'Watch later')),
+  el('p', { className: 'foot' }, el('kbd', {}, '/'), ' to search · Home stays this quiet until you ask'),
 );
-root.append(card);
+root.append(intention);
 
 // Shown once Settings load (so someone on Subscriptions never sees it on the way), on every move
 // to or from home, YouTube's own pushState included. On Subscriptions, home is replaced by it,
 // so Back doesn't return to home.
 function home() {
-  card.hidden = !(loaded && location.pathname === '/');
-  if (!card.hidden && current.enabled && current.home === 'subscriptions') location.replace('/feed/subscriptions');
+  intention.hidden = !(loaded && location.pathname === '/');
+  if (!intention.hidden && current.enabled && current.home === 'subscriptions') location.replace('/feed/subscriptions');
 }
 
 // Autoplay off. Click YouTube's own autoplay button to off on the first watch page in this tab,

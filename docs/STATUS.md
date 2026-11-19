@@ -71,7 +71,8 @@ finished: 32 questions, all answered by Najmush on 2026-11-18. **Read `CONTEXT.m
   mixes/playlists/"More from YouTube", fundraisers, merch.
 - Calm Default on every install, new or updated (no migration; ADR 0002): Intention Page,
   Shorts hidden, autoplay off, watch-page recommendations hidden.
-- Intention Page: "What are you here for?" + search + links to Subscriptions and Watch later.
+- Intention Page: "What are you here for?", pointing at YouTube's own search (no second search
+  box: Najmush, #22), with cards for Subscriptions, Watch later and History, and "/ to search".
   Session intention with timers is v2.1, not v1.
 - Popup: master switch (no pause timer), Settings grouped Home · Watch · Shorts · Search ·
   Everywhere, footer Privacy · Changelog · Sponsor. No options page. Follows system dark
@@ -108,12 +109,14 @@ finished: 32 questions, all answered by Najmush on 2026-11-18. **Read `CONTEXT.m
 
 ## Pipeline
 
-research ✅ → grill ✅ → spec ✅ (#16) → tickets ✅ (#18–#28) → build: #18 ✅ (PR #30), #26 ✅ (live), #19 ✅ (PR #34), #20 ✅ (PR #36), #24 ✅ (PR #37), #27 live (PRs #39–#41, polish left), #21 in review (`feat/21-home-choice`), rest next →
+research ✅ → grill ✅ → spec ✅ (#16) → tickets ✅ (#18–#28) → build: #18 ✅ (PR #30), #26 ✅ (live), #19 ✅ (PR #34), #20 ✅ (PR #36), #24 ✅ (PR #37), #27 live (PRs #39–#41, polish left), #21 ✅ (PR #42), #23 Intention Page B in review, rest next →
 prototypes of the popup, Intention Page and product page (seen running before anything is picked).
 
 ## Next step: review #21, then #25
 
-#21 is built on `feat/21-home-choice` (PR pending Najmush's go-ahead). Next: #25 (Release Gate,
+#21 is merged (PR #42). Its first Intention Page had its own search box, against Najmush's #22
+verdict (recorded only on `proto/22-prototypes`); `feat/23-intention-page-b` replaces it with
+design B, the first half of #23. The popup's design (D) is the other half. Next: #25 (Release Gate,
 alone on a quiet machine: it measures speed; needs a residential address, see #24 notes), then
 #23 (popup and Intention Page design). Najmush: the issues token for the nightly check
 (5 minutes, `checks/README.md`).
@@ -121,7 +124,7 @@ alone on a quiet machine: it measures speed; needs a residential address, see #2
 **Order (two sessions at most at a time):**
 1. ✅ #19 + #26.
 2. ✅ #20 (PR #36) + #24 (PR #37).
-3. #21 (in review). Then #25 (alone on a quiet machine). #23, #27 polish, #28 as before.
+3. ✅ #21. #23's Intention Page (in review), then its popup. Then #25 (alone on a quiet machine). #23, #27 polish, #28 as before.
 
 **#21 (2026-11-19), what the next tickets should know**
 - Home is the first choice Setting: `settings.json` gives `choices` (`intention`,
@@ -129,10 +132,11 @@ alone on a quiet machine: it measures speed; needs a residential address, see #2
   off) sets no attribute, like a switch that's off. The popup shows a choice as a `<select>`.
 - The Intention Page is one element, `#dtox-intention`, that `content.ts` appends to `<html>` at
   `document_start` (outside YouTube's app), `hidden` except on `/` once Settings have loaded;
-  `src/intention.css` shows it only under `html[data-dtox-home="intention"]`. Plain styling,
-  YouTube's colour variables with fallbacks, so it follows `html[dark]`. The search form is a
-  plain GET to `/results`; the links are `/feed/subscriptions` and `/playlist?list=WL`. Nothing
-  is read from the page, so `/privacy` ("reads nothing") still holds.
+  `src/intention.css` shows it only under `html[data-dtox-home="intention"]`. Design B (#23):
+  ↑ to YouTube's search, the question, cards Subscriptions / Watch later / History, "/ to search"
+  (YouTube's own shortcut, checked live). Icons are CSS masks; colours follow `html[dark]`. It
+  is centred on YouTube's content with media queries at YouTube's menu breakpoints (792, 1312
+  px), no `:has()`. Nothing is read from the page, so `/privacy` ("reads nothing") still holds.
 - `hide.css` hides `ytd-browse[page-subtype="home"]` and YouTube's feed-shaped loading
   placeholder (`#home-page-skeleton > #home-container-skeleton`, seen live while home loads)
   whenever Home isn't on YouTube's default.
@@ -142,15 +146,14 @@ alone on a quiet machine: it measures speed; needs a residential address, see #2
   nothing: v1.4.1 kept its settings in `chrome.storage.local`, which v2 never reads, so an update
   already starts on the Calm Default (no clearing needed). An update can't be tested in
   Playwright (`chrome.runtime.reload()` leaves the extension off); only install is tested.
-- Script 1,996 bytes (ADR 0001 updated); extension 10.11 KB of 40.
+- Script 2,247 bytes after #23's Intention Page (ADR 0001 updated); extension 12.54 KB of 40.
 - Nightly: choices are no longer skipped; a choice is checked on its Calm Default value. Home
   passed live in English and Hindi (2026-11-19, from the Mac). The same run failed End screens
   in Hindi (`.ytp-fullscreen-grid .ytp-modern-videowall-still` not found on the playlist page;
   English passed): not from #21, watch whether it repeats.
 - Checked live on the Mac: full load, YouTube's own move to home (logo from search), search
   from the box, and YouTube's dark theme (switched in its own menu).
-- Not done: the full guide (≥1312 px) pushes YouTube's content right, but the card centres on
-  the window, so it sits slightly left of the content's middle. Design is #23.
+- Lesson: #22's verdicts live on `proto/22-prototypes`'s STATUS; read it before porting a design.
 
 Merge one PR at a time; after each, rebase the other open branch on `main`.
 
