@@ -4,7 +4,8 @@
    Fonts: self-hosted latin subsets of Instrument Serif and Inter (SIL OFL 1.1), /fonts/LICENSES.txt. */
 @font-face{font-family:'Instrument Serif';font-style:normal;font-weight:400;font-display:swap;src:url(/fonts/InstrumentSerif-normal-400.woff2) format('woff2')}
 @font-face{font-family:'Instrument Serif';font-style:italic;font-weight:400;font-display:swap;src:url(/fonts/InstrumentSerif-italic-400.woff2) format('woff2')}
-@font-face{font-family:'Inter';font-style:normal;font-weight:400 700;font-display:swap;src:url(/fonts/Inter-normal-400-700.woff2) format('woff2')}
+/* Inter is optional, not swap: swapped in late, it reflowed long text (/changelog: layout shift 0.139 on the VPS gate, phone). Preloaded, so it is nearly always there for the first paint. */
+@font-face{font-family:'Inter';font-style:normal;font-weight:400 700;font-display:optional;src:url(/fonts/Inter-normal-400-700.woff2) format('woff2')}
 :root{
   --bg:#090F0D;--bg2:#0D1512;--surf:#111A17;--surf2:#16211D;--line:rgb(255 255 255 / .07);--line2:rgb(255 255 255 / .12);
   --text:#EEF3F0;--t2:#A2B1AB;--t3:#8A9993;

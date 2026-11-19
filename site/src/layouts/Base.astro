@@ -46,6 +46,7 @@ const canonical = noindex ? null : urlOf(Astro.url.pathname.replace(/\/$/, "") |
       <script is:inline defer src={analytics.src} data-website-id={analytics.websiteId} data-domains={analytics.domains}></script>
     )}
     <link rel="preload" href="/fonts/InstrumentSerif-normal-400.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/Inter-normal-400-700.woff2" as="font" type="font/woff2" crossorigin />
     {/* The extension's own icon (extension/public, copied in by scripts/copy-icons.mjs). */}
     <link rel="icon" type="image/png" sizes="16x16" href="/icon-16.png" />
     <link rel="icon" type="image/png" sizes="48x48" href="/icon-48.png" />
