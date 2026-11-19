@@ -154,6 +154,8 @@ alone on a quiet machine: it measures speed; needs a residential address, see #2
     slides in from the side you moved; a switched row's icon tile pops; changed ticks stretch;
     the count bumps. The popup has no fixed height and snaps to the open tab: easing the height
     made Chrome resize the popup window every frame, which jittered (removed after review).
+    `#panels` is `overflow-x: clip`: a panel sliding in from the right made the page 406 px in a
+    400 px popup for a moment, and the list stuttered on every move right (tested).
   - Fewer words: no "for YouTube", no Calm Default / own mix line, paused is just "Paused", no
     Home caption (the radiogroup is named "Home page").
   - Tabs (after Najmush's review: cramped, too little feedback): 400 px popup; the open tab is a

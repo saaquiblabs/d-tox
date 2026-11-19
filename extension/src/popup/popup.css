@@ -390,7 +390,14 @@ body.off .ticks i.on {
 }
 
 /* ---- panels and cards ---- */
-/* No fixed height: the popup is as tall as the open tab. */
+/* No fixed height: the popup is as tall as the open tab. The panel slides in from the side, so it
+   is clipped to its own column (8px left for the cards' shadows, still inside the body's 10px
+   padding): unclipped, a panel arriving from the right made the page 6px wider than the popup
+   for a moment and the list stuttered (Najmush, 2026-11-19). */
+#panels {
+  overflow-x: clip;
+  overflow-clip-margin: 8px;
+}
 .panel {
   padding-top: 10px;
 }

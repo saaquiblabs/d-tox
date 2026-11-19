@@ -158,6 +158,32 @@ test('the toolbar icon goes grey while D-Tox is paused', async ({ context, openP
   await expect.poll(last).toBe('icon-16.png');
 });
 
+// Najmush, 2026-11-19: moving right (Home → Videos) the list stuttered: the panel sliding in from
+// the right made the page wider than the popup for a moment.
+test('a panel sliding in never makes the popup wider', async ({ openPopup }) => {
+  const popup = await openPopup();
+  await ready(popup);
+  await expect(popup.locator('body')).toHaveClass(/ready/);
+  for (const to of groups.slice(1)) {
+    const widest = await popup.evaluate(
+      (id) =>
+        new Promise<number>((done) => {
+          let max = 0;
+          let frames = 0;
+          document.getElementById(id)!.click();
+          const tick = () => {
+            max = Math.max(max, document.documentElement.scrollWidth);
+            if (++frames < 25) requestAnimationFrame(tick);
+            else done(max);
+          };
+          tick();
+        }),
+      'tab-' + to.toLowerCase(),
+    );
+    expect(widest, to).toBe(await popup.evaluate(() => document.documentElement.clientWidth));
+  }
+});
+
 test('nothing moves when the system asks for reduced motion', async ({ openPopup }) => {
   const popup = await openPopup();
   await popup.emulateMedia({ reducedMotion: 'reduce' });
