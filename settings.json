@@ -2,6 +2,7 @@
   {
     "id": "home",
     "name": "Home",
+    "hint": "Asks what you’re here for",
     "hides": "Hides the recommended feed on YouTube's home page and asks \"What are you here for?\", pointing to YouTube's search, with links to Subscriptions, Watch later and History.",
     "group": "Home",
     "type": "choice",
@@ -24,6 +25,7 @@
   {
     "id": "recommendations",
     "name": "Recommendations",
+    "hint": "The column beside the video",
     "hides": "Hides the suggested videos beside and below the video you're watching. Playlists, live chat, chapters and transcripts stay.",
     "group": "Watch",
     "type": "switch",
@@ -32,6 +34,7 @@
   {
     "id": "end-screens",
     "name": "End screens",
+    "hint": "Cards over the last seconds",
     "hides": "Hides the grid of videos and the info cards that appear at the end of a video.",
     "group": "Watch",
     "type": "switch",
@@ -40,6 +43,7 @@
   {
     "id": "autoplay-off",
     "name": "Autoplay off",
+    "hint": "Nothing plays next by itself",
     "hides": "Turns YouTube's autoplay off, so the next video doesn't start by itself. The autoplay button still works, and playlists still play in order.",
     "group": "Watch",
     "type": "switch",
@@ -48,6 +52,7 @@
   {
     "id": "comments",
     "name": "Comments",
+    "hint": "The thread under the video",
     "hides": "Hides the comments below the video you're watching.",
     "group": "Watch",
     "type": "switch",
@@ -56,6 +61,7 @@
   {
     "id": "shorts",
     "name": "Shorts",
+    "hint": "Shelves, tab and menu link",
     "hides": "Hides Shorts shelves, the Shorts link in the menu, Shorts in search and a channel's Shorts; a link to a Short still opens.",
     "group": "Shorts",
     "type": "switch",
@@ -64,6 +70,7 @@
   {
     "id": "shorts-redirect",
     "name": "Open Shorts in the normal player",
+    "hint": "Not in the Shorts swipe feed",
     "hides": "Turns every Short into a normal video: it opens in the normal player, not the Shorts swipe feed.",
     "group": "Shorts",
     "type": "switch",
@@ -72,6 +79,7 @@
   {
     "id": "search-clean-up",
     "name": "Search clean-up",
+    "hint": "Shelves between results",
     "hides": "Hides the shelves in search results, such as \"People also watched\" and Shorts, and keeps every result.",
     "group": "Search",
     "type": "switch",
@@ -80,6 +88,7 @@
   {
     "id": "explore",
     "name": "Explore, Trending and Playables",
+    "hint": "The menu’s browse section",
     "hides": "Hides Explore, Trending and Playables from YouTube's menu, with the whole Explore section (Music, Gaming, News, Sports and the rest).",
     "group": "Everywhere",
     "type": "switch",
@@ -88,6 +97,7 @@
   {
     "id": "bell",
     "name": "Notifications bell",
+    "hint": "The red count on the bell",
     "hides": "Hides the notifications bell and its red count.",
     "group": "Everywhere",
     "type": "switch",

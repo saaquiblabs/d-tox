@@ -109,22 +109,39 @@ finished: 32 questions, all answered by Najmush on 2026-11-18. **Read `CONTEXT.m
 
 ## Pipeline
 
-research ✅ → grill ✅ → spec ✅ (#16) → tickets ✅ (#18–#28) → build: #18 ✅ (PR #30), #26 ✅ (live), #19 ✅ (PR #34), #20 ✅ (PR #36), #24 ✅ (PR #37), #27 live (PRs #39–#41, polish left), #21 ✅ (PR #42), #23 Intention Page B in review, rest next →
+research ✅ → grill ✅ → spec ✅ (#16) → tickets ✅ (#18–#28) → build: #18 ✅ (PR #30), #26 ✅ (live), #19 ✅ (PR #34), #20 ✅ (PR #36), #24 ✅ (PR #37), #27 live (PRs #39–#41, polish left), #21 ✅ (PR #42), #23 Intention Page B ✅ (PR #43), #23 popup in review, rest next →
 prototypes of the popup, Intention Page and product page (seen running before anything is picked).
 
-## Next step: review #21, then #25
+## Next step: review #23's popup, then #25
 
-#21 is merged (PR #42). Its first Intention Page had its own search box, against Najmush's #22
-verdict (recorded only on `proto/22-prototypes`); `feat/23-intention-page-b` replaces it with
-design B, the first half of #23. The popup's design (D) is the other half. Next: #25 (Release Gate,
+#23 is done in two PRs. The Intention Page B is merged (PR #43; Najmush checked it live: "better
+than what we had so far"). The popup is on `feat/23-popup`, in review. Next: #25 (Release Gate,
 alone on a quiet machine: it measures speed; needs a residential address, see #24 notes), then
-#23 (popup and Intention Page design). Najmush: the issues token for the nightly check
-(5 minutes, `checks/README.md`).
+#27 polish and #28. Najmush: the issues token for the nightly check (5 minutes, `checks/README.md`).
 
 **Order (two sessions at most at a time):**
 1. ✅ #19 + #26.
 2. ✅ #20 (PR #36) + #24 (PR #37).
-3. ✅ #21. #23's Intention Page (in review), then its popup. Then #25 (alone on a quiet machine). #23, #27 polish, #28 as before.
+3. ✅ #21. ✅ #23's Intention Page (PR #43); its popup in review. Then #25 (alone on a quiet machine), #27 polish, #28.
+
+**#23 popup (2026-11-19), what the next tickets should know**
+- Design: the popup on the product page's story (#22 pass 3, the newest Najmush has seen),
+  not the earlier D on `proto/22-prototypes`: icon per row, name and short hint, tabs per group
+  with a dot, the "4 of 10 on" count with ten ticks. Kept from D: the full "hides" line behind
+  "?". It follows the system's light/dark (dark = the page's spruce and mint; light uses a
+  deeper green, #0b7a55, for contrast). 360 px wide.
+- `settings.json` gains `hint` (a few words, no full stop; the shape test checks it). The
+  product page still has its own copy of the hints in `site/src/pages/index.astro`.
+- Controls are native: `input[type=checkbox][role=switch]` and, for Home, three radio buttons in
+  a segmented row (`radiogroup`) in place of the select. Tests find switches with
+  `settingSwitch()` in `tests/extension.ts`, which opens the group's tab first.
+- `tests/popup.spec.ts` runs axe (`@axe-core/playwright`, dev only) on every tab with every "?"
+  open, in light and dark, and with D-Tox off. When D-Tox is off only the drawings fade (the
+  text keeps its contrast).
+- Brand image is `icon-48.png` (the ivory mark vanished on light). The count uses Instrument
+  Serif cut to "0-9Of" (1.6 KB, `public/fonts`, OFL); built as external `/fonts/*` in esbuild.
+- Size: 23.15 KB of 40 (was 12.54). The growth is popup-only (style, icons, font); nothing new
+  loads on YouTube.
 
 **#21 (2026-11-19), what the next tickets should know**
 - Home is the first choice Setting: `settings.json` gives `choices` (`intention`,

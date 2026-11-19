@@ -1,11 +1,9 @@
 import { existsSync } from 'node:fs';
 import settings from '../../settings.json' with { type: 'json' };
 import { cases, pagesOf, savedPages } from './cases';
-import { expect, store, test, turn } from './extension';
+import { expect, masterSwitch, settingSwitch, store, test, turn } from './extension';
 import type { Page } from '@playwright/test';
 
-const settingSwitch = (popup: Page, name: string) => popup.getByRole('checkbox', { name, exact: true });
-const masterSwitch = (popup: Page) => popup.getByRole('checkbox', { name: 'D-Tox is on' });
 
 const groups = ['Home', 'Watch', 'Shorts', 'Search', 'Everywhere'];
 
@@ -15,7 +13,7 @@ const allOff = Object.fromEntries(settings.map((s) => [s.id, s.type === 'switch'
 test('every Setting in settings.json has the agreed shape', () => {
   const ids = new Set<string>();
   for (const s of settings as Record<string, unknown>[]) {
-    const keys = ['calmDefault', 'group', 'hides', 'id', 'name', 'type'];
+    const keys = ['calmDefault', 'group', 'hides', 'hint', 'id', 'name', 'type'];
     // A choice lists its values; 'default' is YouTube's own, which the content script treats as off.
     if (s.type === 'choice') keys.push('choices');
     expect(Object.keys(s).sort(), JSON.stringify(s)).toEqual(keys.sort());
@@ -26,6 +24,8 @@ test('every Setting in settings.json has the agreed shape', () => {
     expect(typeof s.name === 'string' && s.name.length > 0).toBe(true);
     // A Setting that changes a behaviour (autoplay) says what it turns, not what it hides.
     expect(s.hides, 'hides: one line starting "Hides " or "Turns "').toMatch(/^(Hides|Turns) [^\n]+\.$/);
+    // The popup's second line: a few words, no full stop (the "hides" line is behind "?").
+    expect(s.hint, 'hint: a few words under the name in the popup').toMatch(/^[^\n.]{1,34}$/);
     expect(groups).toContain(s.group);
     expect(['switch', 'choice']).toContain(s.type);
     if (s.type === 'switch') expect(typeof s.calmDefault).toBe('boolean');
@@ -96,7 +96,7 @@ for (const setting of settings) {
       await popup.reload();
       const page = await openSaved(c.fixture, c.url);
       await page.evaluate(() => ((window as any).notReloaded = true));
-      const switchEl = settingSwitch(popup, setting.name);
+      const switchEl = await settingSwitch(popup, setting.name);
 
       await turn(switchEl, true);
       await distractionsHidden(page, true);
@@ -154,7 +154,7 @@ for (const setting of settings) {
 
     test('is hidden from the first load when on', async ({ openSaved, openPopup }) => {
       const popup = await openPopup();
-      await turn(settingSwitch(popup, setting.name), true);
+      await turn(await settingSwitch(popup, setting.name), true);
       const page = await openSaved(c.fixture, c.url);
       await distractionsHidden(page, true);
     });
@@ -162,7 +162,7 @@ for (const setting of settings) {
     test('the master switch turns it off everywhere at once', async ({ openSaved, openPopup }) => {
       const page = await openSaved(c.fixture, c.url);
       const popup = await openPopup();
-      await turn(settingSwitch(popup, setting.name), true);
+      await turn(await settingSwitch(popup, setting.name), true);
       await distractionsHidden(page, true);
 
       await turn(masterSwitch(popup), false);

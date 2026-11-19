@@ -53,6 +53,7 @@ const options = {
   target: 'chrome120',
   legalComments: 'inline', // keeps hide-rys.css's MPL-2.0 notice (/*! */) in dist
   define: { __DTOX_CALM_DEFAULT__: JSON.stringify(calmDefault) },
+  external: ['/fonts/*'], // public/fonts, copied as they are
   logLevel: 'warning',
 };
 

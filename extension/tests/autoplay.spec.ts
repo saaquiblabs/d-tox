@@ -1,6 +1,6 @@
 import settings from '../../settings.json' with { type: 'json' };
 import { cases } from './cases';
-import { expect, test, turn } from './extension';
+import { expect, masterSwitch, settingSwitch, test, turn } from './extension';
 import type { Page } from '@playwright/test';
 
 // "Autoplay off" sets YouTube's own autoplay button to off on the first watch page in a tab,
@@ -39,7 +39,7 @@ const settled = (page: Page, on: boolean) => {
 
 test('the saved page starts with YouTube autoplay on', async ({ openSaved, openPopup }) => {
   const popup = await openPopup();
-  await turn(popup.getByRole('checkbox', { name: 'D-Tox is on' }), false);
+  await turn(masterSwitch(popup), false);
   const page = await openSaved(c.fixture, c.url, fakePlayer, { ready: true });
   await expect(autoplay(page)).toHaveAttribute('aria-checked', 'true');
 });
@@ -94,7 +94,7 @@ test('leaves the hidden button alone in a playlist', async ({ openSaved }) => {
 
 test('leaves autoplay alone when the Setting is off', async ({ openSaved, openPopup }) => {
   const popup = await openPopup();
-  await turn(popup.getByRole('checkbox', { name: setting.name, exact: true }), false);
+  await turn(await settingSwitch(popup, setting.name), false);
   const page = await openSaved(c.fixture, c.url, fakePlayer, { ready: true });
   await settled(page, false);
   await youtube(page, 'yt-navigate-finish');
@@ -104,7 +104,7 @@ test('leaves autoplay alone when the Setting is off', async ({ openSaved, openPo
 
 test('leaves autoplay alone when the master switch is off', async ({ openSaved, openPopup }) => {
   const popup = await openPopup();
-  await turn(popup.getByRole('checkbox', { name: 'D-Tox is on' }), false);
+  await turn(masterSwitch(popup), false);
   const page = await openSaved(c.fixture, c.url, fakePlayer, { ready: true });
   await settled(page, false);
   await youtube(page, 'yt-navigate-finish');
@@ -113,7 +113,7 @@ test('leaves autoplay alone when the master switch is off', async ({ openSaved, 
 
 test('switching it on in the popup turns autoplay off in the open tab', async ({ openSaved, openPopup }) => {
   const popup = await openPopup();
-  const switchEl = popup.getByRole('checkbox', { name: setting.name, exact: true });
+  const switchEl = await settingSwitch(popup, setting.name);
   await turn(switchEl, false);
   const page = await openSaved(c.fixture, c.url, fakePlayer, { ready: true });
   await settled(page, false);

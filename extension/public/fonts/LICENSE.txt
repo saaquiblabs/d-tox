@@ -1,0 +1,4 @@
+fonts/InstrumentSerif-count.woff2: the popup's count. Instrument Serif cut down to the characters 0-9, O and f
+(fontTools subset of the latin woff2 from Google Fonts, otherwise unmodified).
+Instrument Serif: Copyright 2022 The Instrument Serif Project Authors. SIL Open Font License 1.1.
+  https://github.com/Instrument/instrument-serif  ·  https://openfontlicense.org

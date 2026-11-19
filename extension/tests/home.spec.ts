@@ -124,18 +124,19 @@ test("on YouTube's default, home is left as it is", async ({ openSaved, openPopu
   await expect(page).toHaveURL(home.url);
 });
 
-test('the popup select switches the open tab without a reload', async ({ openSaved, openPopup }) => {
+test("the popup's Home choice switches the open tab without a reload", async ({ openSaved, openPopup }) => {
   const page = await openSaved(home.fixture, home.url);
   await page.evaluate(() => ((window as any).notReloaded = true));
   const popup = await openPopup();
-  const select = popup.getByRole('combobox', { name: /^Home/ });
-  await expect(select).toHaveValue('intention');
-  await expect(select.locator('option')).toHaveText(['Intention Page', 'Subscriptions', 'YouTube default']);
+  const choice = popup.getByRole('radiogroup', { name: /^Home/ });
+  await expect(choice.getByRole('radio')).toHaveCount(3);
+  await expect(choice.locator('label')).toHaveText(['Intention Page', 'Subscriptions', 'YouTube default']);
+  await expect(choice.getByRole('radio', { name: 'Intention Page' })).toBeChecked();
 
-  await select.selectOption('default');
+  await choice.getByRole('radio', { name: 'YouTube default' }).check();
   await expect(feed(page)).toBeVisible();
   await expect(card(page)).toBeHidden();
-  await select.selectOption('intention');
+  await choice.getByRole('radio', { name: 'Intention Page' }).check();
   await expect(card(page)).toBeVisible();
   await expect(feed(page)).toBeHidden();
   expect(await page.evaluate(() => (window as any).notReloaded)).toBe(true);

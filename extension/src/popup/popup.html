@@ -6,9 +6,25 @@
     <link rel="stylesheet" href="popup-style.css" />
   </head>
   <body>
-    <!-- Plain and unstyled on purpose: the design is picked after the prototypes (#22, #23). -->
-    <label><input type="checkbox" id="enabled" disabled /> D-Tox is on</label>
-    <form id="settings"></form>
+    <!-- The popup from the product page's story (#22, #23); popup.ts fills it from settings.json. -->
+    <header class="hd">
+      <h1 class="brand"><img src="icon-48.png" alt="" width="24" height="24" />D-Tox</h1>
+      <input type="checkbox" role="switch" class="sw" id="enabled" aria-label="D-Tox is on" disabled />
+    </header>
+    <main>
+      <section class="meter">
+        <p id="status" aria-live="polite"></p>
+        <div class="ticks" aria-hidden="true"></div>
+      </section>
+      <div class="tabs" role="tablist" aria-label="Settings"></div>
+      <div id="panels"></div>
+    </main>
+    <footer class="ft">
+      <a href="https://d-tox.saaquiblabs.com/privacy" target="_blank">Privacy</a>
+      <a href="https://github.com/saaquiblabs/d-tox/releases" target="_blank">Changelog</a>
+      <a href="https://github.com/sponsors/saaquiblabs" target="_blank">Sponsor</a>
+      <span id="version"></span>
+    </footer>
     <script src="popup.js"></script>
   </body>
 </html>
