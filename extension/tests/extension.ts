@@ -93,3 +93,13 @@ export async function turn(sw: Locator, on: boolean) {
   const read = (a: { k: string; d: unknown }) => chrome.storage.sync.get({ [a.k]: a.d }).then((v) => v[a.k]);
   await expect.poll(() => sw.page().evaluate(read, { k: id, d: fallback })).toBe(on);
 }
+
+/** The popup's master switch. */
+export const masterSwitch = (popup: Page) => popup.getByRole('switch', { name: 'D-Tox is on' });
+
+/** A Setting's switch in the popup, after opening its group's tab (the other tabs' rows are hidden). */
+export async function settingSwitch(popup: Page, name: string) {
+  const setting = settings.find((s) => s.name === name)!;
+  await popup.getByRole('tab', { name: setting.group, exact: true }).click();
+  return popup.getByRole('switch', { name, exact: true });
+}

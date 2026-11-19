@@ -48,11 +48,13 @@ observers). `extension/src/background.ts` opens `/welcome` on install, and does 
 
 ### Adding a Setting
 
-1. Add it to `settings.json` (id, name, "Hides …" line, group, type, Calm Default value). A
-   Setting that changes a behaviour rather than hiding something says "Turns …" instead.
+1. Add it to `settings.json` (id, name, a short `hint` for the popup, "Hides …" line, group,
+   type, Calm Default value). The popup shows the name and hint on each row and the full line
+   behind "?"; its icon goes in `icons` in `extension/src/popup/popup.ts`. A Setting that
+   changes a behaviour rather than hiding something says "Turns …" instead.
    `calmDefault` is `true`/`false` for a switch. A choice (Home) also lists its `choices`
    (`id`, `name`), one of them `default` (YouTube's own, which sets no attribute), and
-   `calmDefault` is the value it starts on. The popup shows a choice as a select, and its rules can
+   `calmDefault` is the value it starts on. The popup shows a choice as radio buttons, and its rules can
    be gated on its value, `html[data-dtox-<id>="<value>"]`.
 2. Hiding: add its rule to `extension/src/hide.css`, gated on `html[data-dtox-<id>]` and scoped
    to its page. Selectors ported from RYS go in `extension/src/hide-rys.css`, which stays

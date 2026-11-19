@@ -31,7 +31,7 @@ npm test               # typecheck + the checker against saved pages and a fake 
 | `not found` | YouTube no longer builds the Distraction as `cases.ts` describes it, or not on that page today | look at the page in a browser; update the selector in `cases.ts` (no text: it runs in Hindi too) and recapture the saved page, or pick a better `liveUrl` |
 | `still visible` | the rule in `extension/src/*.css` no longer matches | fix the rule |
 | `skipped, its Distractions need a signed-in account` | nothing it hides shows to a signed-out visitor (the bell) | — |
-| `skipped, it changes a behaviour` | behaviour Settings (Autoplay off) are tested by their own spec, not here | — |
+| `skipped, it changes a behaviour` | behaviour Settings (Stop autoplay) are tested by their own spec, not here | — |
 | `BLOCKED in Hindi` | bot check, consent page, page in the wrong language, or YouTube didn't load | not a pass: nothing was checked in that language |
 | `note: the player's bot check … refused the video` | YouTube refuses video to the VPS's datacenter address but renders the page; nothing checked needs the video | — (if a Distraction is then missing, it is BLOCKED instead) |
 

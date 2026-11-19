@@ -22,7 +22,7 @@ export const studio: Link = { label: "Saaquib Labs", href: "https://saaquiblabs.
 /** Popup and page footers carry the same three links (grill, 2026-11-18). */
 export const footer: Link[] = [
   { label: "Privacy", href: "/privacy" },
-  { label: "Changelog", href: `${repo}/releases` },
+  { label: "What’s new", href: "/changelog" },
   { label: "Sponsor", href: "https://github.com/sponsors/saaquiblabs" },
 ];
 

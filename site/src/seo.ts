@@ -20,6 +20,10 @@ export const pages = {
     title: "Privacy",
     description: `${fullName} collects nothing and sends nothing anywhere. Your Settings stay in your Chrome. What this site counts, and how.`,
   },
+  "/changelog": {
+    title: "What’s new",
+    description: `Every version of ${fullName}, newest first, in plain words.`,
+  },
 } satisfies Record<string, PageMeta>;
 
 export const urlOf = (path: string) => origin + path;

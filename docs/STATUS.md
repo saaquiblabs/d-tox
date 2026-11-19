@@ -74,7 +74,7 @@ finished: 32 questions, all answered by Najmush on 2026-11-18. **Read `CONTEXT.m
 - Intention Page: "What are you here for?", pointing at YouTube's own search (no second search
   box: Najmush, #22), with cards for Subscriptions, Watch later and History, and "/ to search".
   Session intention with timers is v2.1, not v1.
-- Popup: master switch (no pause timer), Settings grouped Home · Watch · Shorts · Search ·
+- Popup: master switch (no pause timer), Settings grouped Home · Videos (was Watch) · Shorts · Search ·
   Everywhere, footer Privacy · Changelog · Sponsor. No options page. Follows system dark
   mode; the Intention Page follows YouTube's theme.
 - Install opens `d-tox.saaquiblabs.com/welcome` once (not on update).
@@ -109,22 +109,77 @@ finished: 32 questions, all answered by Najmush on 2026-11-18. **Read `CONTEXT.m
 
 ## Pipeline
 
-research ✅ → grill ✅ → spec ✅ (#16) → tickets ✅ (#18–#28) → build: #18 ✅ (PR #30), #26 ✅ (live), #19 ✅ (PR #34), #20 ✅ (PR #36), #24 ✅ (PR #37), #27 live (PRs #39–#41, polish left), #21 ✅ (PR #42), #23 Intention Page B in review, rest next →
+research ✅ → grill ✅ → spec ✅ (#16) → tickets ✅ (#18–#28) → build: #18 ✅ (PR #30), #26 ✅ (live), #19 ✅ (PR #34), #20 ✅ (PR #36), #24 ✅ (PR #37), #27 live (PRs #39–#41, polish left), #21 ✅ (PR #42), #23 Intention Page B ✅ (PR #43), #23 popup in review, rest next →
 prototypes of the popup, Intention Page and product page (seen running before anything is picked).
 
-## Next step: review #21, then #25
+## Next step: #25
 
-#21 is merged (PR #42). Its first Intention Page had its own search box, against Najmush's #22
-verdict (recorded only on `proto/22-prototypes`); `feat/23-intention-page-b` replaces it with
-design B, the first half of #23. The popup's design (D) is the other half. Next: #25 (Release Gate,
+#23 is done in two PRs: the Intention Page B (PR #43; Najmush checked it live: "better than what
+we had so far") and the popup (PR #44, three passes; Najmush, 2026-11-19: "lock this and move
+ahead"). Site deployed with `/changelog`. Next: #25 (Release Gate,
 alone on a quiet machine: it measures speed; needs a residential address, see #24 notes), then
-#23 (popup and Intention Page design). Najmush: the issues token for the nightly check
-(5 minutes, `checks/README.md`).
+#27 polish and #28. Najmush: the issues token for the nightly check (5 minutes, `checks/README.md`).
 
 **Order (two sessions at most at a time):**
 1. ✅ #19 + #26.
 2. ✅ #20 (PR #36) + #24 (PR #37).
-3. ✅ #21. #23's Intention Page (in review), then its popup. Then #25 (alone on a quiet machine). #23, #27 polish, #28 as before.
+3. ✅ #21. ✅ #23 (PRs #43, #44). Then #25 (alone on a quiet machine), #27 polish, #28.
+
+**#23 popup (2026-11-19), what the next tickets should know**
+- Pass 1 (the product page's popup, 360 px) → Najmush: "better", but make it "richer and
+  luxurious"; "Recommendations" switched on read as *show* them; Home on Subscriptions felt stuck;
+  the changelog should be on our site. Pass 2 is what's on `feat/23-popup`:
+  - A night card on top in both themes (spruce, mint glow, the count in Instrument Serif, ten
+    glowing ticks, "The Calm Default" / "Your own mix", "Paused" when off). Below it, cards in
+    the system's light or dark; a sliding tab pill; switch rows with icon tiles that light up;
+    "i" opens the full line. Home is three choice cards (Ask me first · Subscriptions ·
+    YouTube's feed), each with its own line. 380 px.
+  - **Wording rule:** a switch is named for what it does when on ("Hide recommendations",
+    "Stop autoplay", "Play Shorts as videos", "Clean up search"); the shape test enforces the
+    verbs. Group "Watch" is now "Videos". `settings.json` has `hint` per Setting and per choice.
+    The product page's copy (`site/src/pages/index.astro`) was updated to match.
+  - Home: moving Home off Subscriptions while the tab in front shows Subscriptions now takes it
+    to Home at once (`content.ts`, checked live and in `home.spec.ts`).
+  - `/changelog` ("What's new") on the site: v2.0.0 (coming soon) and v1.0.0–v1.4.1 retold from
+    the GitHub releases. The popup and site footers link to it. Add an entry with each version
+    bump. Needs a site deploy before the popup link works.
+- **Pass 3 (agreed with Najmush 2026-11-19), reviewed and merged (PR #44).**
+  Najmush: "show things VISUALLY rather than text cluttering", "negative space, air to breathe",
+  "eloquent language (less words, rich meaning)", "and performance".
+  - Paused: a grey night fades over the card (`.hero::before`, opacity, 300 ms); ticks, count,
+    logo and every mint below go grey (`body.off` resets `--acc`). The toolbar icon goes grey
+    too: `background.ts` sets `icon-off-*.png` (rendered by `scripts/render-icons.mjs`) and the
+    title "D-Tox (paused)" on a storage change, on install/update and at startup. The paused icon
+    is a flat grey mark with no tile (like uBlock's off icon): a dimmed tile still read as on.
+  - Motion (Web Animations, transform/opacity only, skipped under reduced motion): the panel
+    slides in from the side you moved; a switched row's icon tile pops; changed ticks stretch;
+    the count bumps. The popup has no fixed height and snaps to the open tab: easing the height
+    made Chrome resize the popup window every frame, which jittered (removed after review).
+    `#panels` is `overflow-x: clip`: a panel sliding in from the right made the page 406 px in a
+    400 px popup for a moment, and the list stuttered on every move right (tested).
+  - Fewer words: no "for YouTube", no Calm Default / own mix line, paused is just "Paused", no
+    Home caption (the radiogroup is named "Home page").
+  - Tabs (after Najmush's review: cramped, too little feedback): 400 px popup; the open tab is a
+    spruce pill with a mint ring (grey when paused), the others in the tertiary text colour
+    (opacity dimming failed axe contrast); the dot sits under the name; tabs and the magnifier
+    shrink a little when pressed.
+  - Find: a magnifier in its own tile beside the tab bar (outside the tablist, so Tab goes tabs →
+    magnifier → panel); it turns into a mint × while finding. Click, "/" or any typed character opens a field; rows (and Home choices) from every
+    group whose name, hint or full line hold every word show in place; "Nothing matches"
+    otherwise. Esc, an empty field, or the × closes it and focus returns to the open tab.
+    Untested in a real toolbar popup: whether Chrome lets Esc reach the field or closes the popup.
+  - Intention Page jitter (Najmush's screenshot: the question over search results while YouTube
+    loaded home): it showed at the address change, before YouTube drew home. Now it hides at once
+    when the address leaves home and shows on `yt-navigate-finish`, with an 0.18 s fade. Checked
+    on live YouTube (search → logo): no overlap.
+  - Size 32.41 KB of 40 (27.72 before pass 3); the Intention Page change is 0.2 KB. Screenshots on/off × light/dark shared
+    with Najmush.
+- Controls are native: `input[type=checkbox][role=switch]`, Home as a `radiogroup`. Tests find
+  switches with `settingSwitch()` in `tests/extension.ts`, which opens the group's tab first.
+- `tests/popup.spec.ts` runs axe (`@axe-core/playwright`, dev only) on every tab with every "i"
+  open, in light and dark, paused, and while finding. Paused text keeps its contrast.
+- Count font: Instrument Serif cut to "0-9" and "Paused" (2.1 KB, `public/fonts`, OFL); esbuild
+  leaves `/fonts/*` external. Brand image is `icon-48.png`.
 
 **#21 (2026-11-19), what the next tickets should know**
 - Home is the first choice Setting: `settings.json` gives `choices` (`intention`,

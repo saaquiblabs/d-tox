@@ -13,8 +13,13 @@ const subscriptionsUrl = 'https://www.youtube.com/feed/subscriptions';
 const card = (page: Page) => page.locator('#dtox-intention');
 /** The feed, as a person sees it. Signed out, YouTube's home holds only a "Try searching" nudge. */
 const feed = (page: Page) => page.locator('ytd-browse[page-subtype="home"] ytd-feed-nudge-renderer');
-/** YouTube's own navigation: no page load, just pushState. */
-const youtubeGoesTo = (page: Page, url: string) => page.evaluate((u) => history.pushState({}, '', u), url);
+/** YouTube's own navigation: no page load, just pushState, then yt-navigate-finish once it has drawn the page. */
+const youtubeGoesTo = async (page: Page, url: string) => {
+  await page.evaluate((u) => history.pushState({}, '', u), url);
+  await youtubeDrew(page);
+};
+// Tolerates the page being gone: a redirect (Shorts, Subscriptions) can replace it first.
+const youtubeDrew = (page: Page) => page.evaluate(() => document.dispatchEvent(new Event('yt-navigate-finish'))).catch(() => {});
 
 test('the Calm Default shows the Intention Page in place of the feed', async ({ openSaved }) => {
   expect(setting.calmDefault).toBe('intention');
@@ -90,7 +95,22 @@ test("shows on YouTube's own moves to home and back, and nowhere else", async ({
   await expect(card(page)).toBeHidden();
   await page.goBack();
   await expect(page).toHaveURL(home.url);
+  await youtubeDrew(page);
   await expect(card(page)).toBeVisible();
+});
+
+// Najmush, 2026-11-19: shown at the address change, the question sat over the search results
+// YouTube was still showing while it loaded home.
+test('waits for YouTube to draw home before showing, and hides as soon as it leaves', async ({ openSaved }) => {
+  const page = await openSaved(watch.fixture, watch.url);
+  await page.waitForTimeout(500); // Settings loaded (else their arrival shows it, as on a full load of home)
+  await page.evaluate(() => history.pushState({}, '', '/'));
+  await page.waitForTimeout(300);
+  await expect(card(page)).toBeHidden(); // YouTube still shows the video page
+  await youtubeDrew(page);
+  await expect(card(page)).toBeVisible();
+  await page.evaluate((u) => history.pushState({}, '', u), watch.url);
+  await expect(card(page)).toBeHidden(); // at once, before YouTube draws the video page
 });
 
 test('on Subscriptions, home opens Subscriptions', async ({ context, served, openPopup }) => {
@@ -124,21 +144,37 @@ test("on YouTube's default, home is left as it is", async ({ openSaved, openPopu
   await expect(page).toHaveURL(home.url);
 });
 
-test('the popup select switches the open tab without a reload', async ({ openSaved, openPopup }) => {
+test("the popup's Home choice switches the open tab without a reload", async ({ openSaved, openPopup }) => {
   const page = await openSaved(home.fixture, home.url);
   await page.evaluate(() => ((window as any).notReloaded = true));
   const popup = await openPopup();
-  const select = popup.getByRole('combobox', { name: /^Home/ });
-  await expect(select).toHaveValue('intention');
-  await expect(select.locator('option')).toHaveText(['Intention Page', 'Subscriptions', 'YouTube default']);
+  const choice = popup.getByRole('radiogroup', { name: setting.name });
+  const radio = (id: string) => choice.getByRole('radio', { name: new RegExp('^' + setting.choices!.find((c) => c.id === id)!.name) });
+  await expect(choice.getByRole('radio')).toHaveCount(3);
+  for (const c of setting.choices!) await expect(choice.getByText(c.hint, { exact: true })).toBeVisible();
+  await expect(radio('intention')).toBeChecked();
 
-  await select.selectOption('default');
+  await radio('default').check();
   await expect(feed(page)).toBeVisible();
   await expect(card(page)).toBeHidden();
-  await select.selectOption('intention');
+  await radio('intention').check();
   await expect(card(page)).toBeVisible();
   await expect(feed(page)).toBeHidden();
   expect(await page.evaluate(() => (window as any).notReloaded)).toBe(true);
+});
+
+// Najmush, 2026-11-19: once on Subscriptions, choosing another Home left the tab there until a reload.
+test('moving Home off Subscriptions while on Subscriptions shows the new Home at once', async ({ context, served, openPopup }) => {
+  served.set(subscriptionsUrl, 'gaming.html');
+  const popup = await openPopup();
+  await store(popup, { home: 'subscriptions' });
+  const tab = await context.newPage();
+  await tab.goto(home.url, { waitUntil: 'commit' }).catch(() => {}); // replaced while loading
+  await expect(tab).toHaveURL(subscriptionsUrl);
+  await tab.waitForLoadState();
+  await store(popup, { home: 'intention' });
+  await expect(tab).toHaveURL(home.url);
+  await expect(card(tab)).toBeVisible();
 });
 
 test("the master switch gives back YouTube's home", async ({ openSaved, openPopup }) => {

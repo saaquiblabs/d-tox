@@ -1,8 +1,612 @@
-body {
-  min-width: 16rem;
-  font: 14px system-ui, sans-serif;
+/*
+ * The popup (#23). The top card is always the product page's night (spruce, mint glow, the count
+ * in Instrument Serif); below it the Settings sit on cards in the system's light or dark theme.
+ * Instrument Serif is cut to the count's characters (public/fonts, OFL); everything else is the
+ * system's sans-serif. Native inputs, drawn as switches and choice cards.
+ */
+@font-face {
+  font-family: "Instrument Serif";
+  src: url("/fonts/InstrumentSerif-count.woff2") format("woff2");
+  font-display: block;
 }
-fieldset > label,
-fieldset > small {
+
+:root {
+  color-scheme: light dark;
+  --bg: #eef2f0;
+  --surf: #fff;
+  --surf2: #f5f7f6;
+  --line: rgb(9 15 13 / 0.08);
+  --text: #0b1512;
+  --t2: #3f4e48;
+  --t3: #56655f;
+  --acc: #0b7a55; /* the mint, deep enough for a light page */
+  --acc-hi: #13a072;
+  --acc-soft: rgb(11 122 85 / 0.1);
+  --thumb-on: #fff;
+  --thumb: #fff;
+  --track: rgb(9 15 13 / 0.14);
+  --shadow: 0 1px 2px rgb(9 15 13 / 0.05), 0 10px 28px -14px rgb(9 15 13 / 0.22);
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #070c0a;
+    --surf: #0f1714;
+    --surf2: #131d19;
+    --line: rgb(255 255 255 / 0.07);
+    --text: #eef3f0;
+    --t2: #a8b6b0;
+    --t3: #8d9c96;
+    --acc: #7cf0c4;
+    --acc-hi: #a8f7d9;
+    --acc-soft: rgb(124 240 196 / 0.12);
+    --thumb-on: #04140e;
+    --thumb: #c9d3cf;
+    --track: rgb(255 255 255 / 0.13);
+    --shadow: 0 1px 0 rgb(255 255 255 / 0.03) inset, 0 12px 30px -16px rgb(0 0 0 / 0.8);
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+[hidden] {
+  display: none !important;
+}
+
+body {
+  width: 400px;
+  margin: 0;
+  padding: 10px;
+  background: var(--bg);
+  color: var(--text);
+  font: 400 13px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+:focus-visible {
+  outline: 2px solid var(--acc);
+  outline-offset: 2px;
+}
+
+/* ---- the night card: brand, master switch, count ---- */
+.hero {
+  --acc: #7cf0c4;
+  --acc-hi: #a8f7d9;
+  --thumb-on: #04140e;
+  --thumb: #c9d3cf;
+  --track: rgb(255 255 255 / 0.16);
+  position: relative;
+  overflow: hidden;
+  padding: 16px 18px 18px;
+  border-radius: 20px;
+  color: #eef3f0;
+  background:
+    radial-gradient(90% 120% at 100% 0%, rgb(124 240 196 / 0.2), transparent 55%),
+    radial-gradient(70% 80% at 0% 110%, rgb(124 240 196 / 0.07), transparent 60%),
+    linear-gradient(160deg, #13221c, #080e0c 70%);
+  box-shadow:
+    0 0 0 1px rgb(255 255 255 / 0.07) inset,
+    0 1px 0 rgb(255 255 255 / 0.1) inset,
+    0 18px 40px -20px rgb(4 20 14 / 0.9);
+}
+.hero :focus-visible {
+  outline-color: #7cf0c4;
+}
+/* Paused: a grey night fades in over the glow (opacity only), and everything mint goes grey. */
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(160deg, #262a29, #121413 70%);
+  opacity: 0;
+}
+.ready .hero::before {
+  transition: opacity 0.3s var(--ease);
+}
+body.off .hero::before {
+  opacity: 1;
+}
+.hero > * {
+  position: relative;
+}
+
+.hd {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-size: 15px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+}
+.brand img {
+  border-radius: 8px;
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 0.1);
+}
+body.off .brand img {
+  filter: grayscale(1);
+  opacity: 0.7;
+}
+
+#status {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  min-height: 64px;
+  margin: 18px 0 14px;
+}
+#status b {
+  font: 400 64px/0.8 "Instrument Serif", Georgia, serif;
+  letter-spacing: -0.02em;
+  background: linear-gradient(180deg, #fff, #a8f7d9);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+#status b.bump {
+  animation: bump 0.45s var(--spring);
+}
+@keyframes bump {
+  from {
+    transform: translateY(8px);
+    opacity: 0.2;
+  }
+}
+#status span {
+  padding-bottom: 2px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #c4d0cb;
+}
+body.off #status b {
+  background: none;
+  color: #b4bcb9;
+}
+
+.ticks {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 4px;
+}
+.ticks i {
+  height: 5px;
+  border-radius: 3px;
+  background: rgb(255 255 255 / 0.1);
+  transition: background 0.3s, box-shadow 0.3s;
+}
+.ticks i.on {
+  background: #7cf0c4;
+  box-shadow: 0 0 10px rgb(124 240 196 / 0.55);
+}
+body.off .ticks i.on {
+  background: rgb(255 255 255 / 0.32);
+  box-shadow: none;
+}
+
+/* ---- switch: a native checkbox ---- */
+.sw {
+  appearance: none;
+  flex: none;
+  position: relative;
+  width: 40px;
+  height: 24px;
+  margin: 0;
+  border-radius: 12px;
+  background: var(--track);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.18) inset;
+  cursor: pointer;
+}
+.sw::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--thumb);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.3), 0 0 0 0.5px rgb(0 0 0 / 0.06);
+}
+.sw:checked {
+  background: linear-gradient(180deg, var(--acc-hi), var(--acc));
+}
+.sw:checked::after {
+  transform: translateX(16px);
+  background: var(--thumb-on);
+}
+.sw.big {
+  width: 48px;
+  height: 28px;
+  border-radius: 14px;
+}
+.sw.big::after {
+  width: 22px;
+  height: 22px;
+}
+.sw.big:checked::after {
+  transform: translateX(20px);
+}
+.sw:checked.big {
+  box-shadow: 0 0 18px -2px rgb(124 240 196 / 0.55);
+}
+.sw:disabled {
+  opacity: 0.4;
+}
+.ready .sw {
+  transition: background 0.25s, box-shadow 0.25s;
+}
+.ready .sw::after {
+  transition: transform 0.35s var(--spring), background 0.25s;
+}
+
+/* ---- tabs: one per group. The open tab is a piece of the night card (spruce, mint ring) that
+   slides; the others step back. A dot under a tab's name when something in it is on. The
+   magnifier is its own tile beside them. ---- */
+.nav {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+.bar {
+  flex: auto;
+  display: flex;
+  height: 46px;
+  padding: 4px;
+  border-radius: 14px;
+  background: var(--surf2);
+  box-shadow: 0 0 0 1px var(--line) inset;
+}
+.tabs {
+  position: relative;
+  display: flex;
+  flex: auto;
+}
+.pill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  border-radius: 10px;
+  background:
+    radial-gradient(120% 160% at 100% 0%, rgb(124 240 196 / 0.24), transparent 60%),
+    linear-gradient(160deg, #183429, #0a120f);
+  box-shadow:
+    0 0 0 1px rgb(124 240 196 / 0.28) inset,
+    0 6px 14px -6px rgb(4 20 14 / 0.7);
+}
+.ready .pill {
+  transition: transform 0.35s var(--ease), width 0.35s var(--ease), background 0.3s;
+}
+.tabs button {
+  all: unset;
+  position: relative;
+  flex: auto;
+  padding: 0 4px;
+  line-height: 38px;
+  border-radius: 10px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--t3);
+  cursor: pointer;
+}
+.ready .tabs button {
+  transition: color 0.2s, transform 0.15s var(--ease);
+}
+.tabs button:hover {
+  color: var(--text);
+}
+.tabs button:active {
+  transform: scale(0.94);
+}
+.tabs button[aria-selected="true"] {
+  color: #f4fbf8;
+}
+.tabs button:focus-visible {
+  outline: 2px solid var(--acc);
+  outline-offset: -2px;
+}
+.tabs button.dot::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 4px;
+  width: 4px;
+  height: 4px;
+  margin-left: -2px;
+  border-radius: 50%;
+  background: var(--acc);
+}
+.tabs button[aria-selected="true"].dot::after {
+  background: #7cf0c4;
+  box-shadow: 0 0 6px #7cf0c4;
+}
+#find {
+  all: unset;
+  flex: auto;
+  padding: 0 12px;
+  font-size: 13.5px;
+  color: var(--text);
+}
+#find::placeholder {
+  color: var(--t3);
+}
+#find::-webkit-search-cancel-button {
+  display: none;
+}
+.seek {
+  all: unset;
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  background: var(--surf);
+  box-shadow: var(--shadow), 0 0 0 1px var(--line);
+  color: var(--t2);
+  cursor: pointer;
+}
+.ready .seek {
+  transition: color 0.2s, background 0.2s, transform 0.15s var(--ease);
+}
+.seek:hover {
+  color: var(--acc);
+}
+.seek:active {
+  transform: scale(0.92);
+}
+.seek:focus-visible {
+  outline: 2px solid var(--acc);
+  outline-offset: 2px;
+}
+.seek svg {
+  width: 19px;
+  height: 19px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+.seek .x,
+.finding .seek .lens {
+  display: none;
+}
+.finding .seek .x {
+  display: inline;
+}
+.finding .seek {
+  background: var(--acc-soft);
+  color: var(--acc);
+}
+
+/* ---- panels and cards ---- */
+/* No fixed height: the popup is as tall as the open tab. The panel slides in from the side, so it
+   is clipped to its own column (8px left for the cards' shadows, still inside the body's 10px
+   padding): unclipped, a panel arriving from the right made the page 6px wider than the popup
+   for a moment and the list stuttered (Najmush, 2026-11-19). */
+#panels {
+  overflow-x: clip;
+  overflow-clip-margin: 8px;
+}
+.panel {
+  padding-top: 10px;
+}
+.none {
+  margin: 0;
+  padding: 26px 0 16px;
+  text-align: center;
+  color: var(--t3);
+}
+.card {
+  overflow: hidden;
+  border-radius: 16px;
+  background: var(--surf);
+  box-shadow: var(--shadow), 0 0 0 1px var(--line);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 36px 1fr auto auto;
+  align-items: center;
+  column-gap: 12px;
+  padding: 12px 14px;
+}
+/* Each row draws the line above it and the card clips the first one, so the lines stay right
+   when find hides rows. */
+.row,
+.opt {
+  margin-top: -1px;
+  border-top: 1px solid var(--line);
+}
+
+.ic {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 11px;
+  background: var(--surf2);
+  box-shadow: 0 0 0 1px var(--line) inset;
+  color: var(--t3);
+}
+.ready .ic {
+  transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+}
+.ic svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.row:has(.sw:checked) .ic,
+.opt:has(:checked) .ic {
+  background: var(--acc-soft);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--acc) 25%, transparent) inset;
+  color: var(--acc);
+}
+
+.nm {
   display: block;
+  min-width: 0;
+  cursor: pointer;
+}
+.nm > span {
+  display: block;
+  font-size: 13.5px;
+  font-weight: 550;
+  line-height: 1.25;
+}
+.nm small {
+  display: block;
+  margin-top: 2px;
+  font-size: 12px;
+  color: var(--t3);
+}
+
+.more {
+  all: unset;
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px var(--line) inset;
+  font: italic 600 11px/1 Georgia, serif;
+  color: var(--t3);
+  cursor: pointer;
+}
+.more:hover,
+.more[aria-expanded="true"] {
+  color: var(--text);
+  box-shadow: 0 0 0 1px var(--t3) inset;
+}
+.more:focus-visible {
+  outline: 2px solid var(--acc);
+}
+.hides {
+  grid-column: 2 / -1;
+  margin: 10px 0 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--surf2);
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--t2);
+}
+
+/* Home: one card per choice, a native radio button inside each. */
+.opt {
+  position: relative;
+  display: grid;
+  grid-template-columns: 36px 1fr auto;
+  align-items: center;
+  column-gap: 12px;
+  padding: 13px 14px;
+  cursor: pointer;
+}
+.opt:has(:checked) {
+  background: var(--acc-soft);
+}
+.opt input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+}
+.opt:has(:focus-visible) {
+  outline: 2px solid var(--acc);
+  outline-offset: -2px;
+  border-radius: 16px;
+}
+.check {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1.5px var(--track) inset;
+}
+.opt:has(:checked) .check {
+  background:
+    no-repeat center / 12px url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m2.5 6.2 2.3 2.3 4.7-5'/%3E%3C/svg%3E"),
+    var(--acc);
+  box-shadow: none;
+}
+@media (prefers-color-scheme: dark) {
+  .opt:has(:checked) .check {
+    background:
+      no-repeat center / 12px url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none' stroke='%2304140e' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m2.5 6.2 2.3 2.3 4.7-5'/%3E%3C/svg%3E"),
+      var(--acc);
+  }
+}
+
+/* Paused: the Settings stay and can still be changed, but nothing is mint: switches, icon tiles,
+   checks and dots go grey. The text keeps its contrast. */
+body.off {
+  --acc: var(--t3);
+  --acc-hi: var(--t3);
+  --acc-soft: var(--surf2);
+  --thumb-on: var(--surf);
+}
+body.off .pill {
+  background: linear-gradient(160deg, #3b403e, #222524);
+  box-shadow: 0 6px 14px -6px rgb(0 0 0 / 0.5);
+}
+body.off .tabs button[aria-selected="true"].dot::after {
+  background: #b4bcb9;
+  box-shadow: none;
+}
+body.off #panels .sw:checked {
+  background: var(--t3);
+}
+body.off .row:has(.sw:checked) .ic,
+body.off .opt:has(:checked) .ic {
+  box-shadow: 0 0 0 1px var(--line) inset;
+}
+
+/* ---- footer ---- */
+.ft {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 6px 4px;
+  font-size: 12px;
+  color: var(--t3);
+}
+.ft a {
+  color: inherit;
+  text-decoration: none;
+}
+.ft a:hover {
+  color: var(--text);
+}
+.heart::before {
+  content: "♥";
+  margin-right: 5px;
+  color: #e5484d;
+}
+#version {
+  margin-left: auto;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+  }
 }
