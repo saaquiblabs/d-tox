@@ -2,8 +2,9 @@
  * Hides Distractions (ADR 0001), with hide-rys.css: selectors ported from RYS live there,
  * because that file stays MPL-2.0. Chrome applies both before the page draws. Every rule is gated on a D-Tox attribute on <html>, which content.ts sets from the
  * Settings, and scoped to the page the Setting belongs to. Selectors use element names, ids,
- * classes and attributes only — never visible text or labels. Every rule hides with
- * `display: none !important`: the nightly check (checks/) finds the rules by it.
+ * classes and attributes only — never visible text or labels. Every hide rule hides with
+ * `display: none !important`: the nightly check (checks/) finds the rules by it. One rule
+ * resizes rather than hides (the wide player, #46, under recommendations).
  */
 
 /*
@@ -17,19 +18,23 @@ html[data-dtox-recommendations] ytd-watch-flexy ytd-watch-next-secondary-results
 }
 
 /*
- * …and the video takes the room (#46, version B). With recommendations gone the right column
- * (#secondary) is empty unless it holds a playlist, live chat or an open panel (chapters,
- * transcript), which YouTube marks on ytd-watch-flexy. Only then is the column removed: YouTube's
- * #columns already centres, and the player grows. YouTube caps the player at the window's height
- * less the masthead (56px), its top padding (12px) and 48px; this keeps 150px instead, so the
- * title and the channel row stay above the fold. Two-column default layout only: theatre,
- * fullscreen and narrow windows are YouTube's own.
+ * …and the video takes the room (#46, version B). The one layout rule here: it hides only the
+ * column, and it resizes the player through YouTube's own variable. With recommendations gone the
+ * right column (#secondary) is empty unless it holds a playlist, live chat or an open panel
+ * (chapters, transcript), which YouTube marks on ytd-watch-flexy. Only then is the column removed:
+ * YouTube's #columns already centres, and the player grows. YouTube caps the player at the
+ * window's height less the masthead (56px), its top padding (12px) and 48px; this keeps 150px, so
+ * the title and the channel row stay above the fold. Two-column default layout only
+ * (`is-two-columns_` is YouTube's own, private, name): theatre, fullscreen and narrow windows stay
+ * YouTube's. If YouTube drops `playlist`, `live-chat-present-and-expanded` or `panel-expanded`, a
+ * playlist or chat column would vanish: tests/wide-player.spec.ts and the Release Gate watch for it.
  */
 html[data-dtox-recommendations] ytd-watch-flexy[default-layout][is-two-columns_]:not([playlist]):not([live-chat-present-and-expanded]):not([panel-expanded]) {
   --ytd-watch-flexy-max-player-width: calc((100vh - 56px - 12px - 150px) * (16 / 9)) !important;
-}
-html[data-dtox-recommendations] ytd-watch-flexy[default-layout][is-two-columns_]:not([playlist]):not([live-chat-present-and-expanded]):not([panel-expanded]) #secondary {
-  display: none !important;
+
+  & #secondary {
+    display: none !important;
+  }
 }
 
 /*

@@ -123,8 +123,16 @@ people" → **B**. `hide.css`: under `html[data-dtox-recommendations]`, a two-co
 `#secondary` (YouTube's `#columns` centres) and `--ytd-watch-flexy-max-player-width` keeps 150px
 under the player (YouTube keeps 48px), so title and channel row stay in view. No `:has()`, no
 script. Checked live: the video element resizes with it (1205 → 1390 px at 1728×1000); a playlist
-keeps its column. `tests/wide-player.spec.ts`. Unchecked: whether a playlist link flashes wide
-before YouTube marks it `playlist`; the Release Gate should look at style recalc on resize.
+keeps its column. `tests/wide-player.spec.ts` proves *when* the rule applies (each of the three
+attributes alone, theatre, fullscreen, a narrow window); saved pages run no YouTube script and lay
+out in one column, so they can't show size or centring. **#25 must measure on live YouTube:** the
+watch page with D-Tox is wider than the Baseline Run and the channel row (`ytd-watch-metadata
+#owner`) ends above the fold; a playlist and a live page keep `#secondary`; style recalc on
+resize. Also unchecked: whether a playlist link flashes wide before YouTube marks it `playlist`.
+The nightly checks only that Distractions are hidden, not that a playlist or chat column stays,
+so a YouTube rename of those attributes would show only in the Release Gate. The product page's
+copy (`index.astro`) is unchanged: its watch scene still reads true; a picture of the wider
+player belongs to #27's polish, which Najmush sees first.
 
 **#25 so far (2026-11-20):** decided to run the Release Gate on the Mac (`npm run gate`), not the
 VPS (YouTube won't play video to a datacenter address; ADR to follow). The Mac's ISP address

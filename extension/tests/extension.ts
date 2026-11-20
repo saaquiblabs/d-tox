@@ -26,7 +26,7 @@ function fixtureFor(served: Served, href: string) {
   return served.get(url.href) ?? (url.origin === 'https://www.youtube.com' && url.pathname === '/watch' ? 'watch.html' : undefined);
 }
 
-type Fixtures = {
+export type Fixtures = {
   served: Served;
   context: BrowserContext;
   /**
