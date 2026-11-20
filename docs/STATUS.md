@@ -1,6 +1,6 @@
 # Status
 
-Last updated: 2026-11-20 (IST), 14:30. Each session overwrites this at handoff.
+Last updated: 2026-11-20 (IST), 16:30. Each session overwrites this at handoff.
 
 ## Where we are
 
@@ -28,9 +28,20 @@ finished: 32 questions, all answered by Najmush on 2026-11-18. **Read `CONTEXT.m
   wipe showcase, "Ten switches" story with the popup, numbers bento, Home scene (full feed →
   Intention Page B), close + footer. Assets in `site/public/{shots,feed,logo,fonts}`; Instrument
   Serif + Inter self-hosted (OFL, `public/fonts/LICENSES.txt`). Gate: 100 everywhere, `/` ~395 KB
-  phone. **Still to polish (#27):** PLACEHOLDER numbers (#25), the feed uses real creators'
-  thumbnails (replace before promoting the page), the hero mark is hidden on phones (it was the
-  slow LCP). Every page now shares the look: `components/Header`, `components/Footer` and
+  phone. **#27 numbers and pictures (branch `feat/27-numbers-thumbnails`, 2026-11-20):** the bento
+  shows the Release Gate's numbers (long tasks −7%, style recalc −9%, dated, "six pages, three
+  rounds, an M4 MacBook") and what D-Tox adds to YouTube: 9 KB (script 2.5 KB + three stylesheets;
+  the 32.75 KB build is mostly the popup). Thumbnail ~25 KB (YouTube's hqdefault, measured 21–26 KB)
+  and YouTube's home ~4 MB (signed out, transferred, measured 4.2 MB) are no longer "approx".
+  **No real creator anywhere on the page:** the feed and every before/after shot come from
+  `site/scripts/fiction.mjs` (made-up videos, channels, comments; generated SVG thumbnails) via
+  `site/scripts/capture-shots.mjs [feed|home|live]`: home from the page's own mock (`?yt=before|after`;
+  signed-out YouTube's home is empty), search ("learn python", scrolled to a real Shorts shelf) and
+  watch live with fiction swapped in and ads hidden in both. Look at every picture after a recapture:
+  a missed swap shows a real person. `?yt=` solo mode was broken since the page went live (fixed).
+  Showcase line now "YouTube's own pages, with made-up videos". `/` 318 KB phone (was ~395).
+  **Still to polish (#27):** the Unhook/RYS comparison (missing), the hero mark is hidden on phones
+  (it was the slow LCP), a picture of the wider player (#46). Every page now shares the look: `components/Header`, `components/Footer` and
   `styles/site.css` (fonts, tokens, header, footer) are used by `/` and by `Base.astro`
   (`/privacy`, `/welcome`, 404); styles are inlined per page. Gate 100 everywhere, inner pages
   ~127 KB.

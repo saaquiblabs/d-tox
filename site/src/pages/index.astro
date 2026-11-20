@@ -3,7 +3,8 @@
 // moment, we will polish it at another moment", 2026-11-19). It shares the header, footer, fonts and
 // tokens with every page (components/Header, Footer, styles/site.css); its head mirrors Base.astro.
 // Assets: public/shots (captures, WebP), public/feed (the Home scene's feed), public/logo, public/fonts.
-// Numbers marked PLACEHOLDER wait for the Release Gate (#25).
+// Numbers: the Release Gate of 2026-11-20 (checks/results/release-gate-2026-11-20T1525.json) and the
+// v2.0.0 build. The feed and the before/after shots are fiction (scripts/capture-shots.mjs).
 import "../styles/site.css";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
@@ -59,7 +60,6 @@ em{font-style:italic;color:var(--em)}
 .lead{font-size:clamp(17px,1.5vw,20px);color:var(--t2);line-height:1.55;text-wrap:balance}
 .small{font-size:13px;font-weight:500;color:var(--t3)}
 .kick{font:italic 400 22px/1 var(--disp);color:var(--acc)}
-.ph{display:inline-block;font:600 10px/1 var(--sans);letter-spacing:.06em;text-transform:uppercase;color:#FBBF24;border:1px dashed currentColor;border-radius:4px;padding:3px 5px;vertical-align:middle}
 .sw{all:unset;cursor:pointer;flex:none;width:36px;height:21px;border-radius:12px;background:rgb(255 255 255 / .12);position:relative;transition:background .3s}
 .sw::after{content:"";position:absolute;top:3px;left:3px;width:15px;height:15px;border-radius:50%;background:#C9D3CF;box-shadow:0 1px 2px rgb(0 0 0 / .4);transition:transform .45s var(--spring),background .3s}
 .sw[aria-checked=true]{background:var(--acc)}
@@ -343,7 +343,7 @@ section.pad{padding-block:clamp(96px,11vw,160px)}
   @keyframes glow{to{opacity:1}}
 }}
 html[data-solo],html[data-solo] body{background:#0f0f0f}
-html[data-solo] .hbar,html[data-solo] #page>*:not(.homescene),html[data-solo] .hs .cap,html[data-solo] .tb{display:none!important}
+html[data-solo] .hbar,html[data-solo] #page>:not(main),html[data-solo] main>:not(.homescene),html[data-solo] .hs .cap,html[data-solo] .tb{display:none!important}
 html[data-solo] .homescene{height:auto}html[data-solo] .hs{position:static;height:auto;padding:0;display:block;max-width:none}
 html[data-solo] .hs .holder{width:1440px}html[data-solo] .frame{border-radius:0;box-shadow:none}
 html[data-solo] .yt *{animation:none!important}
@@ -429,7 +429,7 @@ const chromeIcon = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="tr
 const ghIcon = '<svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.33c-2.23.48-2.7-1.07-2.7-1.07-.36-.92-.89-1.17-.89-1.17-.73-.5.05-.49.05-.49.81.06 1.23.83 1.23.83.72 1.23 1.88.87 2.34.67.07-.52.28-.87.51-1.07-1.78-.2-3.65-.89-3.65-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.28.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0Z"/></svg>';
 const cta = sm => `<a class="btn${sm ? ' sm' : ''}" href="https://chromewebstore.google.com/detail/ocngpkbaoflpfjamgcnnjbdnhmakmgel" data-umami-event="add-to-chrome">${sm ? '' : chromeIcon}Add to Chrome${sm ? '' : ', free'}</a>`;
 const M = '/logo/d-ivory.svg', m = '/logo/d-small.svg';
-const URLS = { watch: 'youtube.com/watch?v=rfscVS0vtbw', search: 'youtube.com/results?search_query=how+to+make+pasta', home: 'youtube.com' };
+const URLS = { watch: 'youtube.com/watch?v=Lp8c0deGdnx', search: 'youtube.com/results?search_query=learn+python', home: 'youtube.com' };
 const img = (k, v, cls = '', alt = '') => `<img draggable="false" class="${cls}" src=\"/shots/${k}-${v}-1440.webp" srcset=\"/shots/${k}-${v}-1440.webp 1440w, /shots/${k}-${v}-2160.webp 2160w" sizes="(max-width:1000px) 100vw, 1160px" alt="${alt}" loading="lazy" decoding="async">`;
 const tb = (k, btn) => `<div class="tb"><span><i></i><i></i><i></i></span><span class="url">${URLS[k]}</span>${btn ? `<button class="ext" aria-label="Open the D-Tox popup"><img src=\"${m}" alt=""></button>` : `<span class="ext"><img src=\"${m}" alt=""></span>`}</div>`;
 
@@ -451,7 +451,7 @@ const STEPS = [
 const mainEl = document.getElementById('main');
 mainEl.insertAdjacentHTML('beforeend', `<div class="show" id="see">
   <h2>Same YouTube. <em>Quieter.</em></h2>
-  <p class="lead sub">Real pages, captured today. Drag across to see what goes.</p>
+  <p class="lead sub">YouTube’s own pages, with made-up videos. Drag across to see what goes.</p>
   <div class="deck">
     <div class="top"><div class="pills" role="tablist">${SHOW.map((s, i) => `<button role="tab" data-i="${i}"><span>0${i + 1}</span>${s.label}<i></i></button>`).join('')}</div>
       <span class="hint">Drag the line, or use <kbd>←</kbd><kbd>→</kbd></span></div>
@@ -482,22 +482,22 @@ mainEl.insertAdjacentHTML('beforeend', `<section class="pad" id="settings"><div 
 mainEl.insertAdjacentHTML('beforeend', `<section class="pad" id="numbers" style="padding-top:0"><div class="wrap">
   <h2>Light enough <em>to forget.</em></h2>
   <div class="bento">
-    <div class="tile big"><div><b data-n="7" data-u=" KB">0 KB</b><p>The whole extension, icons aside.</p><small>One stylesheet and a 1.3 KB script. Smaller than the thumbnail of a single video.</small></div>
+    <div class="tile big"><div><b data-n="9" data-u=" KB">0 KB</b><p>All that D-Tox adds to YouTube.</p><small>Three stylesheets and a 2.5 KB script. Smaller than the thumbnail of a single video.</small></div>
       <div class="bars">
-        <div>D-Tox<span class="t"><i style="--s:.03"></i></span><span>7 KB</span></div>
-        <div>One thumbnail<span class="t"><i class="g" style="--s:.12"></i></span><span>~30 KB <span class="ph">approx</span></span></div>
-        <div>YouTube’s page<span class="t"><i class="g" style="--s:1"></i></span><span>~10 MB <span class="ph">approx</span></span></div>
+        <div>D-Tox<span class="t"><i style="--s:.03"></i></span><span>9 KB</span></div>
+        <div>One thumbnail<span class="t"><i class="g" style="--s:.08"></i></span><span>~25 KB</span></div>
+        <div>YouTube’s home<span class="t"><i class="g" style="--s:1"></i></span><span>~4 MB</span></div>
       </div></div>
     <div class="tile"><b data-n="0">0</b><div><p>Requests sent anywhere</p><small>No server, no analytics, no account.</small></div></div>
     <div class="tile"><b data-n="1">0</b><div><p>Permission</p><small>Storage, to keep your switches. Nothing else.</small></div></div>
     <div class="tile"><b data-n="0">0</b><div><p>Timers or watchers</p><small>Hiding is done by CSS, so nothing keeps running.</small></div></div>
     <div class="tile"><b data-n="10">0</b><div><p>Switches</p><small>Four on from the start, the rest yours to choose.</small></div></div>
     <div class="tile"><b data-n="2">0</b><div><p>Languages checked nightly</p><small>Every switch, on live YouTube, in English and Hindi.</small></div></div>
-    <div class="tile"><b data-n="2" data-p="+" data-u="%">0</b><div><p>Main-thread time <span class="ph">placeholder</span></p><small>Against YouTube alone, every switch on.</small></div></div>
+    <div class="tile"><b data-n="7" data-p="−" data-u="%">0</b><div><p>Main-thread blocking</p><small>Long tasks, against YouTube alone, every switch on.</small></div></div>
     <div class="tile"><b data-n="1">0</b><div><p>Stylesheet, applied first</p><small>In place before YouTube draws, so nothing flashes.</small></div></div>
-    <div class="tile"><b data-n="0" data-u=" ms">0</b><div><p>Added to page load <span class="ph">placeholder</span></p><small>Measured by the Release Gate.</small></div></div>
+    <div class="tile"><b data-n="9" data-p="−" data-u="%">0</b><div><p>Style recalculation</p><small>Less for YouTube to lay out on the same six pages.</small></div></div>
   </div>
-  <p class="small when">Measured on every release · v2.0.0 · <span class="ph">until #25</span></p>
+  <p class="small when">Measured by the Release Gate · v2.0.0 · 20 Nov 2026 · six YouTube pages, three rounds, an M4 MacBook</p>
 </div></section>
 
 `); await tick();
@@ -629,7 +629,7 @@ new IntersectionObserver(([x], o) => { if (!x.isIntersecting) return; o.disconne
     const f = t => { const k = reduce ? 1 : Math.min(1, (t - t0) / 1100), e = 1 - Math.pow(1 - k, 3); b.textContent = p + Math.round(n * e) + u; if (k < 1) requestAnimationFrame(f); };
     requestAnimationFrame(f); }); }, { threshold: .35 }).observe(bento);
 
-// ================= home scene: a real-looking feed, built from live data =================
+// ================= home scene: a real-looking feed, made up (public/feed, scripts/capture-shots.mjs) =================
 const AV = ['#E5484D', '#7C3AED', '#0EA5E9', '#F59E0B', '#22C55E', '#EC4899', '#14B8A6', '#F97316'];
 const Y = {
   menu: '<path d="M3 6h18M3 12h18M3 18h18"/>', search: '<circle cx="10.5" cy="10.5" r="6.5"/><path d="m20 20-4.5-4.5"/>', mic: '<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/>',
@@ -646,7 +646,7 @@ near(document.querySelector('.homescene'), '900px', () => fetch('/feed/feed.json
   // a mix, like a real home: not one channel in a row
   const order = [0, 4, 8, 12, 1, 5, 9, 13].map(i => V[i % V.length]);
   let d = 0;
-  const card = v => `<div class="card fade" style="--d:${(d++ * 2.2).toFixed(1)}"><div class="th"><img src=\"/feed/${v.id}.webp" alt="" loading="lazy" decoding="async"><em>${esc(v.dur)}</em></div>
+  const card = v => `<div class="card fade" style="--d:${(d++ * 2.2).toFixed(1)}"><div class="th"><img src=\"/feed/${v.id}.svg" alt="" loading="lazy" decoding="async"><em>${esc(v.dur)}</em></div>
     <div class="mt"><span class="av" style="background:${AV[v.channel.length % AV.length]}">${esc(v.channel[0] ?? '·')}</span><div><h4>${esc(v.title)}</h4><p>${esc(v.channel)}<br>${esc(v.views)} views · ${esc(v.age)}</p></div></div></div>`;
   const yt = document.querySelector('.yt');
   yt.innerHTML = `
@@ -658,7 +658,7 @@ near(document.querySelector('.homescene'), '900px', () => fetch('/feed/feed.json
     <div class="main">
       <div class="chipbar fade" style="--d:0">${['All', 'Cricket', 'Gaming', 'Podcasts', 'Music', 'Live', 'Mixes', 'Comedy', 'Recently uploaded', 'New to you'].map(c => `<span>${c}</span>`).join('')}</div>
       <div class="grid">${order.slice(0, 8).map(card).join('')}</div>
-      <div class="shelf"><h3 class="fade" style="--d:12"><svg viewBox="0 0 24 24">${Y.shorts}</svg>Shorts</h3><div class="srow">${S.slice(0, 5).map(s => `<div class="sh fade" style="--d:${(d++ * 2.2).toFixed(1)}"><div class="th"><img src=\"/feed/s-${s.id}.webp" alt="" loading="lazy" decoding="async"></div><h4>${esc(s.title)}</h4></div>`).join('')}</div></div>
+      <div class="shelf"><h3 class="fade" style="--d:12"><svg viewBox="0 0 24 24">${Y.shorts}</svg>Shorts</h3><div class="srow">${S.slice(0, 5).map(s => `<div class="sh fade" style="--d:${(d++ * 2.2).toFixed(1)}"><div class="th"><img src=\"/feed/${s.id}.svg" alt="" loading="lazy" decoding="async"></div><h4>${esc(s.title)}</h4></div>`).join('')}</div></div>
       <div class="ip A"><span class="up">↑</span><h1>What are you here for?</h1><p>Type it in YouTube’s search, up there. Or go straight to:</p>
         <nav><a>${ys('subs')}Subscriptions</a><a>${ys('later')}Watch later</a></nav></div>
       <div class="ip B"><span class="up">↑</span><h1>What are you here for?</h1><p>Search for it up there, or pick up where you meant to.</p>
@@ -682,8 +682,8 @@ near(document.querySelector('.end'), '700px', () => fetch('/feed/feed.json').the
   document.querySelector('.noise').innerHTML = NOISE.map(([t, x, y, a], i) => {
     const depth = [.7, 1, .85, .95, 1.05, .8][i % 6];
     const st = `--x:${x}px;--y:${y}px;--r:${((i * 37) % 13) - 6}deg;--s:${depth};--o:${(.3 + depth * .35).toFixed(2)}`;
-    if (t === 'thumb') return `<div class="nz thumb" style="${st}"><img src=\"/feed/${a.id}.webp" alt="" loading="lazy"></div>`;
-    if (t === 'short') return `<div class="nz short" style="${st}"><img src=\"/feed/s-${a.id}.webp" alt="" loading="lazy"></div>`;
+    if (t === 'thumb') return `<div class="nz thumb" style="${st}"><img src=\"/feed/${a.id}.svg" alt="" loading="lazy"></div>`;
+    if (t === 'short') return `<div class="nz short" style="${st}"><img src=\"/feed/${a.id}.svg" alt="" loading="lazy"></div>`;
     return `<div class="nz ${t}" style="${st}">${a}</div>`;
   }).join('');
   const sc = () => { const k = Math.min(1, innerWidth / 1500); document.querySelectorAll('.nz').forEach(n => { const i = NOISE[[...n.parentNode.children].indexOf(n)]; n.style.setProperty('--x', i[1] * k + 'px'); n.style.setProperty('--y', i[2] * Math.max(k, .75) + 'px'); }); };
