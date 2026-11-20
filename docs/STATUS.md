@@ -150,7 +150,15 @@ reported and checked for runaway loading, not in the 10% total (`uncounted` in `
 long tasks 2277 → 2107 ms (−7%), style recalc 491 → 447 ms (−9%); watch 510 → 305, channel
 262 → 373 (worth watching), worst-case search 297 → 555 (not counted, settles: idle +0). Every
 check ✓ in every round; end screens 4 → 0; player 996 → 1212 px. These are the product page's
-numbers for #27. Before release (#28): rerun on the release build.
+numbers for #27. **No more full gate runs on the MacBook (Najmush, 2026-11-20):** this run is the
+gate for v2.0.0; #28 does not rerun it (ADR 0005, amended). Gating later releases: open.
+A separate WIP gate from another session sits on `origin/feat/25-release-gate` (4c5989e); this
+work is on `feat/25-release-gate-mac`. Ported from the WIP (compared 2026-11-20): a D-Tox page
+with no `data-dtox-*` attribute is an error; busy-machine guard (`GATE_NOISY=1`); 30 min a round
+cap; build size in the results file; ADR 0003 pointer. From the comparison: a check fails only in
+most rounds, and a Baseline Run page that errored in some rounds is compared on the rest. The
+rest of the WIP conflicts with decisions (per-page 10%, `nice`, seeking past loaded video) and
+was dropped. **[HUMAN]** delete `origin/feat/25-release-gate` once satisfied nothing else is needed.
 
 #23 is done in two PRs: the Intention Page B (PR #43; Najmush checked it live: "better than what
 we had so far") and the popup (PR #44, three passes; Najmush, 2026-11-19: "lock this and move

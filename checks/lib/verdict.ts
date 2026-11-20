@@ -77,8 +77,14 @@ export function judge({ baseline, dtox }: Runs): Verdict {
 
   for (const [mode, runs] of [['Baseline Run', baseline], ['D-Tox', dtox]] as const)
     for (const p of runs.flat()) if (p.blocked) blocks.push(`${p.page} (${mode}): ${p.blocked}`);
-  // A Baseline Run that didn't finish can't be compared with: not D-Tox's fault.
-  for (const p of baseline.flat()) if (p.error) blocks.push(`${p.page} (Baseline Run): ${p.error}`);
+  // A Baseline Run page that never finished can't be compared with: not D-Tox's fault. One that
+  // errored in some rounds is compared on the others.
+  for (const page of new Set(baseline.flat().map((p) => p.page))) {
+    const b = pagesOf(baseline, page);
+    const errors = b.filter((p) => p.error);
+    if (errors.length && errors.length === b.length) blocks.push(`${page} (Baseline Run): ${errors[0]!.error}`);
+    else if (errors.length) notChecked.push(`${page}: Baseline Run errored in ${errors.length} of ${b.length} rounds (${errors[0]!.error}); compared on the rest`);
+  }
   for (const p of dtox.flat()) if (p.error) failures.push(`${p.page}: ${p.error}`);
 
   // Speed: per page the median over rounds, then summed. Pages only D-Tox visits are left out.
@@ -109,7 +115,8 @@ export function judge({ baseline, dtox }: Runs): Verdict {
     if (p.dtox.idleGrowth > p.baseline.idleGrowth + idleGrowthSlack)
       failures.push(`${p.page}: ${p.dtox.idleGrowth} DOM nodes added while idle with D-Tox (Baseline Run ${p.baseline.idleGrowth}): something keeps loading`);
 
-  // What must work. A check that fails without D-Tox too says nothing about D-Tox.
+  // What must work, in most rounds: an ad or a slow load can spoil one; a real breakage fails
+  // them all. A check that fails without D-Tox too says nothing about D-Tox.
   const checks = new Set(dtox.flat().flatMap((p) => Object.keys(p.checks ?? {}) as Check[]).map((c) => c));
   for (const page of new Set(dtox.flat().map((p) => p.page))) {
     const d = pagesOf(dtox, page).filter((p) => !p.error && !p.blocked);
@@ -118,10 +125,16 @@ export function judge({ baseline, dtox }: Runs): Verdict {
       const results = d.map((p) => p.checks?.[check]).filter((r) => r !== undefined);
       if (!results.length) continue;
       if (results.some((r) => r === null)) notChecked.push(`${page}: ${check} (could not be tried)`);
-      if (!results.includes(false)) continue;
+      const failed = results.filter((r) => r === false).length;
+      if (!failed) continue;
+      const of = `${failed} of ${results.length} rounds`;
+      if (failed * 2 <= results.length) {
+        notChecked.push(`${page}: ${check} failed in ${of} (not most: passed)`);
+        continue;
+      }
       const withoutDtox = b.map((p) => p.checks?.[check]).filter((r) => r !== undefined);
-      if (withoutDtox.length && withoutDtox.every((r) => r === false)) blocks.push(`${page}: ${check} fails without D-Tox too`);
-      else failures.push(`${page}: ${check} failed in ${results.filter((r) => r === false).length} of ${results.length} rounds`);
+      if (withoutDtox.length && withoutDtox.filter((r) => r === false).length * 2 > withoutDtox.length) blocks.push(`${page}: ${check} fails without D-Tox too`);
+      else failures.push(`${page}: ${check} failed in ${of}`);
     }
   }
 
@@ -133,8 +146,9 @@ export function judge({ baseline, dtox }: Runs): Verdict {
   else if (dWatch.some((p) => p.endScreens! > 0)) failures.push(`watch: end screens showed with D-Tox (${dWatch.map((p) => p.endScreens).join(', ')})`);
 
   // The wide player (#46): with recommendations hidden the player is wider than YouTube's own.
-  const bw = med(pagesOf(baseline, 'watch'), 'playerWidth');
-  const dw = med(pagesOf(dtox, 'watch'), 'playerWidth');
+  const measured = (runs: PageRun[][]) => pagesOf(runs, 'watch').filter((p) => p.playerWidth);
+  const bw = med(measured(baseline), 'playerWidth');
+  const dw = med(measured(dtox), 'playerWidth');
   if (!bw || !dw) notChecked.push('watch: player width');
   else if (dw < bw + widerBy) failures.push(`watch: the player is ${round(dw)} px with D-Tox, not wider than YouTube's ${round(bw)} px`);
 

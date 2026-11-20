@@ -10,7 +10,7 @@
 // the numbers the product page quotes.
 import { spawnSync } from 'node:child_process';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
-import { cpus, platform, release, totalmem } from 'node:os';
+import { cpus, loadavg, platform, release, totalmem } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
 import { audit, everySettingOn, viewport, type Mode } from './lib/audit.ts';
@@ -19,10 +19,29 @@ import { allowance, judge, type PageRun } from './lib/verdict.ts';
 const root = fileURLToPath(new URL('..', import.meta.url));
 const extensionDir = fileURLToPath(new URL('../extension/', import.meta.url));
 const rounds = Number(process.env.GATE_ROUNDS ?? 3);
+if (!Number.isInteger(rounds) || rounds < 1) {
+  console.error(`gate: GATE_ROUNDS must be a whole number of 1 or more, not “${process.env.GATE_ROUNDS}”`);
+  process.exit(1);
+}
+// It measures speed: a busy machine measures the machine. GATE_NOISY=1 runs anyway (not for a release).
+const load = Math.round(loadavg()[0]! * 10) / 10;
+if (load > cpus().length / 2 && process.env.GATE_NOISY !== '1') {
+  console.error(`gate: the machine is busy (load ${load} on ${cpus().length} cores). Close other apps, or GATE_NOISY=1 to run anyway.`);
+  process.exit(2);
+}
+// A stuck page can't hold the machine all afternoon.
+const capMinutes = 30 * rounds;
+setTimeout(() => {
+  console.error(`gate: still running after ${capMinutes} minutes; stopped (BLOCKED)`);
+  process.exit(2);
+}, capMinutes * 60_000).unref();
 const git = (...args: string[]) => spawnSync('git', args, { cwd: root, encoding: 'utf8' }).stdout.trim();
 
 console.log('\nD-Tox Release Gate: building the extension');
-const build = spawnSync('npm', ['run', 'build'], { cwd: extensionDir, stdio: 'inherit' });
+const build = spawnSync('npm', ['run', 'build'], { cwd: extensionDir, encoding: 'utf8' });
+process.stdout.write(build.stdout ?? '');
+process.stderr.write(build.stderr ?? '');
+const size = build.stdout?.match(/extension size: [^\n]+/)?.[0];
 if (build.status !== 0) {
   console.error('gate: the extension did not build');
   process.exit(1);
@@ -75,7 +94,8 @@ const record = {
   version,
   commit: git('rev-parse', '--short', 'HEAD'),
   uncommittedChanges: git('status', '--porcelain').length > 0,
-  machine: { platform: platform(), release: release(), cpu: cpus()[0]?.model, cores: cpus().length, memoryGb: Math.round(totalmem() / 2 ** 30) },
+  machine: { platform: platform(), release: release(), cpu: cpus()[0]?.model, cores: cpus().length, memoryGb: Math.round(totalmem() / 2 ** 30), load },
+  size,
   browser: chromium.executablePath().match(/chromium[-_][\w-]*\d+/)?.[0] ?? 'chromium',
   viewport,
   rounds: runs.dtox.length,

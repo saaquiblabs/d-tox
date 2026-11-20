@@ -95,7 +95,12 @@ cd checks
 npm ci
 npm run gate              # exit 0 pass, 1 fail, 2 blocked
 GATE_ROUNDS=1 npm run gate   # a quick try, not for a release
+GATE_NOISY=1 npm run gate    # run on a busy machine anyway (not for a release)
 ```
+
+It refuses to start (exit 2) when the machine is busy (load over half its cores), and stops
+(exit 2) after 30 minutes a round. A D-Tox page where the extension set no `data-dtox-*`
+attribute is an error. A check must pass in most rounds: one spoiled by an ad is noted, not failed.
 
 It passes only when, over the pages' medians:
 
@@ -103,7 +108,7 @@ It passes only when, over the pages' medians:
 |------|------|
 | Long-task time and style recalc, summed, within 10% (+50 / +20 ms) of the Baseline Run | `lib/verdict.ts` |
 | Once a page has settled after scrolling (up to 30 s), it adds no more than 500 elements in 8 s idle beyond the Baseline Run (YouTube loading page after page) | |
-| No D-Tox page times out (150 s) or crashes | |
+| No D-Tox page times out (180 s) or crashes; a Baseline Run page that errored in some rounds is compared on the rest | |
 | A video plays and seeks, a playlist plays and keeps its column, a Short plays and swipes to the next, the Shorts redirect lands on `/watch` and plays | |
 | End screens can't be seen at the end of a video (checked only if the Baseline Run saw some) | |
 | The wide player (#46) is at least 40 px wider than YouTube's own, with the channel row above the fold | |

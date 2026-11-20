@@ -153,7 +153,7 @@ async function endScreens(page: Page) {
 const anyVideoPlaying = (page: Page) => page.evaluate(() => [...document.querySelectorAll('video')].some((v) => !v.paused && v.currentTime > 0));
 
 /** Measures one page. Never throws: a timeout or crash is the result's `error`. */
-export async function measure(run: Run, spec: Spec): Promise<PageRun> {
+export async function measure(run: Run, spec: Spec, mode: Mode): Promise<PageRun> {
   const page = await run.context.newPage();
   const r: PageRun = { page: spec.id };
   let timer: NodeJS.Timeout | undefined;
@@ -170,6 +170,9 @@ export async function measure(run: Run, spec: Spec): Promise<PageRun> {
 
       // Speed: load, scroll, then sit idle and see whether the page keeps growing.
       await sleep(6000);
+      // A D-Tox run where the extension did nothing would pass every speed check.
+      if (mode === 'dtox' && !(await page.evaluate(() => [...document.documentElement.attributes].some((a) => a.name.startsWith('data-dtox-')))))
+        throw new Error('D-Tox applied no Settings (no data-dtox-* attribute on <html>)');
       for (let i = 0; i < spec.scroll; i++) {
         await page.mouse.wheel(0, 2500);
         await sleep(1200);
@@ -240,7 +243,7 @@ export async function audit(mode: Mode, extension: string, log: (line: string) =
       if (spec.only && spec.only !== mode) continue;
       // The Shorts page needs a Short to swipe: the redirect is off for it alone.
       if (spec.kind === 'shorts') await run.set({ 'shorts-redirect': false });
-      const r = await measure(run, spec);
+      const r = await measure(run, spec, mode);
       if (spec.kind === 'shorts') await run.set({ 'shorts-redirect': true });
       out.push(r);
       log(describe(mode, r));

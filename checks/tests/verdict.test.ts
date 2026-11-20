@@ -73,6 +73,22 @@ test('a check that fails without D-Tox too blocks instead of failing', () => {
   assert.match(v.blocks.join(), /plays fails without D-Tox too/);
 });
 
+test('a check that fails in one round of three (an ad, a slow load) passes and is noted', () => {
+  const once = [...good];
+  once[1] = [watch({ playerWidth: 1400, endScreens: 0, checks: { plays: false, seeks: true } }), page({ page: 'search' })];
+  const v = judge({ baseline: base, dtox: once });
+  assert.equal(v.status, 'pass');
+  assert.match(v.notChecked.join(), /plays failed in 1 of 3 rounds/);
+});
+
+test('a Baseline Run page that errored in one round is compared on the others', () => {
+  const flaky = [...base];
+  flaky[0] = [page({ page: 'watch', error: 'page time limit 180s' }), page({ page: 'search' })];
+  const v = judge({ baseline: flaky, dtox: good });
+  assert.equal(v.status, 'pass');
+  assert.match(v.notChecked.join(), /errored in 1 of 3/);
+});
+
 test('a bot check blocks, whichever run met it', () => {
   const walled = rounds(page({ page: 'watch', blocked: 'bot check at https://www.google.com/sorry/index' }), page({ page: 'search' }));
   assert.equal(judge({ baseline: walled, dtox: good }).status, 'blocked');

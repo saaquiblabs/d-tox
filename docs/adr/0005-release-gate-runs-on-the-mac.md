@@ -9,3 +9,4 @@ The grill (2026-11-18) put the Release Gate on the home VPS as a manual Openship
 - "Runs at low priority" from the ticket is dropped: on the Mac it would slow both runs alike and protect nothing.
 - The Mac's ISP shares addresses (Excitel); on 2026-11-20 Google flagged it for a few hours ("unusual traffic", 429). The gate reports such a page as BLOCKED (exit 2), never as a pass or a D-Tox failure. Retry later or on another connection (a phone hotspot).
 - Each run writes `checks/results/release-gate-<date>.json`, committed with the release; the product page's numbers come from it, dated.
+- **Amended 2026-11-20 (Najmush): "we are not running this full race ever again on my MacBook."** The passing run of 2026-11-20 15:25 IST (`checks/results/release-gate-2026-11-20T1525.json`) is the gate for v2.0.0. #28 does not rerun it. How later releases are gated is open (a single round, another machine, or a check without video on the VPS); decide before v2.1.
