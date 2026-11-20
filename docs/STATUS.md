@@ -1,6 +1,6 @@
 # Status
 
-Last updated: 2026-11-19 (IST), 13:30. Each session overwrites this at handoff.
+Last updated: 2026-11-20 (IST), 14:30. Each session overwrites this at handoff.
 
 ## Where we are
 
@@ -109,10 +109,36 @@ finished: 32 questions, all answered by Najmush on 2026-11-18. **Read `CONTEXT.m
 
 ## Pipeline
 
-research ✅ → grill ✅ → spec ✅ (#16) → tickets ✅ (#18–#28) → build: #18 ✅ (PR #30), #26 ✅ (live), #19 ✅ (PR #34), #20 ✅ (PR #36), #24 ✅ (PR #37), #27 live (PRs #39–#41, polish left), #21 ✅ (PR #42), #23 Intention Page B ✅ (PR #43), #23 popup in review, rest next →
+research ✅ → grill ✅ → spec ✅ (#16) → tickets ✅ (#18–#28) → build: #18 ✅ (PR #30), #26 ✅ (live), #19 ✅ (PR #34), #20 ✅ (PR #36), #24 ✅ (PR #37), #27 live (PRs #39–#41, polish left), #21 ✅ (PR #42), #23 Intention Page B ✅ (PR #43), #23 popup ✅ (PR #44), #22 closed (picks recorded), #46 wide player in review, rest next →
 prototypes of the popup, Intention Page and product page (seen running before anything is picked).
 
 ## Next step: #25
+
+**#46 (2026-11-20), new ticket from Najmush's screenshot:** with recommendations hidden the right
+column sat empty and the player stayed pinned left. Prototypes A (centred, same size) and B
+(centred and bigger) on `proto/46-wide-player`, loaded in Brave; on his wide-but-short window they
+looked alike (height is the limit). Najmush: "go ahead with whatever feels the best for general
+people" → **B**. `hide.css`: under `html[data-dtox-recommendations]`, a two-column
+`ytd-watch-flexy` with no `playlist`, `live-chat-present-and-expanded` or `panel-expanded` loses
+`#secondary` (YouTube's `#columns` centres) and `--ytd-watch-flexy-max-player-width` keeps 150px
+under the player (YouTube keeps 48px), so title and channel row stay in view. No `:has()`, no
+script. Checked live: the video element resizes with it (1205 → 1390 px at 1728×1000); a playlist
+keeps its column. `tests/wide-player.spec.ts` proves *when* the rule applies (each of the three
+attributes alone, theatre, fullscreen, a narrow window); saved pages run no YouTube script and lay
+out in one column, so they can't show size or centring. **#25 must measure on live YouTube:** the
+watch page with D-Tox is wider than the Baseline Run and the channel row (`ytd-watch-metadata
+#owner`) ends above the fold; a playlist and a live page keep `#secondary`; style recalc on
+resize. Also unchecked: whether a playlist link flashes wide before YouTube marks it `playlist`.
+The nightly checks only that Distractions are hidden, not that a playlist or chat column stays,
+so a YouTube rename of those attributes would show only in the Release Gate. The product page's
+copy (`index.astro`) is unchanged: its watch scene still reads true; a picture of the wider
+player belongs to #27's polish, which Najmush sees first.
+
+**#25 so far (2026-11-20):** decided to run the Release Gate on the Mac (`npm run gate`), not the
+VPS (YouTube won't play video to a datacenter address; ADR to follow). The Mac's ISP address
+(Excitel, shared) was itself flagged by Google ("unusual traffic", 429) on the morning of
+2026-11-20 and cleared by 14:00; the gate must detect that page and stop as BLOCKED, not fail.
+Branch `feat/25-release-gate` exists, empty.
 
 #23 is done in two PRs: the Intention Page B (PR #43; Najmush checked it live: "better than what
 we had so far") and the popup (PR #44, three passes; Najmush, 2026-11-19: "lock this and move

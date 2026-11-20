@@ -51,7 +51,7 @@ export const short: SavedPage = { fixture: 'short.html', url: 'https://www.youtu
 /** YouTube's home page. Signed out it holds only a "Try searching" nudge, which stands in for the feed. */
 export const home: SavedPage = { fixture: 'home.html', url: 'https://www.youtube.com/' };
 
-const watchPlaylist: SavedPage = {
+export const watchPlaylist: SavedPage = {
   fixture: 'watch-playlist.html',
   url: 'https://www.youtube.com/watch?v=aircAruvnKk&list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi',
 };
