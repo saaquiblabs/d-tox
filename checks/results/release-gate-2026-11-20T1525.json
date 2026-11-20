@@ -1,0 +1,582 @@
+{
+  "date": "2026-11-20T09:55:01.093Z",
+  "version": "2.0.0",
+  "commit": "73b0c5c",
+  "uncommittedChanges": false,
+  "machine": {
+    "platform": "darwin",
+    "release": "25.6.0",
+    "cpu": "Apple M4",
+    "cores": 10,
+    "memoryGb": 16
+  },
+  "browser": "chromium-1243",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "rounds": 3,
+  "settings": {
+    "home": "intention",
+    "recommendations": true,
+    "end-screens": true,
+    "autoplay-off": true,
+    "comments": true,
+    "shorts": true,
+    "shorts-redirect": true,
+    "search-clean-up": true,
+    "explore": true,
+    "bell": true
+  },
+  "verdict": {
+    "status": "pass",
+    "failures": [],
+    "blocks": [],
+    "notChecked": [],
+    "pages": [
+      {
+        "page": "home",
+        "counted": true,
+        "baseline": {
+          "longTaskMs": 336,
+          "styleMs": 24,
+          "idleGrowth": 0
+        },
+        "dtox": {
+          "longTaskMs": 334,
+          "styleMs": 23,
+          "idleGrowth": 0
+        }
+      },
+      {
+        "page": "search",
+        "counted": true,
+        "baseline": {
+          "longTaskMs": 774,
+          "styleMs": 80,
+          "idleGrowth": 0
+        },
+        "dtox": {
+          "longTaskMs": 755,
+          "styleMs": 81,
+          "idleGrowth": 0
+        }
+      },
+      {
+        "page": "search-shorts",
+        "counted": false,
+        "baseline": {
+          "longTaskMs": 297,
+          "styleMs": 75,
+          "idleGrowth": 0
+        },
+        "dtox": {
+          "longTaskMs": 555,
+          "styleMs": 103,
+          "idleGrowth": 0
+        }
+      },
+      {
+        "page": "watch",
+        "counted": true,
+        "baseline": {
+          "longTaskMs": 510,
+          "styleMs": 166,
+          "idleGrowth": 212
+        },
+        "dtox": {
+          "longTaskMs": 305,
+          "styleMs": 119,
+          "idleGrowth": 0
+        }
+      },
+      {
+        "page": "playlist",
+        "counted": true,
+        "baseline": {
+          "longTaskMs": 263,
+          "styleMs": 87,
+          "idleGrowth": 0
+        },
+        "dtox": {
+          "longTaskMs": 238,
+          "styleMs": 78,
+          "idleGrowth": 0
+        }
+      },
+      {
+        "page": "channel",
+        "counted": true,
+        "baseline": {
+          "longTaskMs": 262,
+          "styleMs": 52,
+          "idleGrowth": 0
+        },
+        "dtox": {
+          "longTaskMs": 373,
+          "styleMs": 63,
+          "idleGrowth": 0
+        }
+      },
+      {
+        "page": "shorts",
+        "counted": true,
+        "baseline": {
+          "longTaskMs": 132,
+          "styleMs": 82,
+          "idleGrowth": 0
+        },
+        "dtox": {
+          "longTaskMs": 102,
+          "styleMs": 83,
+          "idleGrowth": 0
+        }
+      }
+    ],
+    "totals": {
+      "baseline": {
+        "longTaskMs": 2277,
+        "styleMs": 491
+      },
+      "dtox": {
+        "longTaskMs": 2107,
+        "styleMs": 447
+      }
+    }
+  },
+  "runs": {
+    "baseline": [
+      [
+        {
+          "page": "home",
+          "styleMs": 31,
+          "nodes": 2287,
+          "idleGrowth": 0,
+          "longTaskMs": 398
+        },
+        {
+          "page": "search",
+          "styleMs": 80,
+          "nodes": 15220,
+          "idleGrowth": 0,
+          "longTaskMs": 774
+        },
+        {
+          "page": "search-shorts",
+          "styleMs": 75,
+          "nodes": 11789,
+          "idleGrowth": 0,
+          "longTaskMs": 297
+        },
+        {
+          "page": "watch",
+          "styleMs": 139,
+          "nodes": 8776,
+          "idleGrowth": 0,
+          "longTaskMs": 391,
+          "playerWidth": 996,
+          "endScreens": 4,
+          "checks": {
+            "plays": true,
+            "title in view": true,
+            "seeks": true
+          }
+        },
+        {
+          "page": "playlist",
+          "styleMs": 83,
+          "nodes": 7502,
+          "idleGrowth": 0,
+          "longTaskMs": 221,
+          "checks": {
+            "plays": true,
+            "playlist column kept": true
+          }
+        },
+        {
+          "page": "channel",
+          "styleMs": 52,
+          "nodes": 8492,
+          "idleGrowth": 0,
+          "longTaskMs": 262
+        },
+        {
+          "page": "shorts",
+          "styleMs": 79,
+          "nodes": 3093,
+          "idleGrowth": 0,
+          "longTaskMs": 132,
+          "checks": {
+            "plays": true,
+            "swipes": true
+          }
+        }
+      ],
+      [
+        {
+          "page": "home",
+          "styleMs": 21,
+          "nodes": 2318,
+          "idleGrowth": 0,
+          "longTaskMs": 328
+        },
+        {
+          "page": "search",
+          "styleMs": 74,
+          "nodes": 15248,
+          "idleGrowth": 0,
+          "longTaskMs": 731
+        },
+        {
+          "page": "search-shorts",
+          "styleMs": 67,
+          "nodes": 11177,
+          "idleGrowth": 0,
+          "longTaskMs": 276
+        },
+        {
+          "page": "watch",
+          "styleMs": 166,
+          "nodes": 10425,
+          "idleGrowth": 269,
+          "longTaskMs": 510,
+          "playerWidth": 1230,
+          "endScreens": 4,
+          "checks": {
+            "plays": true,
+            "title in view": true,
+            "seeks": true
+          }
+        },
+        {
+          "page": "playlist",
+          "styleMs": 104,
+          "nodes": 6691,
+          "idleGrowth": 0,
+          "longTaskMs": 263,
+          "checks": {
+            "plays": true,
+            "playlist column kept": true
+          }
+        },
+        {
+          "page": "channel",
+          "styleMs": 52,
+          "nodes": 8523,
+          "idleGrowth": 0,
+          "longTaskMs": 262
+        },
+        {
+          "page": "shorts",
+          "styleMs": 82,
+          "nodes": 3143,
+          "idleGrowth": 0,
+          "longTaskMs": 143,
+          "checks": {
+            "plays": true,
+            "swipes": true
+          }
+        }
+      ],
+      [
+        {
+          "page": "home",
+          "styleMs": 24,
+          "nodes": 2287,
+          "idleGrowth": 0,
+          "longTaskMs": 336
+        },
+        {
+          "page": "search",
+          "styleMs": 87,
+          "nodes": 18967,
+          "idleGrowth": 0,
+          "longTaskMs": 906
+        },
+        {
+          "page": "search-shorts",
+          "styleMs": 88,
+          "nodes": 12454,
+          "idleGrowth": 0,
+          "longTaskMs": 384
+        },
+        {
+          "page": "watch",
+          "styleMs": 169,
+          "nodes": 8821,
+          "idleGrowth": 212,
+          "longTaskMs": 529,
+          "playerWidth": 996,
+          "endScreens": 4,
+          "checks": {
+            "plays": true,
+            "title in view": true,
+            "seeks": true
+          }
+        },
+        {
+          "page": "playlist",
+          "styleMs": 87,
+          "nodes": 7234,
+          "idleGrowth": 0,
+          "longTaskMs": 300,
+          "checks": {
+            "plays": true,
+            "playlist column kept": true
+          }
+        },
+        {
+          "page": "channel",
+          "styleMs": 62,
+          "nodes": 8492,
+          "idleGrowth": 0,
+          "longTaskMs": 305
+        },
+        {
+          "page": "shorts",
+          "styleMs": 85,
+          "nodes": 3080,
+          "idleGrowth": 0,
+          "longTaskMs": 88,
+          "checks": {
+            "plays": true,
+            "swipes": true
+          }
+        }
+      ]
+    ],
+    "dtox": [
+      [
+        {
+          "page": "home",
+          "styleMs": 22,
+          "nodes": 2285,
+          "idleGrowth": 0,
+          "longTaskMs": 300
+        },
+        {
+          "page": "search",
+          "styleMs": 82,
+          "nodes": 15530,
+          "idleGrowth": 0,
+          "longTaskMs": 961
+        },
+        {
+          "page": "search-shorts",
+          "styleMs": 111,
+          "nodes": 31328,
+          "idleGrowth": 0,
+          "longTaskMs": 650
+        },
+        {
+          "page": "watch",
+          "styleMs": 127,
+          "nodes": 6238,
+          "idleGrowth": 0,
+          "longTaskMs": 440,
+          "playerWidth": 1212,
+          "endScreens": 0,
+          "checks": {
+            "plays": true,
+            "title in view": true,
+            "seeks": true
+          }
+        },
+        {
+          "page": "playlist",
+          "styleMs": 84,
+          "nodes": 7516,
+          "idleGrowth": 0,
+          "longTaskMs": 323,
+          "checks": {
+            "plays": true,
+            "playlist column kept": true
+          }
+        },
+        {
+          "page": "channel",
+          "styleMs": 63,
+          "nodes": 8511,
+          "idleGrowth": 0,
+          "longTaskMs": 373
+        },
+        {
+          "page": "shorts",
+          "styleMs": 85,
+          "nodes": 3148,
+          "idleGrowth": 0,
+          "longTaskMs": 148,
+          "checks": {
+            "plays": true,
+            "swipes": true
+          }
+        },
+        {
+          "page": "shorts-redirect",
+          "styleMs": 90,
+          "nodes": 4544,
+          "idleGrowth": 0,
+          "longTaskMs": 162,
+          "checks": {
+            "redirects": true,
+            "plays": true
+          }
+        }
+      ],
+      [
+        {
+          "page": "home",
+          "styleMs": 24,
+          "nodes": 2285,
+          "idleGrowth": 0,
+          "longTaskMs": 334
+        },
+        {
+          "page": "search",
+          "styleMs": 81,
+          "nodes": 17055,
+          "idleGrowth": 0,
+          "longTaskMs": 743
+        },
+        {
+          "page": "search-shorts",
+          "styleMs": 95,
+          "nodes": 28513,
+          "idleGrowth": 0,
+          "longTaskMs": 555
+        },
+        {
+          "page": "watch",
+          "styleMs": 108,
+          "nodes": 6277,
+          "idleGrowth": 0,
+          "longTaskMs": 305,
+          "playerWidth": 1212,
+          "endScreens": 0,
+          "checks": {
+            "plays": true,
+            "title in view": true,
+            "seeks": true
+          }
+        },
+        {
+          "page": "playlist",
+          "styleMs": 78,
+          "nodes": 7244,
+          "idleGrowth": 0,
+          "longTaskMs": 230,
+          "checks": {
+            "plays": true,
+            "playlist column kept": true
+          }
+        },
+        {
+          "page": "channel",
+          "styleMs": 58,
+          "nodes": 8511,
+          "idleGrowth": 0,
+          "longTaskMs": 272
+        },
+        {
+          "page": "shorts",
+          "styleMs": 83,
+          "nodes": 3115,
+          "idleGrowth": 0,
+          "longTaskMs": 87,
+          "checks": {
+            "plays": true,
+            "swipes": true
+          }
+        },
+        {
+          "page": "shorts-redirect",
+          "styleMs": 95,
+          "nodes": 4520,
+          "idleGrowth": 0,
+          "longTaskMs": 154,
+          "checks": {
+            "redirects": true,
+            "plays": true
+          }
+        }
+      ],
+      [
+        {
+          "page": "home",
+          "styleMs": 23,
+          "nodes": 2285,
+          "idleGrowth": 0,
+          "longTaskMs": 351
+        },
+        {
+          "page": "search",
+          "styleMs": 80,
+          "nodes": 16174,
+          "idleGrowth": 0,
+          "longTaskMs": 755
+        },
+        {
+          "page": "search-shorts",
+          "styleMs": 103,
+          "nodes": 31433,
+          "idleGrowth": 0,
+          "longTaskMs": 534
+        },
+        {
+          "page": "watch",
+          "styleMs": 119,
+          "nodes": 6486,
+          "idleGrowth": 0,
+          "longTaskMs": 288,
+          "playerWidth": 1212,
+          "endScreens": 0,
+          "checks": {
+            "plays": true,
+            "title in view": true,
+            "seeks": true
+          }
+        },
+        {
+          "page": "playlist",
+          "styleMs": 78,
+          "nodes": 7496,
+          "idleGrowth": 0,
+          "longTaskMs": 238,
+          "checks": {
+            "plays": true,
+            "playlist column kept": true
+          }
+        },
+        {
+          "page": "channel",
+          "styleMs": 86,
+          "nodes": 8511,
+          "idleGrowth": 0,
+          "longTaskMs": 706
+        },
+        {
+          "page": "shorts",
+          "styleMs": 79,
+          "nodes": 3113,
+          "idleGrowth": 0,
+          "longTaskMs": 102,
+          "checks": {
+            "plays": true,
+            "swipes": true
+          }
+        },
+        {
+          "page": "shorts-redirect",
+          "styleMs": 97,
+          "nodes": 4536,
+          "idleGrowth": 0,
+          "longTaskMs": 178,
+          "checks": {
+            "redirects": true,
+            "plays": true
+          }
+        }
+      ]
+    ]
+  }
+}

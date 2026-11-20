@@ -109,7 +109,7 @@ finished: 32 questions, all answered by Najmush on 2026-11-18. **Read `CONTEXT.m
 
 ## Pipeline
 
-research ✅ → grill ✅ → spec ✅ (#16) → tickets ✅ (#18–#28) → build: #18 ✅ (PR #30), #26 ✅ (live), #19 ✅ (PR #34), #20 ✅ (PR #36), #24 ✅ (PR #37), #27 live (PRs #39–#41, polish left), #21 ✅ (PR #42), #23 Intention Page B ✅ (PR #43), #23 popup ✅ (PR #44), #22 closed (picks recorded), #46 wide player in review, rest next →
+research ✅ → grill ✅ → spec ✅ (#16) → tickets ✅ (#18–#28) → build: #18 ✅ (PR #30), #26 ✅ (live), #19 ✅ (PR #34), #20 ✅ (PR #36), #24 ✅ (PR #37), #27 live (PRs #39–#41, polish left), #21 ✅ (PR #42), #23 Intention Page B ✅ (PR #43), #23 popup ✅ (PR #44), #22 closed (picks recorded), #46 wide player ✅ (PR #47), #25 Release Gate in review, rest next →
 prototypes of the popup, Intention Page and product page (seen running before anything is picked).
 
 ## Next step: #25
@@ -146,7 +146,11 @@ has loaded stalls for any automated browser, with or without D-Tox (requests 200
 for the same scroll; it stops by itself. The gate now lets each page settle (up to 30 s) before
 its 8 s idle window, times search on "python tutorial", and keeps "cooking" as `search-shorts`:
 reported and checked for runaway loading, not in the 10% total (`uncounted` in `lib/verdict.ts`).
-**Next:** run `npm run gate` (3 rounds, ~30 min), commit the passing results file, PR.
+**First passing gate (2026-11-20 15:25 IST, 3 rounds, `checks/results/release-gate-2026-11-20T1525.json`):**
+long tasks 2277 → 2107 ms (−7%), style recalc 491 → 447 ms (−9%); watch 510 → 305, channel
+262 → 373 (worth watching), worst-case search 297 → 555 (not counted, settles: idle +0). Every
+check ✓ in every round; end screens 4 → 0; player 996 → 1212 px. These are the product page's
+numbers for #27. Before release (#28): rerun on the release build.
 
 #23 is done in two PRs: the Intention Page B (PR #43; Najmush checked it live: "better than what
 we had so far") and the popup (PR #44, three passes; Najmush, 2026-11-19: "lock this and move
