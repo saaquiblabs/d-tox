@@ -21,6 +21,7 @@ const manifest = {
   name: 'D-Tox for YouTube',
   version: pkg.version,
   description: 'YouTube for what you came for. Hides the parts of YouTube that pull you elsewhere.',
+  homepage_url: 'https://d-tox.saaquiblabs.com',
   icons: { 16: 'icon-16.png', 48: 'icon-48.png', 128: 'icon-128.png' },
   permissions: ['storage'],
   background: { service_worker: 'background.js' },

@@ -5,6 +5,31 @@ All notable changes to D-Tox will be documented in this file.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - unreleased
+
+Rebuilt from scratch as a Saaquib Labs product. The full story, in plain words, is on
+https://d-tox.saaquiblabs.com/changelog; this file keeps the engineering view.
+
+### Changed
+- **Everything.** One static stylesheet at `document_start`, keyed on `<html>` attributes, and a
+  2.5 KB content script that copies Settings (ADR 0001). No timers, no hiding observers. 32.8 KB
+  in all of 40 (icons excluded).
+- **Ten Settings** from one list, `settings.json`: Home (Intention Page / Subscriptions / YouTube's
+  default), recommendations, end screens, autoplay off, comments, Shorts, Shorts redirect, search
+  clean-up, Explore/Trending/Playables, the bell. Cut from v1: live chat, profile photos, header,
+  video info, annotations, mixes, fundraisers, merch.
+- **Calm Default** on every install and update (ADR 0002): Intention Page, Shorts hidden,
+  autoplay off, recommendations hidden. v1's settings are not migrated.
+- **New popup** (master switch, groups, find), Settings in `chrome.storage.sync`.
+- Website, welcome and privacy pages move to `d-tox.saaquiblabs.com` (`homepage_url` too).
+
+### Checked
+- Release Gate, 2026-11-20, against YouTube alone with every Setting on: long tasks -7%, style
+  recalculation -9%, every check passed in 3 rounds (`checks/results/release-gate-2026-11-20T1525.json`).
+- Nightly check on live YouTube in English and Hindi.
+
+---
+
 ## [1.4.1] - 2026-04-28
 
 ### Added
