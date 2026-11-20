@@ -134,11 +134,19 @@ so a YouTube rename of those attributes would show only in the Release Gate. The
 copy (`index.astro`) is unchanged: its watch scene still reads true; a picture of the wider
 player belongs to #27's polish, which Najmush sees first.
 
-**#25 so far (2026-11-20):** decided to run the Release Gate on the Mac (`npm run gate`), not the
-VPS (YouTube won't play video to a datacenter address; ADR to follow). The Mac's ISP address
-(Excitel, shared) was itself flagged by Google ("unusual traffic", 429) on the morning of
-2026-11-20 and cleared by 14:00; the gate must detect that page and stop as BLOCKED, not fail.
-Branch `feat/25-release-gate` exists, empty.
+**#25 so far (2026-11-20), branch `feat/25-release-gate`:** the gate runs on the Mac (ADR 0005;
+YouTube won't play video to the VPS). `checks/gate.ts` + `lib/audit.ts` + `lib/verdict.ts` (16 unit
+tests), README § Release Gate. Trials (1 round each) on live YouTube: everything works (plays,
+seeks within what has loaded, playlist column, Shorts swipe, redirect, end screens 4 → 0, wide
+player 996 → 1212 px, title in view); totals long tasks +2% / +11%, style ±2%. Seeking past what
+has loaded stalls for any automated browser, with or without D-Tox (requests 200, player buffering;
+`navigator.webdriver` true); not worked around.
+**Open decision (Najmush):** search "cooking" with Shorts hidden: ~85% of results are Shorts
+(152 hidden, all Shorts; 25 videos + 4 channels shown), so for the same scroll YouTube loads ~9
+result pages instead of 3. It stops by itself, but in one trial it was still loading in the 8 s
+idle window (+2891 elements → "keeps loading" failure) and search long tasks rose 488 → 726 ms
+(total +11%). Options: judge runaway as "still growing after ~30 s idle", and/or time a Learner
+query and keep "cooking" as the reported worst case.
 
 #23 is done in two PRs: the Intention Page B (PR #43; Najmush checked it live: "better than what
 we had so far") and the popup (PR #44, three passes; Najmush, 2026-11-19: "lock this and move

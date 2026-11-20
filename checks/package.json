@@ -10,7 +10,8 @@
   "scripts": {
     "nightly": "node nightly.ts",
     "typecheck": "tsc --noEmit",
-    "test": "npm run typecheck && node --test 'tests/*.test.ts'"
+    "test": "npm run typecheck && node --test 'tests/*.test.ts'",
+    "gate": "node gate.ts"
   },
   "devDependencies": {
     "@types/node": "24.10.1",

@@ -79,7 +79,7 @@ const withHl = (url: string, hl: string) => {
 };
 
 /** Why this page can't be checked (bot check, consent, wrong language), or null if it can. */
-async function blockedReason(page: Page, language: Language): Promise<string | null> {
+export async function blockedReason(page: Page, language: Language): Promise<string | null> {
   // Wait for YouTube's app, or for the page to leave YouTube (a consent or bot-check redirect).
   let app = false;
   for (const end = Date.now() + 30_000; Date.now() < end; await page.waitForTimeout(250)) {
@@ -136,7 +136,7 @@ type Outcome = { blocked: string } | { problem: string } | { ok: true; note?: st
  * datacenter addresses such as the VPS, but only the video is refused: the page still renders,
  * and the check plays no video. So it blocks the check only if a Distraction is then missing.
  */
-async function playerBotCheck(page: Page) {
+export async function playerBotCheck(page: Page) {
   const p = await page.evaluate(() => (window as any).ytInitialPlayerResponse?.playabilityStatus);
   return p?.status === 'LOGIN_REQUIRED' ? `the player's bot check (“${p.reason ?? 'sign in'}”)` : null;
 }
