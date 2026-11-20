@@ -6,3 +6,4 @@ The nightly selector check (does each Setting still match live YouTube?) runs as
 
 - The job is scheduled at a quiet hour that does not overlap the backup jobs (02:30–03:30 IST).
 - YouTube sees the VPS's Oracle datacenter IP. If YouTube starts showing it a bot check, the job fails loudly rather than reporting false passes.
+- Amended 2026-11-20: the Release Gate does not run here; it runs on the Mac (ADR 0005). The nightly check stays an Openship job.

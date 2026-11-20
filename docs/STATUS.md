@@ -109,7 +109,7 @@ finished: 32 questions, all answered by Najmush on 2026-11-18. **Read `CONTEXT.m
 
 ## Pipeline
 
-research ✅ → grill ✅ → spec ✅ (#16) → tickets ✅ (#18–#28) → build: #18 ✅ (PR #30), #26 ✅ (live), #19 ✅ (PR #34), #20 ✅ (PR #36), #24 ✅ (PR #37), #27 live (PRs #39–#41, polish left), #21 ✅ (PR #42), #23 Intention Page B ✅ (PR #43), #23 popup ✅ (PR #44), #22 closed (picks recorded), #46 wide player in review, rest next →
+research ✅ → grill ✅ → spec ✅ (#16) → tickets ✅ (#18–#28) → build: #18 ✅ (PR #30), #26 ✅ (live), #19 ✅ (PR #34), #20 ✅ (PR #36), #24 ✅ (PR #37), #27 live (PRs #39–#41, polish left), #21 ✅ (PR #42), #23 Intention Page B ✅ (PR #43), #23 popup ✅ (PR #44), #22 closed (picks recorded), #46 wide player ✅ (PR #47), #25 Release Gate in review, rest next →
 prototypes of the popup, Intention Page and product page (seen running before anything is picked).
 
 ## Next step: #25
@@ -134,11 +134,31 @@ so a YouTube rename of those attributes would show only in the Release Gate. The
 copy (`index.astro`) is unchanged: its watch scene still reads true; a picture of the wider
 player belongs to #27's polish, which Najmush sees first.
 
-**#25 so far (2026-11-20):** decided to run the Release Gate on the Mac (`npm run gate`), not the
-VPS (YouTube won't play video to a datacenter address; ADR to follow). The Mac's ISP address
-(Excitel, shared) was itself flagged by Google ("unusual traffic", 429) on the morning of
-2026-11-20 and cleared by 14:00; the gate must detect that page and stop as BLOCKED, not fail.
-Branch `feat/25-release-gate` exists, empty.
+**#25 so far (2026-11-20), branch `feat/25-release-gate`:** the gate runs on the Mac (ADR 0005;
+YouTube won't play video to the VPS). `checks/gate.ts` + `lib/audit.ts` + `lib/verdict.ts` (16 unit
+tests), README § Release Gate. Trials (1 round each) on live YouTube: everything works (plays,
+seeks within what has loaded, playlist column, Shorts swipe, redirect, end screens 4 → 0, wide
+player 996 → 1212 px, title in view); totals long tasks +2% / +11%, style ±2%. Seeking past what
+has loaded stalls for any automated browser, with or without D-Tox (requests 200, player buffering;
+`navigator.webdriver` true); not worked around.
+**Decided (Najmush, 2026-11-20: "settle, then judge"):** search "cooking" with Shorts hidden:
+~85% of results are Shorts (152 hidden, all Shorts), so YouTube loads ~9 result pages instead of 3
+for the same scroll; it stops by itself. The gate now lets each page settle (up to 30 s) before
+its 8 s idle window, times search on "python tutorial", and keeps "cooking" as `search-shorts`:
+reported and checked for runaway loading, not in the 10% total (`uncounted` in `lib/verdict.ts`).
+**First passing gate (2026-11-20 15:25 IST, 3 rounds, `checks/results/release-gate-2026-11-20T1525.json`):**
+long tasks 2277 → 2107 ms (−7%), style recalc 491 → 447 ms (−9%); watch 510 → 305, channel
+262 → 373 (worth watching), worst-case search 297 → 555 (not counted, settles: idle +0). Every
+check ✓ in every round; end screens 4 → 0; player 996 → 1212 px. These are the product page's
+numbers for #27. **No more full gate runs on the MacBook (Najmush, 2026-11-20):** this run is the
+gate for v2.0.0; #28 does not rerun it (ADR 0005, amended). Gating later releases: open.
+A separate WIP gate from another session sits on `origin/feat/25-release-gate` (4c5989e); this
+work is on `feat/25-release-gate-mac`. Ported from the WIP (compared 2026-11-20): a D-Tox page
+with no `data-dtox-*` attribute is an error; busy-machine guard (`GATE_NOISY=1`); 30 min a round
+cap; build size in the results file; ADR 0003 pointer. From the comparison: a check fails only in
+most rounds, and a Baseline Run page that errored in some rounds is compared on the rest. The
+rest of the WIP conflicts with decisions (per-page 10%, `nice`, seeking past loaded video) and
+was dropped. **[HUMAN]** delete `origin/feat/25-release-gate` once satisfied nothing else is needed.
 
 #23 is done in two PRs: the Intention Page B (PR #43; Najmush checked it live: "better than what
 we had so far") and the popup (PR #44, three passes; Najmush, 2026-11-19: "lock this and move

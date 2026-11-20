@@ -1,8 +1,8 @@
 # checks/
 
-Checks against live YouTube that run as Openship jobs on the home VPS (ADR 0003): the nightly
-check (#24, here) and the Release Gate (#25). The fast saved-page tests that run before every
-push live with the extension in `extension/tests/`.
+Checks against live YouTube: the nightly check (#24), an Openship job on the home VPS (ADR 0003),
+and the Release Gate (#25), a command run on the Mac before each release (ADR 0005). The fast
+saved-page tests that run before every push live with the extension in `extension/tests/`.
 
 ## Nightly check
 
@@ -77,3 +77,50 @@ About 5 minutes. The token can only write issues on this one repo.
    **Environment** → under **Secrets** click **Replace secrets** (the job has none, so nothing is
    lost) → **Add secret** → name `DTOX_ISSUES_TOKEN`, value the token → **Save changes**.
 7. Tell Claude. It runs the job once and checks the log ends without `DTOX_ISSUES_TOKEN is not set`.
+
+## Release Gate
+
+No slow or broken release ships. `npm run gate` builds the extension, then visits live YouTube in a
+fresh Chromium with no extension (the **Baseline Run**) and with D-Tox and every Setting on,
+alternating, three rounds. Pages: home, search ("python tutorial"), a Shorts-heavy search ("cooking": reported and checked
+for runaway loading, not in the speed total), a watch page, a
+playlist, a channel, a Short, and the Shorts redirect (D-Tox only). Video plays muted; nothing is
+recorded. About 30 minutes for three rounds.
+
+**Run it on the Mac, on a home connection, with other apps closed** (ADR 0005: YouTube won't play
+video to the VPS, and the gate measures speed).
+
+```bash
+cd checks
+npm ci
+npm run gate              # exit 0 pass, 1 fail, 2 blocked
+GATE_ROUNDS=1 npm run gate   # a quick try, not for a release
+GATE_NOISY=1 npm run gate    # run on a busy machine anyway (not for a release)
+```
+
+It refuses to start (exit 2) when the machine is busy (load over half its cores), and stops
+(exit 2) after 30 minutes a round. A D-Tox page where the extension set no `data-dtox-*`
+attribute is an error. A check must pass in most rounds: one spoiled by an ad is noted, not failed.
+
+It passes only when, over the pages' medians:
+
+| Rule | From |
+|------|------|
+| Long-task time and style recalc, summed, within 10% (+50 / +20 ms) of the Baseline Run | `lib/verdict.ts` |
+| Once a page has settled after scrolling (up to 30 s), it adds no more than 500 elements in 8 s idle beyond the Baseline Run (YouTube loading page after page) | |
+| No D-Tox page times out (180 s) or crashes; a Baseline Run page that errored in some rounds is compared on the rest | |
+| A video plays and seeks, a playlist plays and keeps its column, a Short plays and swipes to the next, the Shorts redirect lands on `/watch` and plays | |
+| End screens can't be seen at the end of a video (checked only if the Baseline Run saw some) | |
+| The wide player (#46) is at least 40 px wider than YouTube's own, with the channel row above the fold | |
+
+**BLOCKED** (exit 2) means nothing about D-Tox was decided: a Google "unusual traffic" page, a
+consent page, the player's bot check, a Baseline Run that errored, or a check that fails without
+D-Tox too. Try again later, or on another connection (a phone hotspot). The Mac's ISP shares
+addresses and was flagged for a few hours on 2026-11-20.
+
+Seeking jumps back within what has loaded: past it, YouTube's player stalls for an automated
+browser with or without D-Tox (checked 2026-11-20), and the gate does not hide that it is automated.
+
+Each run writes `results/release-gate-<date>T<time IST>.json`: version, commit, machine, every
+page of every round, and the verdict. Commit the passing one with the release; the product page's
+numbers come from it, with its date.
