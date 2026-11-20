@@ -19,8 +19,10 @@ type Spec = { id: PageId; url: string; scroll: number; kind: Kind; only?: Mode }
 
 export const pages: Spec[] = [
   { id: 'home', url: 'https://www.youtube.com/', scroll: 6, kind: 'browse' },
-  // "cooking" has a Shorts shelf (checks/README): hiding Shorts there must not make YouTube load page after page.
-  { id: 'search', url: 'https://www.youtube.com/results?search_query=cooking', scroll: 8, kind: 'browse' },
+  { id: 'search', url: 'https://www.youtube.com/results?search_query=python+tutorial', scroll: 8, kind: 'browse' },
+  // The worst case, not in the speed total (verdict.ts `uncounted`): ~85% of "cooking" results in
+  // India are Shorts, so with them hidden YouTube loads ~3× the result pages for the same scroll.
+  { id: 'search-shorts', url: 'https://www.youtube.com/results?search_query=cooking', scroll: 8, kind: 'browse' },
   { id: 'watch', url: 'https://www.youtube.com/watch?v=aircAruvnKk', scroll: 4, kind: 'video' },
   { id: 'playlist', url: watchPlaylist.url, scroll: 0, kind: 'video' },
   { id: 'channel', url: 'https://www.youtube.com/@3blue1brown/videos', scroll: 6, kind: 'browse' },
@@ -34,7 +36,10 @@ export const everySettingOn = Object.fromEntries(
   settings.map((s) => [s.id, s.type === 'switch' ? true : s.calmDefault || s.choices!.find((c) => c.id !== 'default')!.id]),
 );
 
-const pageLimitMs = 150_000;
+const pageLimitMs = 180_000;
+/** Up to this long for a page to stop changing after the scroll, then this long sitting idle. */
+const settleMs = 30_000;
+const idleMs = 8_000;
 const english = languages[0]!;
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
@@ -169,14 +174,22 @@ export async function measure(run: Run, spec: Spec): Promise<PageRun> {
         await page.mouse.wheel(0, 2500);
         await sleep(1200);
       }
-      // Elements in the page, not Chrome's node count: that counts discarded nodes until they are collected.
+      // Elements in the page, not Chrome's node count: that counts discarded nodes until they are
+      // collected. Let the page settle first (YouTube may still be loading what the scroll asked
+      // for, more of it when D-Tox hides much of each page); only growth after that is runaway.
       const elements = () => page.evaluate(() => document.getElementsByTagName('*').length);
-      const before = await elements();
-      await sleep(8000);
+      let last = await elements();
+      for (let still = 0, end = Date.now() + settleMs; still < 3 && Date.now() < end; ) {
+        await sleep(2000);
+        const now = await elements();
+        still = now === last ? still + 1 : 0;
+        last = now;
+      }
+      await sleep(idleMs);
       const after = await elements();
       r.styleMs = Math.round((await metrics(cdp)).styleMs);
       r.nodes = after;
-      r.idleGrowth = after - before;
+      r.idleGrowth = after - last;
       r.longTaskMs = Math.round(await page.evaluate(() => ((window as any).__dtoxLongTasks as number[]).reduce((a, b) => a + b, 0)));
 
       // What must work.

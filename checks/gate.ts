@@ -51,7 +51,7 @@ const verdict = judge(runs);
 const pct = (d: number, b: number) => (b ? `${d <= b ? '' : '+'}${Math.round(((d - b) / b) * 100)}%` : '–');
 console.log('\nMedians per page (ms)          long tasks: Baseline → D-Tox    style recalc: Baseline → D-Tox');
 for (const p of verdict.pages)
-  console.log(`  ${p.page.padEnd(28)} ${String(p.baseline.longTaskMs).padStart(6)} → ${String(p.dtox.longTaskMs).padEnd(14)} ${String(p.baseline.styleMs).padStart(6)} → ${p.dtox.styleMs}`);
+  console.log(`  ${(p.counted ? p.page : p.page + ' (worst case, not counted)').padEnd(28)} ${String(p.baseline.longTaskMs).padStart(6)} → ${String(p.dtox.longTaskMs).padEnd(14)} ${String(p.baseline.styleMs).padStart(6)} → ${p.dtox.styleMs}`);
 const t = verdict.totals;
 console.log(`  ${'all pages'.padEnd(28)} ${String(t.baseline.longTaskMs).padStart(6)} → ${String(t.dtox.longTaskMs).padEnd(6)} (${pct(t.dtox.longTaskMs, t.baseline.longTaskMs)})  ${String(t.baseline.styleMs).padStart(6)} → ${t.dtox.styleMs} (${pct(t.dtox.styleMs, t.baseline.styleMs)})`);
 for (const n of verdict.notChecked) console.log(`  not checked: ${n}`);

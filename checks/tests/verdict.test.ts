@@ -115,3 +115,13 @@ test('a check D-Tox could not try is listed, not failed', () => {
   assert.equal(v.status, 'pass');
   assert.match(v.notChecked.join(), /watch: seeks/);
 });
+
+test('the worst-case search is reported and checked for runaway loading, but not in the speed total', () => {
+  const worst = (over: Partial<PageRun> = {}) => page({ page: 'search-shorts', longTaskMs: 300, ...over });
+  const v = judge({ baseline: base.map((r) => [...r, worst()]), dtox: good.map((r) => [...r, worst({ longTaskMs: 5000 })]) });
+  assert.equal(v.status, 'pass');
+  assert.equal(v.totals.dtox.longTaskMs, 2000);
+  assert.equal(v.pages.find((p) => p.page === 'search-shorts')!.dtox.longTaskMs, 5000);
+  const runaway = judge({ baseline: base.map((r) => [...r, worst()]), dtox: good.map((r) => [...r, worst({ idleGrowth: 3000 })]) });
+  assert.match(runaway.failures.join(), /search-shorts: 3000 DOM nodes/);
+});

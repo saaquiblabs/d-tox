@@ -2,7 +2,7 @@
 // (audit.ts) measures each page once per run; the gate runs the Baseline Run (no extension) and
 // D-Tox (every Setting on) several rounds, alternating, and this decides from the medians.
 
-export type PageId = 'home' | 'search' | 'watch' | 'playlist' | 'channel' | 'shorts' | 'shorts-redirect';
+export type PageId = 'home' | 'search' | 'search-shorts' | 'watch' | 'playlist' | 'channel' | 'shorts' | 'shorts-redirect';
 
 /** What one page gave in one run. A check is true or false, or null when it could not be tried. */
 export type PageRun = {
@@ -13,7 +13,7 @@ export type PageRun = {
   error?: string;
   longTaskMs?: number;
   styleMs?: number;
-  /** DOM nodes when scrolling stopped, and how many more after sitting idle. */
+  /** Elements in the page once it settled after scrolling, and how many more in the idle window after. */
   nodes?: number;
   idleGrowth?: number;
   checks?: Partial<Record<Check, boolean | null>>;
@@ -32,6 +32,12 @@ export type Check =
 
 export type Runs = { baseline: PageRun[][]; dtox: PageRun[][] };
 
+/**
+ * Measured and reported, checked for runaway loading, but not in the speed total: a worst case.
+ * A search where most results are Shorts makes YouTube load page after page to fill the space
+ * D-Tox empties (Najmush, 2026-11-20: "settle, then judge").
+ */
+export const uncounted: PageId[] = ['search-shorts'];
 /** Long-task time and style recalc, summed over the pages, may be at most this much over the Baseline Run. */
 export const allowance = 0.1;
 /** …plus a little, in ms, so a page with almost no cost doesn't fail on noise. */
@@ -42,7 +48,7 @@ export const idleGrowthSlack = 500;
 export const widerBy = 40;
 
 export type Totals = { longTaskMs: number; styleMs: number };
-export type PageSummary = { page: PageId; baseline: Totals & { idleGrowth: number }; dtox: Totals & { idleGrowth: number } };
+export type PageSummary = { page: PageId; counted: boolean; baseline: Totals & { idleGrowth: number }; dtox: Totals & { idleGrowth: number } };
 export type Verdict = {
   status: 'pass' | 'fail' | 'blocked';
   /** Why it failed or was blocked, and what was not checked. */
@@ -82,11 +88,12 @@ export function judge({ baseline, dtox }: Runs): Verdict {
     const d = pagesOf(dtox, page).filter((p) => !p.error && !p.blocked);
     return {
       page,
+      counted: !uncounted.includes(page),
       baseline: { longTaskMs: round(med(b, 'longTaskMs')), styleMs: round(med(b, 'styleMs')), idleGrowth: round(med(b, 'idleGrowth')) },
       dtox: { longTaskMs: round(med(d, 'longTaskMs')), styleMs: round(med(d, 'styleMs')), idleGrowth: round(med(d, 'idleGrowth')) },
     };
   });
-  const sum = (side: 'baseline' | 'dtox', key: keyof Totals) => pages.reduce((a, p) => a + p[side][key], 0);
+  const sum = (side: 'baseline' | 'dtox', key: keyof Totals) => pages.reduce((a, p) => a + (p.counted ? p[side][key] : 0), 0);
   const totals = {
     baseline: { longTaskMs: sum('baseline', 'longTaskMs'), styleMs: sum('baseline', 'styleMs') },
     dtox: { longTaskMs: sum('dtox', 'longTaskMs'), styleMs: sum('dtox', 'styleMs') },

@@ -82,9 +82,10 @@ About 5 minutes. The token can only write issues on this one repo.
 
 No slow or broken release ships. `npm run gate` builds the extension, then visits live YouTube in a
 fresh Chromium with no extension (the **Baseline Run**) and with D-Tox and every Setting on,
-alternating, three rounds. Pages: home, search ("cooking", with a Shorts shelf), a watch page, a
+alternating, three rounds. Pages: home, search ("python tutorial"), a Shorts-heavy search ("cooking": reported and checked
+for runaway loading, not in the speed total), a watch page, a
 playlist, a channel, a Short, and the Shorts redirect (D-Tox only). Video plays muted; nothing is
-recorded. About 25 minutes for three rounds.
+recorded. About 30 minutes for three rounds.
 
 **Run it on the Mac, on a home connection, with other apps closed** (ADR 0005: YouTube won't play
 video to the VPS, and the gate measures speed).
@@ -101,7 +102,7 @@ It passes only when, over the pages' medians:
 | Rule | From |
 |------|------|
 | Long-task time and style recalc, summed, within 10% (+50 / +20 ms) of the Baseline Run | `lib/verdict.ts` |
-| No page adds more than 500 elements while idle beyond what the Baseline Run adds (YouTube loading page after page) | |
+| Once a page has settled after scrolling (up to 30 s), it adds no more than 500 elements in 8 s idle beyond the Baseline Run (YouTube loading page after page) | |
 | No D-Tox page times out (150 s) or crashes | |
 | A video plays and seeks, a playlist plays and keeps its column, a Short plays and swipes to the next, the Shorts redirect lands on `/watch` and plays | |
 | End screens can't be seen at the end of a video (checked only if the Baseline Run saw some) | |

@@ -141,12 +141,12 @@ seeks within what has loaded, playlist column, Shorts swipe, redirect, end scree
 player 996 → 1212 px, title in view); totals long tasks +2% / +11%, style ±2%. Seeking past what
 has loaded stalls for any automated browser, with or without D-Tox (requests 200, player buffering;
 `navigator.webdriver` true); not worked around.
-**Open decision (Najmush):** search "cooking" with Shorts hidden: ~85% of results are Shorts
-(152 hidden, all Shorts; 25 videos + 4 channels shown), so for the same scroll YouTube loads ~9
-result pages instead of 3. It stops by itself, but in one trial it was still loading in the 8 s
-idle window (+2891 elements → "keeps loading" failure) and search long tasks rose 488 → 726 ms
-(total +11%). Options: judge runaway as "still growing after ~30 s idle", and/or time a Learner
-query and keep "cooking" as the reported worst case.
+**Decided (Najmush, 2026-11-20: "settle, then judge"):** search "cooking" with Shorts hidden:
+~85% of results are Shorts (152 hidden, all Shorts), so YouTube loads ~9 result pages instead of 3
+for the same scroll; it stops by itself. The gate now lets each page settle (up to 30 s) before
+its 8 s idle window, times search on "python tutorial", and keeps "cooking" as `search-shorts`:
+reported and checked for runaway loading, not in the 10% total (`uncounted` in `lib/verdict.ts`).
+**Next:** run `npm run gate` (3 rounds, ~30 min), commit the passing results file, PR.
 
 #23 is done in two PRs: the Intention Page B (PR #43; Najmush checked it live: "better than what
 we had so far") and the popup (PR #44, three passes; Najmush, 2026-11-19: "lock this and move
