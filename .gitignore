@@ -36,3 +36,6 @@ yarn-debug.log*
 # Playwright
 test-results/
 playwright-report/
+
+# Release output (npm run zip, site/scripts/store-assets.mjs)
+extension/release/

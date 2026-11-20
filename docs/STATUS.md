@@ -123,7 +123,23 @@ finished: 32 questions, all answered by Najmush on 2026-11-18. **Read `CONTEXT.m
 research ✅ → grill ✅ → spec ✅ (#16) → tickets ✅ (#18–#28) → build: #18 ✅ (PR #30), #26 ✅ (live), #19 ✅ (PR #34), #20 ✅ (PR #36), #24 ✅ (PR #37), #27 live (PRs #39–#41, polish left), #21 ✅ (PR #42), #23 Intention Page B ✅ (PR #43), #23 popup ✅ (PR #44), #22 closed (picks recorded), #46 wide player ✅ (PR #47), #25 Release Gate in review, rest next →
 prototypes of the popup, Intention Page and product page (seen running before anything is picked).
 
-## Next step: #25
+## Next step: #28 (release), upload is with Najmush
+
+**#28 so far (2026-11-20), branch `feat/28-release`:** `npm run zip` in `extension/` (clean build,
+fails without a `/changelog` entry for the version) → `extension/release/d-tox-2.0.0.zip` (29 KB,
+gitignored). Manifest gains `homepage_url` (`d-tox.saaquiblabs.com`; v1 had one, v2 had lost it).
+`site/scripts/store-assets.mjs` renders the listing's pictures into `extension/release/store/`
+(five 1280×800 screenshots with a line each, popup on the Calm Default, 440×280 promo tile), from
+the page's fiction shots. **`docs/release.md`** holds the whole procedure: build, the **[HUMAN]**
+click-by-click upload (package, listing, privacy practices, account, submit with auto-publish off),
+the listing text, and what follows publishing (date the changelog, GitHub release on a yes,
+cut-over). `/changelog`'s "Fast" line now carries the gate's −7%; `CHANGELOG.md` has 2.0.0
+("unreleased"). The gate run (73b0c5c) predates `homepage_url` only; ADR 0005 says no rerun.
+Left in #28 after the upload: dating the changelog on publish day, the GitHub release, links
+repointed in the saaquiblabs repo, the 301 from `d-tox.najmushsaaquib.com`, then removing the
+portfolio route group. Root `promo-*.html` and `assets/` (v1 store material) are now unused.
+
+## Earlier: #25
 
 **#46 (2026-11-20), new ticket from Najmush's screenshot:** with recommendations hidden the right
 column sat empty and the player stayed pinned left. Prototypes A (centred, same size) and B
