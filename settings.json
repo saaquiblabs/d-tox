@@ -29,7 +29,7 @@
     "id": "recommendations",
     "name": "Hide recommendations",
     "hint": "The column beside the video",
-    "hides": "Hides the suggested videos beside and below the video you're watching. Playlists, live chat, chapters and transcripts stay.",
+    "hides": "Hides the suggested videos beside and below the video you're watching, and gives the video their room. Playlists, live chat, chapters and transcripts stay.",
     "group": "Videos",
     "type": "switch",
     "calmDefault": true

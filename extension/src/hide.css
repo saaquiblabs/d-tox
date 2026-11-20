@@ -17,6 +17,22 @@ html[data-dtox-recommendations] ytd-watch-flexy ytd-watch-next-secondary-results
 }
 
 /*
+ * …and the video takes the room (#46, version B). With recommendations gone the right column
+ * (#secondary) is empty unless it holds a playlist, live chat or an open panel (chapters,
+ * transcript), which YouTube marks on ytd-watch-flexy. Only then is the column removed: YouTube's
+ * #columns already centres, and the player grows. YouTube caps the player at the window's height
+ * less the masthead (56px), its top padding (12px) and 48px; this keeps 150px instead, so the
+ * title and the channel row stay above the fold. Two-column default layout only: theatre,
+ * fullscreen and narrow windows are YouTube's own.
+ */
+html[data-dtox-recommendations] ytd-watch-flexy[default-layout][is-two-columns_]:not([playlist]):not([live-chat-present-and-expanded]):not([panel-expanded]) {
+  --ytd-watch-flexy-max-player-width: calc((100vh - 56px - 12px - 150px) * (16 / 9)) !important;
+}
+html[data-dtox-recommendations] ytd-watch-flexy[default-layout][is-two-columns_]:not([playlist]):not([live-chat-present-and-expanded]):not([panel-expanded]) #secondary {
+  display: none !important;
+}
+
+/*
  * Watch page · end screens: the creator's end-screen links (.ytp-ce-element), the video grid at
  * the end (.html5-endscreen, and .ytp-fullscreen-grid in YouTube's newer player) and info cards
  * (.ytp-cards-*).
