@@ -32,8 +32,8 @@ Open https://chrome.google.com/webstore/devconsole and pick **D-Tox** (`ocngpkba
 4. **Store icon**: `extension/public/icon-128.png` (the folded-D mark).
 5. **Screenshots**: delete every screenshot already there, then add `extension/release/store/1-watch.png`
    through `5-popup.png`, in order.
-6. **Small promo tile**: `extension/release/store/promo-440x280.png`. **Marquee**: remove v1's
-   (it carries the old brand); none for now.
+6. **Small promo tile**: `extension/release/store/promo-440x280.png`. **Marquee promo tile**:
+   replace v1's (it carries the old brand) with `extension/release/store/marquee-1400x560.png`.
 7. **Homepage URL**: `https://d-tox.saaquiblabs.com`. **Support URL**:
    `https://github.com/saaquiblabs/d-tox/issues`.
 8. **Save draft**.

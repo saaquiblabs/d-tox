@@ -182,6 +182,15 @@ h1{font:400 44px/1 'Instrument Serif',serif;letter-spacing:-.01em;text-align:cen
   await render('promo-440x280', 440, 280, `<div style="height:100%;display:grid;place-items:center;text-align:center;gap:0;padding:28px">
   <div><img src="${pub}logo/d-ivory.svg" style="width:64px;height:64px"><h1 style="font-size:52px;padding:0;margin-top:10px">D-Tox</h1>
   <p style="margin-top:10px;font-size:16px;color:#A2B1AB">YouTube for what you <em style="font:italic 20px 'Instrument Serif',serif;color:#7CF0C4">came for.</em></p></div></div>`);
+  // Marquee promo tile (1400×560): the promise on the left, the live watch page without/with D-Tox.
+  await render('marquee-1400x560', 1400, 560, `<div style="position:absolute;left:72px;top:0;bottom:0;width:470px;display:flex;flex-direction:column;justify-content:center">
+  <div style="display:flex;align-items:center;gap:14px"><img src="${pub}logo/d-ivory.svg" style="width:52px;height:52px"><span style="font:600 30px Inter,sans-serif">D-Tox</span></div>
+  <h1 style="text-align:left;padding:0;margin-top:26px;font-size:64px;line-height:1.02">YouTube for what<br>you <em>came for.</em></h1>
+  <p style="margin-top:22px;font-size:19px;line-height:1.45;color:#A2B1AB">No feed, no Shorts, no next video.<br>Free, open source, sends nothing anywhere.</p></div>
+<p class="tag off" style="left:600px;top:58px">Without D-Tox</p><p class="tag on" style="left:1004px;top:58px">With D-Tox</p>
+<div class="pane" style="left:600px;top:80px;width:380px"><img src="${img('watch-before')}" style="margin-top:0"></div>
+<div class="pane" style="left:1004px;top:80px;width:380px;border-color:rgb(124 240 196 / .45)"><img src="${img('watch-after')}"></div>
+<div style="position:absolute;left:0;right:0;bottom:0;height:70px;background:linear-gradient(transparent,#090F0D)"></div>`);
   await b.close();
   console.log('store pictures →', out);
 }
