@@ -104,7 +104,7 @@ Optional. To fill it later:
 
 ### 3a. You (**[HUMAN]**)
 
-- [ ] In the dashboard, click **Publish**
+- [x] In the dashboard, click **Publish**
 - [ ] Tell the agent the date
 
 ### 3b. Agent
