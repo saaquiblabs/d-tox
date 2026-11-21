@@ -1,6 +1,6 @@
 # Status
 
-Last updated: 2026-11-21 (IST), 22:20. Each session overwrites this at handoff.
+Last updated: 2026-11-21 (IST), 22:45. Each session overwrites this at handoff.
 
 ## Where we are
 
@@ -129,11 +129,12 @@ prototypes of the popup, Intention Page and product page (seen running before an
 **#28 closed 2026-11-21.** v2.0.0 approved 19:22 IST and published the same evening; the store
 page shows 2.0.0. Changelog dated (PR #53), GitHub release `v2.0.0` with the reviewed zip
 (sha256 `cbc96ae1…`). The saaquiblabs card already shows v2 and live YouTube before/after
-(saaquiblabs #90/#92, live). **d-tox.saaquiblabs.com is not redeployed yet:** Openship's newest
-d-tox deployment is `91b8c62` (2026-11-20), so `/changelog` still says "Coming soon" for 2.0.0.
-Najmush runs the deploy. Still his: the portfolio deploy (redirects), the 301 from
-`d-tox.najmushsaaquib.com`; on or after 2026-12-21 remove the portfolio's route group and the
-old `d-tox` Openship project. Optional: Search Console for the listing's Official URL.
+(saaquiblabs #90/#92, live). Site deployed with the comparison and the dated changelog; deploys
+now take ~1:30 (PR #55: Install `npm ci --omit=dev`, Build `npm run verify:deploy`, Lighthouse in
+`.githooks/pre-push`; was 6–8 min). **Old host retired, no redirect (Najmush, 2026-11-21: "remove it
+from every place"):** portfolio PR najmushsaaquib.com#172 removes the old D-Tox pages; Najmush
+deletes the old `d-tox` Openship project and the `d-tox` DNS record in the `najmushsaaquib.com`
+zone. Old links to `d-tox.najmushsaaquib.com` stop working; nothing waits for 2026-12-21. Optional: Search Console for the listing's Official URL.
 
 **#27 polish, item 1 of 3: the honest comparison** ("Not the most switches. The right ten."; D-Tox's rows first, rivals' wins last, per Najmush) (`#compare` in `index.astro`, after the Home
 scene, before the close). A table of D-Tox, Unhook, RYS in ten rows; a dot marks the better

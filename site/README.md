@@ -81,5 +81,5 @@ green on the same box. Do them in order; tell Claude after each.
    visit. Claude checks from outside: `/` 200, `/welcome` 200 with no redirect, `/welcome/` 308 →
    `/welcome`, `/nope` 404.
 
-The old `d-tox.najmushsaaquib.com` redirects here since 2026-11-21 (#28; portfolio PR #170). Before that, links were repointed first,
-then it 301s here for 30 days.
+The old `d-tox.najmushsaaquib.com` is retired (2026-11-21, no redirect): its pages are removed from the
+portfolio (najmushsaaquib.com#172), and its Openship project and DNS record are deleted.
