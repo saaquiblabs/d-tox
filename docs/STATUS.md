@@ -139,7 +139,15 @@ Search Console; how-to in release.md).
 
 **Submitted for review 2026-11-21, 15:30 IST**, auto-publish off. Status: Pending review.
 Once it passes, Najmush must click Publish **within 30 days** or the staged version expires.
-Then release.md § 3b (date changelog, GitHub release on his yes, cut-over).
+Then release.md § 3b (date changelog, GitHub release on his yes).
+
+**Cut-over done early (2026-11-21, Najmush: "start pointing to the new D-Tox everywhere"):**
+saaquiblabs.com's D-Tox card, story and Privacy link → `d-tox.saaquiblabs.com` (saaquiblabs PR #88);
+the portfolio's D-Tox pages on both old hosts are instant redirects to the same path here, its
+projects card and blog posts repointed (najmushsaaquib.com PR #170). Both merged; **deploys
+pending** (Najmush runs them). Until v2 is published, "Get D-Tox" installs v1.4.1. Remove the
+portfolio's route group and the old `d-tox` Openship project on or after 2026-12-21.
+The saaquiblabs card's screenshots are still v1's.
 
 **#28 so far (2026-11-20), branch `feat/28-release`:** `npm run zip` in `extension/` (clean build,
 fails without a `/changelog` entry for the version) → `extension/release/d-tox-2.0.0.zip` (29 KB,
