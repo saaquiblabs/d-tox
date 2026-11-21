@@ -1,6 +1,6 @@
 # Status
 
-Last updated: 2026-11-21 (IST), 21:45. Each session overwrites this at handoff.
+Last updated: 2026-11-21 (IST), 22:05. Each session overwrites this at handoff.
 
 ## Where we are
 
@@ -122,17 +122,26 @@ finished: 32 questions, all answered by Najmush on 2026-11-18. **Read `CONTEXT.m
 research ✅ → grill ✅ → spec ✅ (#16) → tickets ✅ (#18–#28) → build: #18 ✅ (PR #30), #26 ✅ (live), #19 ✅ (PR #34), #20 ✅ (PR #36), #24 ✅ (PR #37), #27 live (PRs #39–#41, polish left), #21 ✅ (PR #42), #23 Intention Page B ✅ (PR #43), #23 popup ✅ (PR #44), #22 closed (picks recorded), #46 wide player ✅ (PR #47), #25 Release Gate in review, rest next →
 prototypes of the popup, Intention Page and product page (seen running before anything is picked).
 
-## Next step: #28 wrap-up (v2.0.0 is published)
+## Next step: #27 polish (branch `feat/27-polish`), waiting on Najmush's look
 
-**v2.0.0 approved 2026-11-21, 19:22 IST; Najmush clicked Publish the same evening.** Changelog
-dated 2026-11-21 (`changelog.astro`, `CHANGELOG.md`); GitHub release `v2.0.0` with the zip
-(Najmush: "go ahead"). The store page can take a while to show 2.0.0; existing users update over
-hours. Repo social preview (`og.jpg`) uploaded by Najmush. Left in #28: the cut-over deploys and
-the 301 from `d-tox.najmushsaaquib.com` (Najmush runs them), the saaquiblabs card's v1
-screenshots; on or after 2026-12-21 remove the portfolio's route
-group and the old `d-tox` Openship project. Optional: verify `saaquiblabs.com` in Search Console
-for the listing's Official URL (release.md). Then close #28; #27 polish is next.
+**#28 closed 2026-11-21.** v2.0.0 approved 19:22 IST and published the same evening; the store
+page shows 2.0.0. Changelog dated (PR #53), GitHub release `v2.0.0` with the reviewed zip
+(sha256 `cbc96ae1…`). The saaquiblabs card already shows v2 and live YouTube before/after
+(saaquiblabs #90/#92, live). **d-tox.saaquiblabs.com is not redeployed yet:** Openship's newest
+d-tox deployment is `91b8c62` (2026-11-20), so `/changelog` still says "Coming soon" for 2.0.0.
+Najmush runs the deploy. Still his: the portfolio deploy (redirects), the 301 from
+`d-tox.najmushsaaquib.com`; on or after 2026-12-21 remove the portfolio's route group and the
+old `d-tox` Openship project. Optional: Search Console for the listing's Official URL.
 
+**#27 polish, item 1 of 3: the honest comparison** (`#compare` in `index.astro`, after the Home
+scene, before the close). A table of D-Tox, Unhook, RYS in ten rows; a dot marks the better
+answer per row, rivals' wins included (users and rating, switches, other browsers, embeds,
+schedule). Facts from each Chrome Web Store page and lawrencehook.com/rys/features, 21 Nov 2026:
+Unhook 1M users, 4.9 (4.7K), 37 KiB, closed, free, Firefox/Edge/Android-via-Firefox, embeds,
+23 options; RYS 10K, 3.3 (157), 349 KiB, MPL-2.0, ~15 free features, 80+ paid ("a few dollars a
+month": autoplay off, bell, schedule, lock are paid); D-Tox 16 users, 32.81 KiB. Verify 100
+everywhere, `/` 322 KB phone. **Not merged: Najmush sees it first.** Left: the hero mark hidden
+on phones, a picture of the wider player (#46); maybe a "Compare" link in the header nav.
 
 **2026-11-21, branch `feat/28-live-store-shots`:** Najmush was mid-upload (description and icon
 pasted) and turned down the five fiction screenshots ("look AI made", no before/after on one
@@ -154,7 +163,6 @@ the portfolio's D-Tox pages on both old hosts are instant redirects to the same 
 projects card and blog posts repointed (najmushsaaquib.com PR #170). Both merged; **deploys
 pending** (Najmush runs them). Until v2 is published, "Get D-Tox" installs v1.4.1. Remove the
 portfolio's route group and the old `d-tox` Openship project on or after 2026-12-21.
-The saaquiblabs card's screenshots are still v1's.
 
 **#28 so far (2026-11-20), branch `feat/28-release`:** `npm run zip` in `extension/` (clean build,
 fails without a `/changelog` entry for the version) → `extension/release/d-tox-2.0.0.zip` (29 KB,
