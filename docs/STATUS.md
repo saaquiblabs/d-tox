@@ -1,6 +1,6 @@
 # Status
 
-Last updated: 2026-11-21 (IST), 22:05. Each session overwrites this at handoff.
+Last updated: 2026-11-21 (IST), 22:20. Each session overwrites this at handoff.
 
 ## Where we are
 
@@ -17,7 +17,9 @@ finished: 32 questions, all answered by Najmush on 2026-11-18. **Read `CONTEXT.m
   How to build, test and add a Setting: root `README.md`.
 - **Site (#26) is live (2026-11-19)** at `d-tox.saaquiblabs.com`, Umami included; Najmush
   checked it. `site/`: Astro static, `/` (stand-in for #27), `/welcome`, `/privacy`, 404;
-  `npm run verify` = tests, build, `/welcome` vs `settings.json`, links, Lighthouse. Openship
+  `npm run verify` = tests, build, `/welcome` vs `settings.json`, links, Lighthouse (pre-push hook,
+  `.githooks/pre-push`); the Openship deploy runs `npm run verify:deploy` (same minus Lighthouse) with
+  Install `npm ci --omit=dev`, ported from saaquiblabs #89 on 2026-11-21: the deploy took 6–8 min. Openship
   project `d-tox.saaquiblabs.com` (`proj_ombNMbyjVUOS-aV7`, home-vps); the domain had to be
   added as the project's public endpoint before the edge served the real certificate. Deploys
   are manual: `ssh najmush-oracle '~/.openship/bin/openship --local deploy --project
@@ -140,7 +142,7 @@ schedule). Facts from each Chrome Web Store page and lawrencehook.com/rys/featur
 Unhook 1M users, 4.9 (4.7K), 37 KiB, closed, free, Firefox/Edge/Android-via-Firefox, embeds,
 23 options; RYS 10K, 3.3 (157), 349 KiB, MPL-2.0, ~15 free features, 80+ paid ("a few dollars a
 month": autoplay off, bell, schedule, lock are paid); D-Tox 16 users, 32.81 KiB. Verify 100
-everywhere, `/` 322 KB phone. **Not merged: Najmush sees it first.** Left: the hero mark hidden
+everywhere, `/` 322 KB phone. Merged (PR #54) after Najmush's look. Left: the hero mark hidden
 on phones, a picture of the wider player (#46); maybe a "Compare" link in the header nav.
 
 **2026-11-21, branch `feat/28-live-store-shots`:** Najmush was mid-upload (description and icon

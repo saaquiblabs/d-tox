@@ -1,7 +1,9 @@
 // The launch gate, ported from the saaquiblabs studio site's tests/verify.mjs (saaquiblabs ADR 0014):
 // link check + Lighthouse with the studio's budgets, on the built site. `npm run verify` runs the
-// unit tests, builds, checks /welcome against settings.json (tests/welcome.mjs), then runs this. The
-// Openship build calls that same command; keep every budget here.
+// unit tests, builds, checks /welcome against settings.json (tests/welcome.mjs), then runs this; the
+// git pre-push hook runs it. The Openship deploy runs `npm run verify:deploy` (`--links`): the same
+// minus Lighthouse, no Chrome, so a deploy takes about two minutes (as the studio site, its #89).
+// Keep every budget here.
 //
 // Budgets: Lighthouse 100 in all four categories, page JS < 50 KB, page < 400 KB. Bytes are what the
 // page loads, measured uncompressed (the local server doesn't gzip), so the live page is lighter.
@@ -9,10 +11,6 @@
 // Chrome: CHROME_PATH, else Playwright's Chromium (`npx playwright install chromium`).
 import { readFile, readdir, access } from "node:fs/promises";
 import { join, relative } from "node:path";
-import lighthouse from "lighthouse";
-import desktop from "lighthouse/core/config/desktop-config.js";
-import { launch } from "chrome-launcher";
-import pw from "playwright";
 import { serve, dist } from "./serve.mjs";
 
 const origin = "https://d-tox.saaquiblabs.com";
@@ -29,7 +27,10 @@ const { base } = server;
 const sitemap = await readFile(join(dist, "sitemap-0.xml"), "utf8");
 const listed = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => new URL(m[1]).pathname);
 // `node tests/verify.mjs / /welcome` runs Lighthouse on those pages only (for debugging; the gate runs all).
-const pages = process.argv.slice(2).length ? process.argv.slice(2) : listed;
+// `--links` (the deploy): the link check only.
+const linksOnly = process.argv.includes("--links");
+const args = process.argv.slice(2).filter((a) => a !== "--links");
+const pages = args.length ? args : listed;
 if (!listed.length) problems.push("sitemap lists no pages");
 
 // --- Links: every href/src/srcset in every built HTML file, internal and external. ---
@@ -82,6 +83,21 @@ await Promise.all(Array.from({ length: 8 }, async () => {
   }
 }));
 console.log(`verify: ${links.size} links checked`);
+
+if (linksOnly) {
+  server.close();
+  if (problems.length) {
+    console.error(`verify: ${problems.length} problem(s)\n  ` + problems.join("\n  "));
+    process.exit(1);
+  }
+  console.log("verify: ok (links only; Lighthouse runs before each push)");
+  process.exit(0);
+}
+
+const { default: lighthouse } = await import("lighthouse");
+const { default: desktop } = await import("lighthouse/core/config/desktop-config.js");
+const { launch } = await import("chrome-launcher");
+const { default: pw } = await import("playwright");
 
 // --- Lighthouse, phone and desktop, every page. ---
 const chromePath = process.env.CHROME_PATH ?? pw.chromium.executablePath();

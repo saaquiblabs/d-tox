@@ -11,6 +11,9 @@ export default defineConfig({
   trailingSlash: "never",
   // Styles go inline in each page (they are small), so no stylesheet blocks the first paint.
   build: { format: "directory", inlineStylesheets: "always" },
+  // Kept between builds: the Openship deploy keeps .turbo/cache (one of its build caches), as on the
+  // studio site (its #89).
+  cacheDir: "./.turbo/cache/astro",
   // Every page except the 404 page.
   integrations: [sitemap({ filter: (url) => !/\/404\/?$/.test(url) })],
 });
