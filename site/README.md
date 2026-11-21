@@ -60,15 +60,14 @@ green on the same box. Do them in order; tell Claude after each.
    | Framework | **Static site** |
    | Root directory | `site` |
    | Build image | `node:22` |
-   | Install command | `npm ci && npx playwright install --with-deps chromium` |
-   | Build command | `npm run verify` |
+   | Install command | `npm ci --omit=dev` (no Chrome or test tools since 2026-11-21) |
+   | Build command | `npm run verify:deploy` (tests, build, `/welcome` check, links; Lighthouse runs before each push) |
    | Output directory | `dist` |
    | Auto Deploy | off (deploy by hand after merges, like the studio site) |
 
    → **Create project**. Then in the project's routing settings: **Hide .html extensions** on,
    **Trailing slash** off, **SPA fallback** off (a missing path gets `404.html` with status 404;
-   left on, every missing page answers 200). → **Deploy**. Wait for green (about 5–7 minutes:
-   Chromium, then the gate). A red build means the gate failed and the log says which page and why.
+   left on, every missing page answers 200). → **Deploy**. Wait for green (about 2 minutes). A red build means the gate failed and the log says which page and why.
    Tell Claude either way. If any field isn't where this says, stop and tell Claude: it can create the
    project from the CLI over SSH instead, as it did for the studio site (#48).
 4. **DNS, after step 3 is green.** Cloudflare (account `saaquiblabs`) → `saaquiblabs.com` → **DNS** →
