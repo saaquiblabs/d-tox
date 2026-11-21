@@ -23,48 +23,48 @@ One action per line. Tick as you go.
 
 ### 2a. Open the item
 
-- [ ] Open https://chrome.google.com/webstore/devconsole
-- [ ] Click **D-Tox for YouTube** (ID `ocngpkbaoflpfjamgcnnjbdnhmakmgel`)
+- [x] Open https://chrome.google.com/webstore/devconsole
+- [x] Click **D-Tox for YouTube** (ID `ocngpkbaoflpfjamgcnnjbdnhmakmgel`)
 
 ### 2b. Package
 
-- [ ] Left menu: **Package**
-- [ ] Click **Upload new package**
-- [ ] Choose `extension/release/d-tox-2.0.0.zip`
-- [ ] Check the name now reads **D-Tox for YouTube**
+- [x] Left menu: **Package**
+- [x] Click **Upload new package**
+- [x] Choose `extension/release/d-tox-2.0.0.zip`
+- [x] Check the name now reads **D-Tox for YouTube**
 
 ### 2c. Store listing
 
-- [ ] Left menu: **Store listing**
-- [ ] **Description**: delete the old text
-- [ ] **Description**: paste the [Listing text](#listing-text) below
-- [ ] **Category**: Productivity
-- [ ] **Language**: English
-- [ ] **Store icon**: upload `extension/public/icon-128.png`
-- [ ] **Screenshots**: delete every one already there
-- [ ] **Screenshots**: add `extension/release/store/1-watch.png`
-- [ ] **Screenshots**: add `2-search.png`
-- [ ] **Screenshots**: add `3-home.png`
-- [ ] **Screenshots**: add `4-comments.png`
-- [ ] **Screenshots**: add `5-popup.png`
-- [ ] **Small promo tile**: upload `extension/release/store/promo-440x280.png`
-- [ ] **Marquee promo tile**: remove the old one
-- [ ] **Marquee promo tile**: upload `extension/release/store/marquee-1400x560.png`
+- [x] Left menu: **Store listing**
+- [x] **Description**: delete the old text
+- [x] **Description**: paste the [Listing text](#listing-text) below
+- [x] **Category**: Productivity
+- [x] **Language**: English
+- [x] **Store icon**: upload `extension/public/icon-128.png`
+- [x] **Screenshots**: delete every one already there
+- [x] **Screenshots**: add `extension/release/store/1-watch.png`
+- [x] **Screenshots**: add `2-search.png`
+- [x] **Screenshots**: add `3-home.png`
+- [x] **Screenshots**: add `4-comments.png`
+- [x] **Screenshots**: add `5-popup.png`
+- [x] **Small promo tile**: upload `extension/release/store/promo-440x280.png`
+- [x] **Marquee promo tile**: remove the old one
+- [x] **Marquee promo tile**: upload `extension/release/store/marquee-1400x560.png`
 - [ ] **Official URL**: leave it empty (pick "None"). It only accepts a site verified in Google
       Search Console, and `d-tox.saaquiblabs.com` isn't yet. See [Official URL](#official-url).
-- [ ] **Homepage URL**: `https://d-tox.saaquiblabs.com`
-- [ ] **Support URL**: `https://github.com/saaquiblabs/d-tox/issues`
-- [ ] **Mature content**: off
-- [ ] Click **Save draft**
+- [x] **Homepage URL**: `https://d-tox.saaquiblabs.com`
+- [x] **Support URL**: `https://github.com/saaquiblabs/d-tox/issues`
+- [x] **Mature content**: off
+- [x] Click **Save draft**
 
 ### 2d. Privacy practices
 
-- [ ] Left menu: **Privacy practices**
-- [ ] **Single purpose**: paste
+- [x] Left menu: **Privacy practices**
+- [x] **Single purpose**: paste
       `Hides the parts of YouTube that pull you away from what you came for (the recommended feed, Shorts, autoplay and similar), each behind its own switch.`
-- [ ] **storage** justification: paste
+- [x] **storage** justification: paste
       `Keeps the user's switches (which parts of YouTube to hide). Nothing else is stored.`
-- [ ] **Host permission** (`https://www.youtube.com/*`) justification: paste
+- [x] **Host permission** (`https://www.youtube.com/*`) justification: paste
       `Applies the stylesheet that hides the chosen parts of YouTube's pages. Only www.youtube.com; nothing is read from the page or sent anywhere.`
 - [ ] **Remote code**: No, I am not using remote code
 - [ ] **Data usage**: tick no data types
@@ -74,17 +74,17 @@ One action per line. Tick as you go.
 
 ### 2e. Account (affects every item on this developer account)
 
-- [ ] Left menu: **Account**
-- [ ] **Contact email**: `hello@saaquiblabs.com`
-- [ ] Open the verification email sent there and click its link
-- [ ] **Publisher name**: look at it, don't change it now. Renaming it renames the publisher of
+- [x] Left menu: **Account**
+- [x] **Contact email**: `hello@saaquiblabs.com`
+- [x] Open the verification email sent there and click its link
+- [x] **Publisher name**: look at it, don't change it now. Renaming it renames the publisher of
       every item on the account (ADR 0002; not needed for v2.0.0).
 
 ### 2f. Submit
 
-- [ ] Back on the item, click **Submit for review**
-- [ ] Untick **Publish automatically after the review**
-- [ ] Confirm the submit
+- [x] Back on the item, click **Submit for review**
+- [x] Untick **Publish automatically after the review**
+- [x] Confirm the submit
 - [ ] Tell the agent: "submitted today"
 - [ ] Wait for the review (usually 1–3 days, sometimes longer)
 

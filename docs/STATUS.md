@@ -1,6 +1,6 @@
 # Status
 
-Last updated: 2026-11-21 (IST), 15:30. Each session overwrites this at handoff.
+Last updated: 2026-11-21 (IST), 15:35. Each session overwrites this at handoff.
 
 ## Where we are
 
@@ -133,7 +133,13 @@ only), and composes without/with D-Tox side by side: `1-watch`, `2-search`, `3-h
 Page alone: signed-out Home has no feed, and his own has watch history off), `4-comments`,
 `5-popup`. Each pair changes one Setting from the Calm Default. Ads hidden and video blocked in
 both; the player shows the video's thumbnail without its clock. Zip rebuilt the same day
-(sha256 `cbc96ae1…`, tests 149/149). Upload resumes at step 5 (screenshots).
+(sha256 `cbc96ae1…`, tests 149/149). Marquee 1400×560 added; `docs/release.md` steps rewritten as
+one-action-per-line checklists. Official URL left empty (needs `saaquiblabs.com` verified in
+Search Console; how-to in release.md).
+
+**Submitted for review 2026-11-21, 15:30 IST**, auto-publish off. Status: Pending review.
+Once it passes, Najmush must click Publish **within 30 days** or the staged version expires.
+Then release.md § 3b (date changelog, GitHub release on his yes, cut-over).
 
 **#28 so far (2026-11-20), branch `feat/28-release`:** `npm run zip` in `extension/` (clean build,
 fails without a `/changelog` entry for the version) → `extension/release/d-tox-2.0.0.zip` (29 KB,
