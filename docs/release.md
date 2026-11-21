@@ -9,8 +9,12 @@ How a version reaches the Chrome Web Store (#28, ADR 0002). The listing is
    entry (no date yet: it shows "Coming soon"). `CHANGELOG.md` has the engineering view.
 2. `cd extension && npm test && npm run zip` → `extension/release/d-tox-<version>.zip` (prints its
    sha256 and contents; fails if the changelog has no entry).
-3. `cd site && npm run build && node scripts/store-assets.mjs` → `extension/release/store/`:
-   screenshots `1-home` … `5-before` (1280×800) and `promo-440x280.png`. Look at each one.
+3. `cd site && npm run build && nice node scripts/store-assets.mjs` → `extension/release/store/`:
+   five 1280×800 screenshots of live YouTube (signed out, real videos, nothing swapped):
+   `1-watch`, `2-search`, `4-comments` are without/with D-Tox side by side, `3-home` the
+   Intention Page, `5-popup` the popup over the watch page; plus `promo-440x280.png`. Raw
+   captures land in `store/raw/` (`capture` or `compose` runs one half). Results change per load:
+   look at each one.
 4. The site is deployed, so the listing's links show the current page.
 
 ## 2. Upload (**[HUMAN]**, about 15 minutes)
@@ -26,8 +30,8 @@ Open https://chrome.google.com/webstore/devconsole and pick **D-Tox** (`ocngpkba
 2. **Description**: replace it with the text in [Listing text](#listing-text) below.
 3. **Category**: Productivity (keep it if already set). **Language**: English.
 4. **Store icon**: `extension/public/icon-128.png` (the folded-D mark).
-5. **Screenshots**: delete every v1 screenshot, then add `extension/release/store/1-home.png`
-   through `5-before.png`, in order.
+5. **Screenshots**: delete every screenshot already there, then add `extension/release/store/1-watch.png`
+   through `5-popup.png`, in order.
 6. **Small promo tile**: `extension/release/store/promo-440x280.png`. **Marquee**: remove v1's
    (it carries the old brand); none for now.
 7. **Homepage URL**: `https://d-tox.saaquiblabs.com`. **Support URL**:

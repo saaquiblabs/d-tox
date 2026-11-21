@@ -1,6 +1,6 @@
 # Status
 
-Last updated: 2026-11-20 (IST), 16:30. Each session overwrites this at handoff.
+Last updated: 2026-11-21 (IST), 15:30. Each session overwrites this at handoff.
 
 ## Where we are
 
@@ -124,6 +124,16 @@ research ✅ → grill ✅ → spec ✅ (#16) → tickets ✅ (#18–#28) → bu
 prototypes of the popup, Intention Page and product page (seen running before anything is picked).
 
 ## Next step: #28 (release), upload is with Najmush
+
+**2026-11-21, branch `feat/28-live-store-shots`:** Najmush was mid-upload (description and icon
+pasted) and turned down the five fiction screenshots ("look AI made", no before/after on one
+page). `site/scripts/store-assets.mjs` now captures **live YouTube, signed out, real videos and
+creators, nothing swapped** (his call; the "no real creator" rule stays for the product page
+only), and composes without/with D-Tox side by side: `1-watch`, `2-search`, `3-home` (Intention
+Page alone: signed-out Home has no feed, and his own has watch history off), `4-comments`,
+`5-popup`. Each pair changes one Setting from the Calm Default. Ads hidden and video blocked in
+both; the player shows the video's thumbnail without its clock. Zip rebuilt the same day
+(sha256 `cbc96ae1…`, tests 149/149). Upload resumes at step 5 (screenshots).
 
 **#28 so far (2026-11-20), branch `feat/28-release`:** `npm run zip` in `extension/` (clean build,
 fails without a `/changelog` entry for the version) → `extension/release/d-tox-2.0.0.zip` (29 KB,
