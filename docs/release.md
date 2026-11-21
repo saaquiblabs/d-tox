@@ -19,57 +19,101 @@ How a version reaches the Chrome Web Store (#28, ADR 0002). The listing is
 
 ## 2. Upload (**[HUMAN]**, about 15 minutes)
 
-Open https://chrome.google.com/webstore/devconsole and pick **D-Tox** (`ocngpkbaoflpfjamgcnnjbdnhmakmgel`).
+One action per line. Tick as you go.
 
-**Package**
-1. **Package** (left menu) → **Upload new package** → `extension/release/d-tox-2.0.0.zip`.
-   The listing's name becomes the manifest's, "D-Tox for YouTube", and its summary the manifest's
-   description. Check both after the upload.
+### 2a. Open the item
 
-**Store listing**
-2. **Description**: replace it with the text in [Listing text](#listing-text) below.
-3. **Category**: Productivity (keep it if already set). **Language**: English.
-4. **Store icon**: `extension/public/icon-128.png` (the folded-D mark).
-5. **Screenshots**: delete every screenshot already there, then add `extension/release/store/1-watch.png`
-   through `5-popup.png`, in order.
-6. **Small promo tile**: `extension/release/store/promo-440x280.png`. **Marquee promo tile**:
-   replace v1's (it carries the old brand) with `extension/release/store/marquee-1400x560.png`.
-7. **Homepage URL**: `https://d-tox.saaquiblabs.com`. **Support URL**:
-   `https://github.com/saaquiblabs/d-tox/issues`.
-8. **Save draft**.
+- [ ] Open https://chrome.google.com/webstore/devconsole
+- [ ] Click **D-Tox for YouTube** (ID `ocngpkbaoflpfjamgcnnjbdnhmakmgel`)
 
-**Privacy practices**
-9. **Single purpose**: "Hides the parts of YouTube that pull you away from what you came for (the
-   recommended feed, Shorts, autoplay and similar), each behind its own switch."
-10. **Permission justification**:
-    - `storage`: "Keeps the user's switches (which parts of YouTube to hide). Nothing else is stored."
-    - Host permission `https://www.youtube.com/*`: "Applies the stylesheet that hides the chosen
-      parts of YouTube's pages. Only www.youtube.com; nothing is read from the page or sent anywhere."
-11. **Remote code**: No, I am not using remote code.
-12. **Data usage**: tick nothing (it collects no user data); tick the three certifications.
-13. **Privacy policy URL**: `https://d-tox.saaquiblabs.com/privacy`.
-14. **Save draft**.
+### 2b. Package
 
-**Account** (applies to every item on this developer account)
-15. **Contact email**: `hello@saaquiblabs.com` (it needs verifying by a link sent there).
-16. **Publisher name**: check what it shows. Changing it to Saaquib Labs here renames the
-    publisher of every item on the account; moving the item to a group publisher is a separate
-    transfer (ADR 0002 allows it, not needed for v2.0.0).
+- [ ] Left menu: **Package**
+- [ ] Click **Upload new package**
+- [ ] Choose `extension/release/d-tox-2.0.0.zip`
+- [ ] Check the name now reads **D-Tox for YouTube**
 
-**Submit**
-17. **Submit for review**. Untick **Publish automatically after the review**, so the publish
-    happens when you choose (the changelog is dated and the GitHub release made on the same day).
-    Review usually takes 1–3 days and can take longer.
+### 2c. Store listing
 
-## 3. After the review (**[HUMAN]** publishes, then the agent)
+- [ ] Left menu: **Store listing**
+- [ ] **Description**: delete the old text
+- [ ] **Description**: paste the [Listing text](#listing-text) below
+- [ ] **Category**: Productivity
+- [ ] **Language**: English
+- [ ] **Store icon**: upload `extension/public/icon-128.png`
+- [ ] **Screenshots**: delete every one already there
+- [ ] **Screenshots**: add `extension/release/store/1-watch.png`
+- [ ] **Screenshots**: add `2-search.png`
+- [ ] **Screenshots**: add `3-home.png`
+- [ ] **Screenshots**: add `4-comments.png`
+- [ ] **Screenshots**: add `5-popup.png`
+- [ ] **Small promo tile**: upload `extension/release/store/promo-440x280.png`
+- [ ] **Marquee promo tile**: remove the old one
+- [ ] **Marquee promo tile**: upload `extension/release/store/marquee-1400x560.png`
+- [ ] **Official URL**: leave it empty (pick "None"). It only accepts a site verified in Google
+      Search Console, and `d-tox.saaquiblabs.com` isn't yet. See [Official URL](#official-url).
+- [ ] **Homepage URL**: `https://d-tox.saaquiblabs.com`
+- [ ] **Support URL**: `https://github.com/saaquiblabs/d-tox/issues`
+- [ ] **Mature content**: off
+- [ ] Click **Save draft**
 
-1. **[HUMAN]** In the dashboard, **Publish**. Tell the agent the date.
-2. Agent, one PR: date the entry in `changelog.astro` and `CHANGELOG.md`; STATUS.
-3. Agent: GitHub release `v<version>` on `main` with the zip attached and the changelog entry as
-   its notes (on Najmush's yes; it is public).
-4. Cut-over (#28): repoint links (saaquiblabs repo's D-Tox card and story); `d-tox.najmushsaaquib.com`
-   301s to `d-tox.saaquiblabs.com` for 30 days, then the portfolio's D-Tox route group is removed in
-   a PR there (saaquiblabs ADR 0006).
+### 2d. Privacy practices
+
+- [ ] Left menu: **Privacy practices**
+- [ ] **Single purpose**: paste
+      `Hides the parts of YouTube that pull you away from what you came for (the recommended feed, Shorts, autoplay and similar), each behind its own switch.`
+- [ ] **storage** justification: paste
+      `Keeps the user's switches (which parts of YouTube to hide). Nothing else is stored.`
+- [ ] **Host permission** (`https://www.youtube.com/*`) justification: paste
+      `Applies the stylesheet that hides the chosen parts of YouTube's pages. Only www.youtube.com; nothing is read from the page or sent anywhere.`
+- [ ] **Remote code**: No, I am not using remote code
+- [ ] **Data usage**: tick no data types
+- [ ] **Data usage**: tick all three certifications
+- [ ] **Privacy policy URL**: `https://d-tox.saaquiblabs.com/privacy`
+- [ ] Click **Save draft**
+
+### 2e. Account (affects every item on this developer account)
+
+- [ ] Left menu: **Account**
+- [ ] **Contact email**: `hello@saaquiblabs.com`
+- [ ] Open the verification email sent there and click its link
+- [ ] **Publisher name**: look at it, don't change it now. Renaming it renames the publisher of
+      every item on the account (ADR 0002; not needed for v2.0.0).
+
+### 2f. Submit
+
+- [ ] Back on the item, click **Submit for review**
+- [ ] Untick **Publish automatically after the review**
+- [ ] Confirm the submit
+- [ ] Tell the agent: "submitted today"
+- [ ] Wait for the review (usually 1–3 days, sometimes longer)
+
+### Official URL
+
+Optional. To fill it later:
+
+1. Open https://search.google.com/search-console
+2. Add property → **Domain** → `saaquiblabs.com`
+3. Copy the TXT record it gives
+4. Add that TXT record at the DNS provider for `saaquiblabs.com`
+5. Back in Search Console, click **Verify**
+6. Use the same Google account as the developer dashboard
+7. Back in the dashboard, Official URL now lists the site; pick it and **Save draft**
+
+## 3. After the review
+
+### 3a. You (**[HUMAN]**)
+
+- [ ] In the dashboard, click **Publish**
+- [ ] Tell the agent the date
+
+### 3b. Agent
+
+- [ ] One PR: date the entry in `changelog.astro` and `CHANGELOG.md`; update STATUS
+- [ ] On Najmush's yes (it is public): GitHub release `v<version>` on `main`, zip attached, changelog entry as notes
+- [ ] Cut-over (#28): repoint the saaquiblabs repo's D-Tox card and story to `d-tox.saaquiblabs.com`
+- [ ] Cut-over: `d-tox.najmushsaaquib.com` 301s to `d-tox.saaquiblabs.com` for 30 days
+- [ ] After 30 days: remove the portfolio's D-Tox route group in a PR there (saaquiblabs ADR 0006)
 
 ## Listing text
 
