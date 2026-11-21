@@ -224,6 +224,22 @@ em{font-style:italic;color:var(--em)}
 
 section.pad{padding-block:clamp(96px,11vw,160px)}
 
+/* ---------- honest comparison ---------- */
+.vs{width:100%;margin-top:clamp(36px,4vw,56px);border-collapse:separate;border-spacing:0;font-size:15px;line-height:1.35;table-layout:fixed}
+.vs th,.vs td{padding:16px 18px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+.vs thead th{font:500 13px/1 var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--t3);padding-block:18px}
+.vs thead th.me{color:var(--acc)}
+.vs thead th.me img{display:inline-block;width:16px;height:16px;vertical-align:-3px;margin-right:8px}
+.vs tbody th{font-weight:500;color:var(--text);width:24%}
+.vs td{color:var(--t2)}
+.vs .me{background:rgb(var(--acc-rgb) / .04)}
+.vs thead .me{border-radius:14px 14px 0 0}
+.vs tbody tr:last-child .me{border-radius:0 0 14px 14px}
+.vs td.win{color:var(--text)}
+.vs td.win::before,.when .dot{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--acc);margin-right:9px;vertical-align:2px}
+.when .dot{margin:0 4px 0 2px}
+#compare .sub{margin-top:20px;max-width:40rem}
+
 /* ---------- home scene: YouTube's home, full of videos, empties into the Intention Page ---------- */
 .homescene{position:relative;height:340vh;view-timeline:--home block}
 .hs{position:sticky;top:72px;height:calc(100vh - 72px);display:grid;grid-template-rows:auto 1fr;align-items:center;padding-block:20px 28px}
@@ -363,6 +379,13 @@ html[data-solo=after] .yt .q .box{border-color:#3ea6ff;box-shadow:0 0 0 3px rgb(
   .bento{grid-template-columns:1fr 1fr}.tile.big{grid-row:auto;min-height:0}
   .hs .holder{width:100%}
   .nz.thumb{width:110px}.nz.short{width:56px}
+}
+@media (max-width:640px){
+  .vs,.vs tbody{display:block}.vs thead{display:block}
+  .vs tr{display:grid;grid-template-columns:repeat(3,1fr)}.vs thead td{display:none}
+  .vs tbody th{grid-column:1/-1;width:auto;padding:18px 0 4px;border:0;font-size:14px}
+  .vs th,.vs td{padding:8px 10px 16px 0;font-size:13.5px}.vs thead th{padding:14px 0;font-size:11.5px}
+  .vs .me{background:none;padding-left:0}.vs thead .me,.vs tbody tr:last-child .me{border-radius:0}
 }
 @media (max-width:560px){.pills button{padding:9px 12px}.pills button span{display:none}.bento{grid-template-columns:1fr}.tile.big{grid-column:auto}.tile .bars div{grid-template-columns:90px 1fr auto}}
 </style>
@@ -506,6 +529,29 @@ mainEl.insertAdjacentHTML('beforeend', `<div class="homescene" id="home"><div cl
     <div style="display:grid;gap:10px;justify-items:end"><div class="prog"><span>Scroll</span><span class="t"><i></i></span></div></div></div>
   <div class="holder"><figure class="frame" aria-label="YouTube’s home, with and without D-Tox">${tb('home')}<div class="ytbox" aria-hidden="true"><div class="yt"></div></div></figure></div>
 </div></div>
+
+`); await tick();
+// ---- honest comparison (#27): facts from each Chrome Web Store page and lawrencehook.com/rys/features, 21 Nov 2026.
+// w: which columns give the better answer (0 D-Tox, 1 Unhook, 2 RYS). Re-check before changing a row.
+const VS = [
+  ['Home page', 'Asks what you came for', 'Hidden, or Subscriptions', 'Hidden, or a redirect', [0]],
+  ['Download', '33 KB, the smallest', '37 KB', '349 KB', [0]],
+  ['Code', 'Open (MIT)', 'Closed', 'Open (MPL-2.0)', [0, 2]],
+  ['Price', 'Free, all of it', 'Free', 'Free; most options paid', [0, 1]],
+  ['Autoplay off', 'Free, on from install', 'Free', 'Paid', [0, 1]],
+  ['Switches', '10, four on from install', '23', '15 free, 80+ paid', [1, 2]],
+  ['Schedule and lock', '—', '—', 'Paid', [2]],
+  ['Other browsers', 'Chrome', 'Firefox, Edge, Android via Firefox', 'Firefox', [1]],
+  ['Embedded videos', '—', 'Yes', 'Paid, one option', [1]],
+  ['People using it', '16, just launched', '1,000,000 · 4.9★', '10,000 · 3.3★', [1]],
+];
+mainEl.insertAdjacentHTML('beforeend', `<section class="pad" id="compare"><div class="wrap">
+  <h2>Not the most switches. <em>The right ten.</em></h2>
+  <p class="lead sub">Others hand you a panel to set. <span style="white-space:nowrap">D-Tox</span> starts calm the moment it’s installed, and all of it is free. Unhook reaches more browsers and more people; it’s good too.</p>
+  <table class="vs"><thead><tr><td></td><th scope="col" class="me"><img src=\"${m}" alt="">D-Tox</th><th scope="col">Unhook</th><th scope="col">RYS</th></tr></thead>
+    <tbody>${VS.map(([k, ...r]) => `<tr><th scope="row">${k}</th>${r.slice(0, 3).map((v, i) => `<td class="${i === 0 ? 'me' : ''}${r[3].includes(i) ? ' win' : ''}">${v}</td>`).join('')}</tr>`).join('')}</tbody></table>
+  <p class="small when">From each one’s Chrome Web Store page and the RYS features page, 21 Nov 2026. <span class="dot"></span> marks the better answer in each row.</p>
+</div></section>
 
 `); await tick();
 document.querySelector('.end').hidden = false;
