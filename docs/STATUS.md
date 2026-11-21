@@ -133,7 +133,7 @@ Najmush runs the deploy. Still his: the portfolio deploy (redirects), the 301 fr
 `d-tox.najmushsaaquib.com`; on or after 2026-12-21 remove the portfolio's route group and the
 old `d-tox` Openship project. Optional: Search Console for the listing's Official URL.
 
-**#27 polish, item 1 of 3: the honest comparison** (`#compare` in `index.astro`, after the Home
+**#27 polish, item 1 of 3: the honest comparison** ("Not the most switches. The right ten."; D-Tox's rows first, rivals' wins last, per Najmush) (`#compare` in `index.astro`, after the Home
 scene, before the close). A table of D-Tox, Unhook, RYS in ten rows; a dot marks the better
 answer per row, rivals' wins included (users and rating, switches, other browsers, embeds,
 schedule). Facts from each Chrome Web Store page and lawrencehook.com/rys/features, 21 Nov 2026:
