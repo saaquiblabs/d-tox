@@ -1,6 +1,6 @@
 # Status
 
-Last updated: 2026-11-21 (IST), 15:35. Each session overwrites this at handoff.
+Last updated: 2026-11-21 (IST), 21:45. Each session overwrites this at handoff.
 
 ## Where we are
 
@@ -48,9 +48,8 @@ finished: 32 questions, all answered by Najmush on 2026-11-18. **Read `CONTEXT.m
   New icon: the folded-D mark on the page's dark tile, rendered by `extension/scripts/render-icons.mjs`
   into `extension/public/icon-{16,48,128}.png` (the toolbar icon and, copied, the favicon) plus
   `site/public/og.jpg` (social card on every page; also the README banner). Repo description,
-  homepage and topics updated. **[HUMAN]** upload `site/public/og.jpg` as the repo's social preview
-  (GitHub Settings → Social preview; no API) and the new 128 icon to the Web Store listing at the
-  next release.
+  homepage and topics updated. `site/public/og.jpg` is the repo's social preview (uploaded by Najmush) and the
+  new 128 icon is on the Web Store listing (v2.0.0).
   The page builds itself after first paint, section by section, and the Home scene and the noise
   only when scrolled near (the VPS gate measured 430 ms blocking time when it was one task).
   The prototype's history and Najmush's verdicts live on `proto/22-prototypes` (docs/STATUS.md
@@ -123,7 +122,17 @@ finished: 32 questions, all answered by Najmush on 2026-11-18. **Read `CONTEXT.m
 research ✅ → grill ✅ → spec ✅ (#16) → tickets ✅ (#18–#28) → build: #18 ✅ (PR #30), #26 ✅ (live), #19 ✅ (PR #34), #20 ✅ (PR #36), #24 ✅ (PR #37), #27 live (PRs #39–#41, polish left), #21 ✅ (PR #42), #23 Intention Page B ✅ (PR #43), #23 popup ✅ (PR #44), #22 closed (picks recorded), #46 wide player ✅ (PR #47), #25 Release Gate in review, rest next →
 prototypes of the popup, Intention Page and product page (seen running before anything is picked).
 
-## Next step: #28 (release), upload is with Najmush
+## Next step: #28 wrap-up (v2.0.0 is published)
+
+**v2.0.0 approved 2026-11-21, 19:22 IST; Najmush clicked Publish the same evening.** Changelog
+dated 2026-11-21 (`changelog.astro`, `CHANGELOG.md`); GitHub release `v2.0.0` with the zip
+(Najmush: "go ahead"). The store page can take a while to show 2.0.0; existing users update over
+hours. Repo social preview (`og.jpg`) uploaded by Najmush. Left in #28: the cut-over deploys and
+the 301 from `d-tox.najmushsaaquib.com` (Najmush runs them), the saaquiblabs card's v1
+screenshots; on or after 2026-12-21 remove the portfolio's route
+group and the old `d-tox` Openship project. Optional: verify `saaquiblabs.com` in Search Console
+for the listing's Official URL (release.md). Then close #28; #27 polish is next.
+
 
 **2026-11-21, branch `feat/28-live-store-shots`:** Najmush was mid-upload (description and icon
 pasted) and turned down the five fiction screenshots ("look AI made", no before/after on one
@@ -137,9 +146,7 @@ both; the player shows the video's thumbnail without its clock. Zip rebuilt the 
 one-action-per-line checklists. Official URL left empty (needs `saaquiblabs.com` verified in
 Search Console; how-to in release.md).
 
-**Submitted for review 2026-11-21, 15:30 IST**, auto-publish off. Status: Pending review.
-Once it passes, Najmush must click Publish **within 30 days** or the staged version expires.
-Then release.md § 3b (date changelog, GitHub release on his yes).
+**Submitted for review 2026-11-21, 15:30 IST**, auto-publish off; approved 19:22 IST, published.
 
 **Cut-over done early (2026-11-21, Najmush: "start pointing to the new D-Tox everywhere"):**
 saaquiblabs.com's D-Tox card, story and Privacy link → `d-tox.saaquiblabs.com` (saaquiblabs PR #88);

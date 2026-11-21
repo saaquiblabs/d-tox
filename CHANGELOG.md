@@ -5,7 +5,7 @@ All notable changes to D-Tox will be documented in this file.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [2.0.0] - unreleased
+## [2.0.0] - 2026-11-21
 
 Rebuilt from scratch as a Saaquib Labs product. The full story, in plain words, is on
 https://d-tox.saaquiblabs.com/changelog; this file keeps the engineering view.
